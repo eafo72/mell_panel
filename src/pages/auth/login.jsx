@@ -18,7 +18,7 @@ const login = () => {
       <ToastContainer />
       <div className="loginwrapper">
         <div className="lg-inner-column">
-          <div className="left-column relative z-[1]" style={{backgroundColor:"#00254A"}}>
+          <div className="left-column relative z-[1]" style={{backgroundColor:"black"}}>
             {/*}
             <div className="max-w-[520px] pt-20 ltr:pl-20 rtl:pr-20">
              
@@ -34,7 +34,7 @@ const login = () => {
             </div>
             {*/}
 
-            <div style={{marginTop:"40vh",marginLeft:"10vw",marginRight:"10vw"}}>
+            <div align="center" style={{marginTop:"40vh"}}>
               <img
                 src={isDark ? Illustration : IllustrationBlack}
                 alt=""

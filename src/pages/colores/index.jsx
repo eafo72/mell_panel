@@ -12,12 +12,12 @@ import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../configs/axios";
-import { UserContext } from "../../pages/context/userContext";
+import { UserContext } from "../context/userContext";
 import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Users = () => {
+const Colors = () => {
 
   const COLUMNS = [
    
@@ -29,23 +29,17 @@ const Users = () => {
       },
     },
     {
-      Header: "Correo",
-      accessor: "correo",
+      Header: "Hexadecimal",
+      accessor: "colorhexa",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
-    {
-      Header: "Tipo",
-      accessor: "tipo",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
+        
     {
       Header: "Editar",
       Cell: (row) => {
-        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.correo)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
             <Icon icon="heroicons:pencil-square"/>
@@ -57,7 +51,7 @@ const Users = () => {
     {
       Header: "Borrar",
       Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.correo)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.nombre)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
             <Icon icon="heroicons-outline:trash"/>
@@ -78,13 +72,13 @@ const Users = () => {
 
   const navigate = useNavigate();
 
-  const getUsers = async () => {
+  const getColors = async () => {
     try {
-      let res = await clienteAxios.get(`/usuario/obtener`);
+      let res = await clienteAxios.get(`/color/obtener`);
 
-      //console.log(res.data.usuarios);
+      //console.log(res.data.colores);
       
-      setDatos(res.data.usuarios);
+      setDatos(res.data.colores);
     } catch (error) {
       console.log(error);
     }
@@ -99,25 +93,24 @@ const Users = () => {
     if(authStatus === false) {
       //navigate("/");
     }
-    getUsers();
+    getColors();
       
   },[authStatus]);
   
 
-  const header = ["Nombre", "Correo", "Tipo" ];
+  const header = ["Nombre", "Hexadecimal"];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
         "nombre":datos[i]['nombre'],
-        "correo":datos[i]['correo'],
-        "tipo":datos[i]['tipo']
+        "colorhexa":datos[i]['colorhexa']
       })
     }
 
     downloadExcel({
-      fileName: "mell_users",
-      sheet: "users",
+      fileName: "mell_colors",
+      sheet: "colors",
       tablePayload: {
         header,
         body: newDatos,
@@ -126,18 +119,18 @@ const Users = () => {
   }
 
   const handleAlta = () => {
-    navigate("/usuarios/alta");
+    navigate("/colores/alta");
   };
 
-  const goToEditar = (id,email) => {
-    localStorage.setItem("EditUser",id);
-    navigate("/usuarios/editar");
+  const goToEditar = (id,name) => {
+    localStorage.setItem("EditColor",id);
+    navigate("/colores/editar");
   }
 
-  const goToBorrar = async (id,email) => {
-    localStorage.setItem("DeleteUser",id);
-    localStorage.setItem("DeleteUserEmail",email);
-    navigate("/usuarios/borrar");
+  const goToBorrar = async (id,name) => {
+    localStorage.setItem("DeleteColor",id);
+    localStorage.setItem("DeleteColorName",name);
+    navigate("/colores/borrar");
   }
 
     
@@ -179,7 +172,7 @@ const Users = () => {
       <ToastContainer />
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Usuarios</h4>
+          <h4 className="card-title">Colores</h4>
           <button onClick={(e) => handleAlta(e)} className="btn btn-success">
             Agregar nuevo
           </button>
@@ -317,4 +310,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Colors;

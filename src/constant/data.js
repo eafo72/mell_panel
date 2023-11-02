@@ -10,13 +10,43 @@ export const menuItems = [
     link: "dashboard",
   },
  */
+
+  {
+    title: "Productos",
+    icon: "heroicons:list-bullet",
+    link: "productos",
+  },
+
+  {
+    title: "Categorías",
+    icon: "heroicons:list-bullet",
+    link: "categorias",
+  },
+  {
+    title: "Subcategorías",
+    icon: "heroicons:list-bullet",
+    link: "subcategorias",
+  },
+  {
+    title: "Marcas",
+    icon: "heroicons:list-bullet",
+    link: "marcas",
+  },
+  {
+    title: "Colores",
+    icon: "heroicons:paint-brush",
+    link: "colores",
+  },
+  {
+    title: "Proveedores",
+    icon: "heroicons:user-group",
+    link: "proveedores",
+  },
   {
     title: "Usuarios",
     icon: "heroicons:user-group",
     link: "usuarios",
   },
- 
-
 ];
 
 export const topMenu = [];

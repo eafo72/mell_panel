@@ -19,7 +19,7 @@ function Error() {
           to="/dashboard"
           className="btn bg-white text-black-500 hover:bg-opacity-75 transition-all duration-150 block text-center"
         >
-          Ir a Usuarios
+          Ir a Dashboard
         </Link>
       </div>
     </div>

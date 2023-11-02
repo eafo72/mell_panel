@@ -8,17 +8,17 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
-const UsuariosBorrar = () => {
-  const id = localStorage.getItem("DeleteUser");
-  const email = localStorage.getItem("DeleteUserEmail");
+const SubcategoriasBorrar = () => {
+  const id = localStorage.getItem("DeleteSubcategory");
+  const name = localStorage.getItem("DeleteSubcategoryName");
 
   const navigate = useNavigate();
 
-  const deleteUser = async () => {
+  const deleteSubcategory = async () => {
     try {
-      const res = await clienteAxios.post("/usuario/borrar", { id });
+      const res = await clienteAxios.post("/subcategoria/borrar", { id });
       //console.log(res.data);
-      toast.success('Usuario Borrado', {
+      toast.success('Subcategoría Borrada', {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: false,
@@ -28,7 +28,7 @@ const UsuariosBorrar = () => {
         progress: undefined,
         theme: "dark",
       });
-      navigate("/usuarios");
+      navigate("/subcategorias");
       
     } catch (error) {
       console.log(error);
@@ -46,20 +46,20 @@ const UsuariosBorrar = () => {
   };
 
   const regresar = () => {
-    navigate("/usuarios");
+    navigate("/subcategorias");
   };
 
   return (
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Borrar Usuarios">
+        <Card title="Borrar Subcategorías">
           <div className="space-y-4">
             <div className=" space-y-4 text-center">
-              <p>¿Seguro que desea borrar el usuario del correo: {email}?</p>
+              <p>¿Seguro que desea borrar la subcategoría: {name}?</p>
               <Button
                 text="Borrar"
-                onClick={() => deleteUser()}
+                onClick={() => deleteSubcategory()}
                 className="btn-danger m-5"
               />
               <Button
@@ -75,4 +75,4 @@ const UsuariosBorrar = () => {
   );
 };
 
-export default UsuariosBorrar;
+export default SubcategoriasBorrar;

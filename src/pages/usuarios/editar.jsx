@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
+import Textarea from "@/components/ui/Textarea";
 import Select from "react-select";
 import Button from "@/components/ui/Button";
 import useDarkMode from "@/hooks/useDarkMode";
@@ -13,50 +14,53 @@ import clienteAxios from "../../configs/axios";
 
 const UsuariosEditar = () => {
   const [isDark] = useDarkMode();
-
   const [nombre, setNombre] = useState();
-  const [apellidoPaterno, setApellidoPaterno] = useState();
-  const [apellidoMaterno, setApellidoMaterno] = useState();
+  const [tipo, setTipo] = useState();
   const [correo, setCorreo] = useState();
+  const [direccion, setDireccion] = useState();
   const [telefono, setTelefono] = useState();
+  const [cumpleanios, setCumpleanios] = useState();
 
-  const [asistePresencial, setAsistePresencial] = useState();
-  const [asisteVirtual, setAsisteVirtual] = useState();
+  const [allUserTypes, setAllUserTypes] = useState([]);
 
-  const opcionesAsistencia = [
-    { value: "si", label: "Sí" },
-    { value: "no", label: "No" }
-  ];
-
-  
-  
+    
   const id = localStorage.getItem("EditUser");
+
+  const getUserTypes = async () => {
+    try {
+      let res = await clienteAxios.get(`/tipos_usuario/obtener`);
+
+      //console.log(res.data.tipos_usuario);
+      let array = [];
+      for (let i = 0; i < res.data.tipos_usuario.length; i++) {
+        //console.log(i);
+        array.push({"value":res.data.tipos_usuario[i]["nombre"],"label":res.data.tipos_usuario[i]["nombre"]});
+      }
+      setAllUserTypes(array);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const getUser = async () => {
     try {
-      const res = await clienteAxios.post("/user/get",  { user_id:id });
-      console.log(res.data.data.user);
+      const res = await clienteAxios.get("/usuario/single/"+id);
+      //console.log(res.data.single);
       
-      setNombre(res.data.data.user.first_name);
-      setApellidoPaterno(res.data.data.user.last_name);
-      setApellidoMaterno(res.data.data.user.second_surname);
-      setCorreo(res.data.data.user.email);
-      setTelefono(res.data.data.user.phone);
-
-      if(res.data.data.user.asiste_presencial != null){
-        setAsistePresencial({
-          label: res.data.data.user.asiste_presencial,
-          value: res.data.data.user.asiste_presencial,
+      setNombre(res.data.single.nombre);
+      if(res.data.single.tipo != null){
+        setTipo({
+          label: res.data.single.tipo,
+          value: res.data.single.tipo,
         }); 
       }  
+      setCorreo(res.data.single.correo);
+      setDireccion(res.data.single.direccion);
+      setTelefono(res.data.single.telefono);
+      setCumpleanios(res.data.single.cumpleanios);
 
-      if(res.data.data.user.asiste_virtual != null){
-        setAsisteVirtual({
-          label: res.data.data.user.asiste_virtual,
-          value: res.data.data.user.asiste_virtual,
-        }); 
-      }  
-      
     } catch (error) {
       console.log(error);
       mostrarMensaje(error.code);
@@ -64,7 +68,8 @@ const UsuariosEditar = () => {
   };
 
   useEffect(() => {
-  getUser();
+    getUserTypes();
+    getUser();
   }, []);
 
   const navigate = useNavigate();
@@ -88,30 +93,21 @@ const UsuariosEditar = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir al menos un nombre");
-    }else if(apellidoPaterno == "" || apellidoPaterno == undefined) {
-      mostrarMensaje("Debes escribir el apellido paterno");
-    }else if(apellidoMaterno == "" || apellidoMaterno == undefined) {
-      mostrarMensaje("Debes escribir el apellido materno");  
+    }else if(tipo == "" || tipo == undefined) {
+      mostrarMensaje("Debes seleccionar el tipo de usuario");
     }else if(correo == "" || correo == undefined) {
       mostrarMensaje("Debes escribir un correo");
-    }else if(telefono == "" || telefono == undefined) {
-      mostrarMensaje("Debes escribir un teléfono");  
-    } else if (asistePresencial == "" || asistePresencial == undefined) {
-      mostrarMensaje("Debes seleccionar si asiste al evento presencial");  
-    } else if (asisteVirtual == "" || asisteVirtual == undefined) {
-      mostrarMensaje("Debes seleccionar si asiste al evento virtual");  
     } else {
       const editUser = async () => {
         try {
-          const res = await clienteAxios.post("/user/update", {
-            user_id:id,
-            first_name:nombre,
-            last_name:apellidoPaterno,
-            second_surname:apellidoMaterno,
-            phone:telefono,
-            email:correo,
-            asiste_presencial:asistePresencial.value,
-            asiste_virtual:asisteVirtual.value
+          const res = await clienteAxios.put("/usuario/actualizar", {
+            id:id,
+            nombre, 
+            tipo:tipo.value, 
+            correo,
+            direccion,
+            telefono,
+            cumpleanios
           });
           console.log(res);
           navigate("/usuarios");
@@ -148,50 +144,31 @@ const UsuariosEditar = () => {
         <Card title="Editar Usuario">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
-              {/*Nombres*/}
-              <Textinput
+            
+             {/*Nombre*/}
+             <Textinput
                 onChange={(e) => setNombre(e.target.value)}
-                label="Nombre *"
-                placeholder="Nombre"
-                id="nombres"
+                label="Nombre Completo *"
+                placeholder="Nombre Completo"
+                id="nombre"
                 type="text"
                 defaultValue={nombre}
               />
 
-              {/*Apellido Paterno*/}
-              <Textinput
-                onChange={(e) => setApellidoPaterno(e.target.value)}
-                label="Apellido Paterno*"
-                placeholder="Apellido Paterno"
-                id="apellidoP"
-                type="text"
-                defaultValue={apellidoPaterno}
-              />
+              {/*Tipo Usuario*/}
+              <label  className="block capitalize form-label  ">Tipo de Usuario *</label>
+              <Select
+                  styles={customStyles}
+                  label="Tipo de usuario *"
+                  placeholder="Seleccione"
+                  id="tipo"
+                  options={allUserTypes}
+                  value={tipo}
+                  onChange={setTipo}
+                  isSearchable={true}
+                ></Select>
 
-              {/*Apellido Materno*/}
-              <Textinput
-                onChange={(e) => setApellidoMaterno(e.target.value)}
-                label="Apellidos Materno *"
-                placeholder="Apellido Materno"
-                id="apellidoM"
-                type="text"
-                defaultValue={apellidoMaterno}
-              />
-
-              
-
-              {/*telefono*/}
-              <Textinput
-                onChange={(e) => setTelefono(e.target.value)}
-                label="Teléfono *"
-                placeholder="Teléfono"
-                id="telefono"
-                type="tel"
-                defaultValue={telefono}
-              />
-
-
-              {/*correo*/}
+              {/*Correo*/}
               <Textinput
                 onChange={(e) => setCorreo(e.target.value)}
                 label="Correo *"
@@ -201,31 +178,38 @@ const UsuariosEditar = () => {
                 defaultValue={correo}
               />
 
-              {/*Asiste Presencial*/}
-              <label  className="block capitalize form-label  ">Asiste Presencial *</label>
-              <Select
-                  styles={customStyles}
-                  label="Asiste a evento presencial *"
-                  placeholder="Seleccione una opcion"
-                  id="evento_presencial"
-                  options={opcionesAsistencia}
-                  value={asistePresencial}
-                  onChange={setAsistePresencial}
-                  isSearchable={false}
-                ></Select>  
 
-              {/*Asiste Virtual*/}
-              <label  className="block capitalize form-label  ">Asiste Virtual *</label>
-              <Select
-                  styles={customStyles}
-                  label="Asiste a evento virtual *"
-                  placeholder="Seleccione una opcion"
-                  id="evento_virtual"
-                  options={opcionesAsistencia}
-                  value={asisteVirtual}
-                  onChange={setAsisteVirtual}
-                  isSearchable={false}
-                ></Select>  
+              {/*direccion*/}
+              <Textarea
+                  onChange={(e) => setDireccion(e.target.value)}
+                  label="Dirección"
+                  placeholder="Dirección"
+                  id="direccion"
+                  type="text"
+                  dValue={direccion}
+                />
+
+
+              {/*telefono*/}
+              <Textinput
+                onChange={(e) => setTelefono(e.target.value)}
+                label="Teléfono"
+                placeholder="Teléfono"
+                id="telefono"
+                type="tel"
+                defaultValue={telefono}
+              />
+
+
+              {/*Cumpleaños*/}
+              <Textinput
+                onChange={(e) => setCumpleanios(e.target.value)}
+                label="Cumpleaños "
+                placeholder="Cumpleaños"
+                id="cumpleanios"
+                type="date"
+                defaultValue={cumpleanios}
+              />
                
 
               <div className=" space-y-4">

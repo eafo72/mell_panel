@@ -39,9 +39,9 @@ export const UserProvider = ({ children }) => {
     if (token) {
       clienteAxios.defaults.headers.common['x-auth-token'] = token
       try {
-        const res = token && (await clienteAxios.post('/account/verificar-distribuidor'))
-        //console.log(res.data.data);
-        setUser(res.data.data)
+        const res = token && (await clienteAxios.get('/usuario/verificar'))
+        //console.log(res.data.usuario);
+        setUser(res.data.usuario)
         setAuthStatus(true)
       } catch (error) {
         console.log('Error Verificando token', error)
@@ -54,11 +54,11 @@ export const UserProvider = ({ children }) => {
 
   const loginUser = async (dataForm) => {
     try {
-      const res = await clienteAxios.post('/account/login-distribuidor', dataForm)
+      const res = await clienteAxios.post('/usuario/login', dataForm)
       
-      console.log(res);
+      console.log(res.data);
 
-      if(res.data.http == 202){
+      if(res.status == 202){
           toast.error(res.data.errors[0]['detail'], {
           position: "top-right",
           autoClose: 2500,
@@ -70,8 +70,8 @@ export const UserProvider = ({ children }) => {
           theme: "dark",
         });
 
-      }else if(res.data.http == 200){
-        localStorage.setItem('token', res.data.data.token)
+      }else if(res.status == 200){
+        localStorage.setItem('token', res.data.token)
         setAuthStatus(true)
       }
 

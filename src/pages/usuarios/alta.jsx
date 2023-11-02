@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
+import Textarea from "@/components/ui/Textarea";
+import Select from "react-select";
 import Button from "@/components/ui/Button";
+import useDarkMode from "@/hooks/useDarkMode";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
@@ -10,12 +13,17 @@ import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../configs/axios";
 
 const UsuariosAlta = () => {
-  const [nombres, setNombres] = useState();
-  const [apellidos, setApellidos] = useState();
+  const [isDark] = useDarkMode();
+  const [nombre, setNombre] = useState();
+  const [tipo, setTipo] = useState();
   const [correo, setCorreo] = useState();
   const [password, setPassword] = useState();
+  const [direccion, setDireccion] = useState();
   const [telefono, setTelefono] = useState();
-  const [telefono_emergencia, setTelefonoEmergencia] = useState();
+  const [cumpleanios, setCumpleanios] = useState();
+
+  
+  const [allUserTypes, setAllUserTypes] = useState([]);
 
   const navigate = useNavigate();
 
@@ -32,27 +40,45 @@ const UsuariosAlta = () => {
     });
   }
 
+  const getUserTypes = async () => {
+    try {
+      let res = await clienteAxios.get(`/tipos_usuario/obtener`);
+
+      //console.log(res.data.tipos_usuario);
+      let array = [];
+      for (let i = 0; i < res.data.tipos_usuario.length; i++) {
+        //console.log(i);
+        array.push({"value":res.data.tipos_usuario[i]["nombre"],"label":res.data.tipos_usuario[i]["nombre"]});
+      }
+      setAllUserTypes(array);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  
+  useEffect(() => {
+    getUserTypes();
+  },[]);
+
   const sendData = (event) => {
     event.preventDefault();
 
     //validamos campos
-    if(nombres == "" || nombres == undefined) {
-      mostrarMensaje("Debes escribir al menos un nombre");
-    }else if(apellidos == "" || apellidos == undefined) {
-      mostrarMensaje("Debes escribir al menos un apellido");
+    if(nombre == "" || nombre == undefined) {
+      mostrarMensaje("Debes escribir el nombre");
+    }else if(tipo == "" || tipo == undefined) {
+      mostrarMensaje("Debes seleccionar el tipo de usuario");
     }else if(correo == "" || correo == undefined) {
       mostrarMensaje("Debes escribir un correo");
-    }else if(telefono == "" || telefono == undefined) {
-      mostrarMensaje("Debes escribir un teléfono");  
-    }else if(telefono_emergencia == "" || telefono_emergencia == undefined) {
-      mostrarMensaje("Debes escribir un teléfono de emergencia");  
     }else if(password == "" || password == undefined) {
       mostrarMensaje("Debes escribir una contraseña");    
     } else {
       const createUser = async (dataForm) => {
         try {
           const res = await clienteAxios.post("/usuario/crear", dataForm);
-          console.log(res);
+          //console.log(res);
           navigate("/usuarios");
           
         } catch (error) {
@@ -60,8 +86,24 @@ const UsuariosAlta = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createUser({ nombres, apellidos, correo, telefono, telefono_emergencia, password });
+      createUser({ nombre, tipo:tipo.value, correo, password, direccion, telefono, cumpleanios });
     }
+  };
+
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      background: isDark
+        ? "rgb(15 23 42 / var(--tw-bg-opacity))"
+        : "transparent",
+    }),
+    option: (base, state) => {
+      return {
+        ...base,
+        background: isDark ? "rgb(15 23 42 / var(--tw-bg-opacity))" : "",
+        color: state.isFocused ? (isDark ? "white" : "black") : "grey",
+      };
+    },
   };
 
   return (
@@ -71,23 +113,27 @@ const UsuariosAlta = () => {
         <Card title="Alta de Usuarios">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
-              {/*Nombres*/}
+              {/*Nombre*/}
               <Textinput
-                onChange={(e) => setNombres(e.target.value)}
-                label="Nombres *"
-                placeholder="Nombres"
-                id="nombres"
+                onChange={(e) => setNombre(e.target.value)}
+                label="Nombre Completo *"
+                placeholder="Nombre Completo"
+                id="nombre"
                 type="text"
               />
 
-              {/*Apellidos*/}
-              <Textinput
-                onChange={(e) => setApellidos(e.target.value)}
-                label="Apellidos *"
-                placeholder="Apellidos"
-                id="apellidos"
-                type="text"
-              />
+              {/*Tipo Usuario*/}
+              <label  className="block capitalize form-label  ">Tipo de Usuario *</label>
+              <Select
+                  styles={customStyles}
+                  label="Tipo de usuario *"
+                  placeholder="Seleccione"
+                  id="tipo"
+                  options={allUserTypes}
+                  value={tipo}
+                  onChange={setTipo}
+                  isSearchable={true}
+                ></Select>
 
               {/*Correo*/}
               <Textinput
@@ -98,24 +144,6 @@ const UsuariosAlta = () => {
                 type="email"
               />
 
-              {/*telefono*/}
-              <Textinput
-                onChange={(e) => setTelefono(e.target.value)}
-                label="Teléfono *"
-                placeholder="Teléfono"
-                id="telefono"
-                type="tel"
-              />
-
-              {/*telefono emergencia*/}
-              <Textinput
-                onChange={(e) => setTelefonoEmergencia(e.target.value)}
-                label="Teléfono de emergencia *"
-                placeholder="Teléfono de emergencia"
-                id="telefono_emergencia"
-                type="tel"
-              />
-
               {/*Password*/}
               <Textinput
                 onChange={(e) => setPassword(e.target.value)}
@@ -124,6 +152,38 @@ const UsuariosAlta = () => {
                 id="passw"
                 type="password"
               />
+
+              {/*direccion*/}
+              <Textarea
+                  onChange={(e) => setDireccion(e.target.value)}
+                  label="Dirección"
+                  placeholder="Dirección"
+                  id="direccion"
+                  type="text"
+                />
+
+
+              {/*telefono*/}
+              <Textinput
+                onChange={(e) => setTelefono(e.target.value)}
+                label="Teléfono"
+                placeholder="Teléfono"
+                id="telefono"
+                type="tel"
+              />
+
+
+              {/*Cumpleaños*/}
+              <Textinput
+                onChange={(e) => setCumpleanios(e.target.value)}
+                label="Cumpleaños "
+                placeholder="Cumpleaños"
+                id="cumpleanios"
+                type="date"
+              />
+              
+
+              
 
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>

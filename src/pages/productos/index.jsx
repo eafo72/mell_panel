@@ -17,7 +17,7 @@ import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Users = () => {
+const Products = () => {
 
   const COLUMNS = [
    
@@ -29,15 +29,22 @@ const Users = () => {
       },
     },
     {
-      Header: "Correo",
-      accessor: "correo",
+      Header: "Categoría",
+      accessor: "categoria",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Tipo",
-      accessor: "tipo",
+      Header: "Subcategoría",
+      accessor: "subcategoria",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Precio",
+      accessor: "precio",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
@@ -45,7 +52,7 @@ const Users = () => {
     {
       Header: "Editar",
       Cell: (row) => {
-        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.correo)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
             <Icon icon="heroicons:pencil-square"/>
@@ -57,7 +64,7 @@ const Users = () => {
     {
       Header: "Borrar",
       Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.correo)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.nombre)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
             <Icon icon="heroicons-outline:trash"/>
@@ -78,13 +85,13 @@ const Users = () => {
 
   const navigate = useNavigate();
 
-  const getUsers = async () => {
+  const getProducts = async () => {
     try {
-      let res = await clienteAxios.get(`/usuario/obtener`);
+      let res = await clienteAxios.get(`/producto/obtener`);
 
-      //console.log(res.data.usuarios);
+      //console.log(res.data.productos);
       
-      setDatos(res.data.usuarios);
+      setDatos(res.data.productos);
     } catch (error) {
       console.log(error);
     }
@@ -99,25 +106,26 @@ const Users = () => {
     if(authStatus === false) {
       //navigate("/");
     }
-    getUsers();
+    getProducts();
       
   },[authStatus]);
   
 
-  const header = ["Nombre", "Correo", "Tipo" ];
+  const header = ["Nombre", "Categoría", "Subcategoría", "Precio" ];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
         "nombre":datos[i]['nombre'],
-        "correo":datos[i]['correo'],
-        "tipo":datos[i]['tipo']
+        "categoria":datos[i]['categoria'],
+        "subcategoria":datos[i]['subcategoria'],
+        "precio":datos[i]['precio']
       })
     }
 
     downloadExcel({
-      fileName: "mell_users",
-      sheet: "users",
+      fileName: "mell_products",
+      sheet: "products",
       tablePayload: {
         header,
         body: newDatos,
@@ -126,18 +134,18 @@ const Users = () => {
   }
 
   const handleAlta = () => {
-    navigate("/usuarios/alta");
+    navigate("/productos/alta");
   };
 
-  const goToEditar = (id,email) => {
-    localStorage.setItem("EditUser",id);
-    navigate("/usuarios/editar");
+  const goToEditar = (id,name) => {
+    localStorage.setItem("EditProduct",id);
+    navigate("/productos/editar");
   }
 
-  const goToBorrar = async (id,email) => {
-    localStorage.setItem("DeleteUser",id);
-    localStorage.setItem("DeleteUserEmail",email);
-    navigate("/usuarios/borrar");
+  const goToBorrar = async (id,name) => {
+    localStorage.setItem("DeleteProduct",id);
+    localStorage.setItem("DeleteProductName",name);
+    navigate("/productos/borrar");
   }
 
     
@@ -179,7 +187,7 @@ const Users = () => {
       <ToastContainer />
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Usuarios</h4>
+          <h4 className="card-title">Productos</h4>
           <button onClick={(e) => handleAlta(e)} className="btn btn-success">
             Agregar nuevo
           </button>
@@ -317,4 +325,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Products;
