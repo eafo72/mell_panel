@@ -12,35 +12,17 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
-const CategoriasEditar = () => {
+const EstantesAlta = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
-  const [imagen, setImagen] = useState();
+  const [almacen, setAlmacen] = useState();
+
+  const [allStorages, setAllStorages] = useState([]);
   
-    
-  const id = localStorage.getItem("EditCategory");
-
-  const getCategory = async () => {
-    try {
-      const res = await clienteAxios.get("/categoria/single/"+id);
-      //console.log(res.data.single);
-      
-      setNombre(res.data.single.nombre);
-      setImagen(res.data.single.imagen);
-
-    } catch (error) {
-      console.log(error);
-      mostrarMensaje(error.code);
-    }
-  };
-
-  useEffect(() => {
-  getCategory();
-  }, []);
-
+  
   const navigate = useNavigate();
 
-  const mostrarMensaje = (mensaje) => {
+  const mostrarMensaje = (mensaje) =>{
     toast.error(mensaje, {
       position: "top-right",
       autoClose: 2500,
@@ -51,7 +33,29 @@ const CategoriasEditar = () => {
       progress: undefined,
       theme: "dark",
     });
+  }
+
+  const getStorages = async () => {
+    try {
+      let res = await clienteAxios.get(`/almacen/obtener`);
+
+      //console.log(res.data.almacenes);
+      let array = [];
+      for (let i = 0; i < res.data.almacenes.length; i++) {
+        //console.log(i);
+        array.push({"value":res.data.almacenes[i]["nombre"],"label":res.data.almacenes[i]["nombre"]});
+      }
+      setAllStorages(array);
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  
+  useEffect(() => {
+    getStorages();
+  },[]);
 
   const sendData = (event) => {
     event.preventDefault();
@@ -59,27 +63,25 @@ const CategoriasEditar = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
+    }else if(almacen == "" || almacen == undefined) {
+      mostrarMensaje("Debes seleccionar una almacén");
     } else {
-      const editCategory = async () => {
+      const createShelf = async (dataForm) => {
         try {
-          const res = await clienteAxios.put("/categoria/actualizar", {
-            id:id,
-            nombre, 
-            imagen
-          });
+          const res = await clienteAxios.post("/estante/crear", dataForm);
           //console.log(res);
-          navigate("/categorias");
+          navigate("/estantes");
           
         } catch (error) {
           console.log(error);
           mostrarMensaje(error.response.data.msg);
         }
       };
-      editCategory();
+      createShelf({ nombre, almacen:almacen.value });
     }
   };
 
-   const customStyles = {
+  const customStyles = {
     control: (base, state) => ({
       ...base,
       background: isDark
@@ -107,11 +109,9 @@ const CategoriasEditar = () => {
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Editar Categoría">
+        <Card title="Alta de Estantes">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
-            
-            
               {/*Nombre*/}
               <Textinput
                 onChange={(e) => setNombre(e.target.value)}
@@ -119,19 +119,21 @@ const CategoriasEditar = () => {
                 placeholder="Nombre"
                 id="nombre"
                 type="text"
-                defaultValue={nombre}
               />
 
-              {/*Imagen*/}
-              <Textinput
-                onChange={(e) => setImagen(e.target.value)}
-                label="Imagen *"
-                placeholder="Imagen"
-                id="imagen"
-                type="file"
-              />
-               
-
+               {/*Tipo Almacenes*/}
+               <label  className="block capitalize form-label  ">Almacen *</label>
+              <Select
+                  styles={customStyles}
+                  label="Almacén *"
+                  placeholder="Seleccione"
+                  id="almacen"
+                  options={allStorages}
+                  value={almacen}
+                  onChange={setAlmacen}
+                  isSearchable={true}
+                ></Select>
+              
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>
                 <Button text="Guardar" type="submit" className="btn-dark" />
@@ -144,4 +146,4 @@ const CategoriasEditar = () => {
   );
 };
 
-export default CategoriasEditar;
+export default EstantesAlta;

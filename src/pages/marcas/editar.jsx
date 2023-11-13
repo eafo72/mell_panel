@@ -83,6 +83,14 @@ const MarcasEditar = () => {
         ? "rgb(15 23 42 / var(--tw-bg-opacity))"
         : "transparent",
     }),
+    singleValue: (base, state) => ({
+      ...base,
+      color: isDark ? "white" : "rgb(15 23 42 / var(--tw-text-opacity))",
+    }), 
+    multiValueRemove: (base, state) => ({
+      ...base,
+      color: "red",
+    }), 
     option: (base, state) => {
       return {
         ...base,
@@ -96,7 +104,7 @@ const MarcasEditar = () => {
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Editar Usuario">
+        <Card title="Editar Marca">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
             

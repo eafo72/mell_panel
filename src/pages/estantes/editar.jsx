@@ -12,21 +12,45 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
-const CategoriasEditar = () => {
+const EstantesEditar = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
-  const [imagen, setImagen] = useState();
+  const [almacen, setAlmacen] = useState();
   
+  const [allStorages, setAllStorages] = useState([]);
     
-  const id = localStorage.getItem("EditCategory");
+  const id = localStorage.getItem("EditShelf");
 
-  const getCategory = async () => {
+  const getStorages = async () => {
     try {
-      const res = await clienteAxios.get("/categoria/single/"+id);
-      //console.log(res.data.single);
+      let res = await clienteAxios.get(`/almacen/obtener`);
+
+      //console.log(res.data.almacenes);
+      let array = [];
+      for (let i = 0; i < res.data.almacenes.length; i++) {
+        //console.log(i);
+        array.push({"value":res.data.almacenes[i]["nombre"],"label":res.data.almacenes[i]["nombre"]});
+      }
+      setAllStorages(array);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getShelf = async () => {
+    try {
+      const res = await clienteAxios.get("/estante/single/"+id);
+      console.log(res.data.single);
       
       setNombre(res.data.single.nombre);
-      setImagen(res.data.single.imagen);
+      
+      if(res.data.single.almacen != null){
+        setAlmacen({
+          label: res.data.single.almacen,
+          value: res.data.single.almacen,
+        }); 
+      }  
 
     } catch (error) {
       console.log(error);
@@ -35,7 +59,8 @@ const CategoriasEditar = () => {
   };
 
   useEffect(() => {
-  getCategory();
+  getStorages();
+  getShelf();
   }, []);
 
   const navigate = useNavigate();
@@ -59,23 +84,25 @@ const CategoriasEditar = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
+    }else if(almacen == "" || almacen == undefined) {
+      mostrarMensaje("Debes seleccionar una almacén");
     } else {
-      const editCategory = async () => {
+      const editShelf = async () => {
         try {
-          const res = await clienteAxios.put("/categoria/actualizar", {
+          const res = await clienteAxios.put("/estante/actualizar", {
             id:id,
             nombre, 
-            imagen
+            almacen:almacen.value
           });
           //console.log(res);
-          navigate("/categorias");
+          navigate("/estantes");
           
         } catch (error) {
           console.log(error);
           mostrarMensaje(error.response.data.msg);
         }
       };
-      editCategory();
+      editShelf();
     }
   };
 
@@ -107,7 +134,7 @@ const CategoriasEditar = () => {
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Editar Categoría">
+        <Card title="Editar Estante">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
             
@@ -122,14 +149,18 @@ const CategoriasEditar = () => {
                 defaultValue={nombre}
               />
 
-              {/*Imagen*/}
-              <Textinput
-                onChange={(e) => setImagen(e.target.value)}
-                label="Imagen *"
-                placeholder="Imagen"
-                id="imagen"
-                type="file"
-              />
+             {/*Tipo Almacenes*/}
+             <label  className="block capitalize form-label  ">Almacén *</label>
+              <Select
+                  styles={customStyles}
+                  label="Almacén *"
+                  placeholder="Seleccione"
+                  id="almacen"
+                  options={allStorages}
+                  value={almacen}
+                  onChange={setAlmacen}
+                  isSearchable={true}
+                ></Select>
                
 
               <div className=" space-y-4">
@@ -144,4 +175,4 @@ const CategoriasEditar = () => {
   );
 };
 
-export default CategoriasEditar;
+export default EstantesEditar;

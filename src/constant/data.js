@@ -38,6 +38,21 @@ export const menuItems = [
     link: "colores",
   },
   {
+    title: "Tallas",
+    icon: "heroicons:list-bullet",
+    link: "tallas",
+  },
+  {
+    title: "Almacenes",
+    icon: "heroicons:list-bullet",
+    link: "almacenes",
+  },
+  {
+    title: "Estantes",
+    icon: "heroicons:archive-box",
+    link: "estantes",
+  },
+  {
     title: "Proveedores",
     icon: "heroicons:user-group",
     link: "proveedores",

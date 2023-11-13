@@ -12,12 +12,12 @@ import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../configs/axios";
-import { UserContext } from "../../pages/context/userContext";
+import { UserContext } from "../context/userContext";
 import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Products = () => {
+const Shelf = () => {
 
   const COLUMNS = [
    
@@ -29,54 +29,12 @@ const Products = () => {
       },
     },
     {
-      Header: "Talla",
-      accessor: "talla",
+      Header: "Almacen",
+      accessor: "almacen",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
-    {
-      Header: "Color",
-      accessor: "color",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Categoría",
-      accessor: "categoria",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Subcategoría",
-      accessor: "subcategoria",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Precio",
-      accessor: "precio",
-      Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
-      },
-    },
-
-    
-    {
-      Header: "Fotos",
-      Cell: (row) => {
-        return <button onClick={() => goToFotos(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:photo"/>
-          </span>
-        </button>
-      },
-    },
-
     {
       Header: "Editar",
       Cell: (row) => {
@@ -113,13 +71,13 @@ const Products = () => {
 
   const navigate = useNavigate();
 
-  const getProducts = async () => {
+  const getShelf = async () => {
     try {
-      let res = await clienteAxios.get(`/producto/obtener`);
+      let res = await clienteAxios.get(`/estante/obtener`);
 
-      //console.log(res.data.productos);
+      console.log(res.data.estantes);
       
-      setDatos(res.data.productos);
+      setDatos(res.data.estantes);
     } catch (error) {
       console.log(error);
     }
@@ -134,26 +92,24 @@ const Products = () => {
     if(authStatus === false) {
       //navigate("/");
     }
-    getProducts();
+    getShelf();
       
   },[authStatus]);
   
 
-  const header = ["Nombre", "Categoría", "Subcategoría", "Precio" ];
+  const header = ["Nombre", "Almacén" ];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
         "nombre":datos[i]['nombre'],
-        "categoria":datos[i]['categoria'],
-        "subcategoria":datos[i]['subcategoria'],
-        "precio":datos[i]['precio']
+        "almacen":datos[i]['almacen']
       })
     }
 
     downloadExcel({
-      fileName: "mell_products",
-      sheet: "products",
+      fileName: "mell_shelfs",
+      sheet: "shelfs",
       tablePayload: {
         header,
         body: newDatos,
@@ -162,26 +118,18 @@ const Products = () => {
   }
 
   const handleAlta = () => {
-    navigate("/productos/alta");
+    navigate("/estantes/alta");
   };
 
- 
-
-  const goToFotos = (id,name) => {
-    localStorage.setItem("PhotoProduct",id);
-    navigate("/productos/alta_foto");
+  const goToEditar = (id,email) => {
+    localStorage.setItem("EditShelf",id);
+    navigate("/estantes/editar");
   }
 
-
-  const goToEditar = (id,name) => {
-    localStorage.setItem("EditProduct",id);
-    navigate("/productos/editar");
-  }
-
-  const goToBorrar = async (id,name) => {
-    localStorage.setItem("DeleteProduct",id);
-    localStorage.setItem("DeleteProductName",name);
-    navigate("/productos/borrar");
+  const goToBorrar = async (id,nombre) => {
+    localStorage.setItem("DeleteShelf",id);
+    localStorage.setItem("DeleteShelfName",nombre);
+    navigate("/estantes/borrar");
   }
 
     
@@ -223,7 +171,7 @@ const Products = () => {
       <ToastContainer />
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Productos</h4>
+          <h4 className="card-title">Estantes</h4>
           <button onClick={(e) => handleAlta(e)} className="btn btn-success">
             Agregar nuevo
           </button>
@@ -361,4 +309,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Shelf;

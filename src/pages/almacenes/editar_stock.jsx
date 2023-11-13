@@ -12,31 +12,17 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
-const CategoriasEditar = () => {
+const ProductosEditarStock = () => {
   const [isDark] = useDarkMode();
-  const [nombre, setNombre] = useState();
-  const [imagen, setImagen] = useState();
   
-    
-  const id = localStorage.getItem("EditCategory");
-
-  const getCategory = async () => {
-    try {
-      const res = await clienteAxios.get("/categoria/single/"+id);
-      //console.log(res.data.single);
-      
-      setNombre(res.data.single.nombre);
-      setImagen(res.data.single.imagen);
-
-    } catch (error) {
-      console.log(error);
-      mostrarMensaje(error.code);
-    }
-  };
-
-  useEffect(() => {
-  getCategory();
-  }, []);
+  const [nombre, setNombre] = useState();
+  const [stock, setStock] = useState();
+  const [apartado, setApartado] = useState();
+  const [estropeado, setEstropeado] = useState();
+ 
+  
+  const id_almacen = localStorage.getItem("ViewStorage");
+  const id_producto = localStorage.getItem("EditStock");
 
   const navigate = useNavigate();
 
@@ -53,30 +39,56 @@ const CategoriasEditar = () => {
     });
   };
 
+
+  const getProduct = async () => {
+    try {
+      const res = await clienteAxios.get("/producto/single/"+id_producto);
+      //console.log(res.data.single);
+      
+      setNombre(res.data.single.nombre);
+
+
+    
+      for (let i = 0; i < res.data.single.almacen.length; i++) {
+        if(res.data.single.almacen[i]['id_almacen'] == id_almacen ){
+          setStock(res.data.single.almacen[i]['stock']);
+          setApartado(res.data.single.almacen[i]['apartado']);
+          setEstropeado(res.data.single.almacen[i]['estropeado']);
+        }
+      }
+
+
+    } catch (error) {
+      console.log(error);
+      mostrarMensaje(error.code);
+    }
+  };
+  
+  useEffect(() => {
+    getProduct();
+  },[]);
+
+
   const sendData = (event) => {
     event.preventDefault();
 
     //validamos campos
-    if(nombre == "" || nombre == undefined) {
-      mostrarMensaje("Debes escribir el nombre");
-    } else {
-      const editCategory = async () => {
-        try {
-          const res = await clienteAxios.put("/categoria/actualizar", {
+    const editProduct = async () => {
+       try {
+          const res = await clienteAxios.put("/producto/actualizar", {
             id:id,
-            nombre, 
-            imagen
+            almacen
           });
           //console.log(res);
-          navigate("/categorias");
+          navigate("/almacenes/ver");
           
         } catch (error) {
           console.log(error);
           mostrarMensaje(error.response.data.msg);
         }
       };
-      editCategory();
-    }
+      editProduct();
+    
   };
 
    const customStyles = {
@@ -89,11 +101,11 @@ const CategoriasEditar = () => {
     singleValue: (base, state) => ({
       ...base,
       color: isDark ? "white" : "rgb(15 23 42 / var(--tw-text-opacity))",
-    }), 
+    }),  
     multiValueRemove: (base, state) => ({
       ...base,
       color: "red",
-    }), 
+    }),  
     option: (base, state) => {
       return {
         ...base,
@@ -107,30 +119,51 @@ const CategoriasEditar = () => {
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Editar Categoría">
+        <Card title="Editar Producto">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
             
-            
-              {/*Nombre*/}
-              <Textinput
+               {/*Nombre*/}
+               <Textinput
                 onChange={(e) => setNombre(e.target.value)}
                 label="Nombre *"
                 placeholder="Nombre"
                 id="nombre"
                 type="text"
                 defaultValue={nombre}
+                readonly
               />
 
-              {/*Imagen*/}
+  
+              {/*Stock*/}
               <Textinput
-                onChange={(e) => setImagen(e.target.value)}
-                label="Imagen *"
-                placeholder="Imagen"
-                id="imagen"
-                type="file"
+                onChange={(e) => setStock(e.target.value)}
+                label="Stock"
+                placeholder="Stock"
+                id="stock"
+                type="number"
+                defaultValue={stock}
               />
-               
+
+              {/*Apartado*/}
+              <Textinput
+                onChange={(e) => setApartado(e.target.value)}
+                label="Apartado"
+                placeholder="Apartado"
+                id="apartado"
+                type="number"
+                defaultValue={apartado}
+              />
+
+              {/*Estropeado*/}
+              <Textinput
+                onChange={(e) => setEstropeado(e.target.value)}
+                label="Estropeado"
+                placeholder="Estropeado"
+                id="estropeado"
+                type="number"
+                defaultValue={estropeado}
+              />
 
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>
@@ -144,4 +177,4 @@ const CategoriasEditar = () => {
   );
 };
 
-export default CategoriasEditar;
+export default ProductosEditarStock;

@@ -61,6 +61,14 @@ const MarcasAlta = () => {
         ? "rgb(15 23 42 / var(--tw-bg-opacity))"
         : "transparent",
     }),
+    singleValue: (base, state) => ({
+      ...base,
+      color: isDark ? "white" : "rgb(15 23 42 / var(--tw-text-opacity))",
+    }), 
+    multiValueRemove: (base, state) => ({
+      ...base,
+      color: "red",
+    }), 
     option: (base, state) => {
       return {
         ...base,

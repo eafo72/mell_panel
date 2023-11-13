@@ -23,7 +23,12 @@ const SubcategoriasAlta   = lazy(() => import("./pages/subcategorias/alta"));
 const SubcategoriasEditar = lazy(() => import("./pages/subcategorias/editar"));
 const SubcategoriasBorrar = lazy(() => import("./pages/subcategorias/borrar"));
 
-const Productos           = lazy(() => import("./pages/productos"));
+const Productos       = lazy(() => import("./pages/productos"));
+const ProductosAlta   = lazy(() => import("./pages/productos/alta"));
+const ProductosEditar = lazy(() => import("./pages/productos/editar"));
+const ProductosBorrar = lazy(() => import("./pages/productos/borrar"));
+const ProductosAltaFoto   = lazy(() => import("./pages/productos/alta_foto"));
+const ProductosBorrarFoto   = lazy(() => import("./pages/productos/borrar_foto"));
 
 const Marcas       = lazy(() => import("./pages/marcas"));
 const MarcasAlta   = lazy(() => import("./pages/marcas/alta"));
@@ -39,6 +44,22 @@ const Proveedores       = lazy(() => import("./pages/proveedores"));
 const ProveedoresAlta   = lazy(() => import("./pages/proveedores/alta"));
 const ProveedoresEditar = lazy(() => import("./pages/proveedores/editar"));
 const ProveedoresBorrar = lazy(() => import("./pages/proveedores/borrar"));
+
+const Tallas       = lazy(() => import("./pages/tallas"));
+const TallasAlta   = lazy(() => import("./pages/tallas/alta"));
+const TallasEditar = lazy(() => import("./pages/tallas/editar"));
+const TallasBorrar = lazy(() => import("./pages/tallas/borrar"));
+
+const Almacenes       = lazy(() => import("./pages/almacenes"));
+const AlmacenesAlta   = lazy(() => import("./pages/almacenes/alta"));
+const AlmacenesEditar = lazy(() => import("./pages/almacenes/editar"));
+const AlmacenesBorrar = lazy(() => import("./pages/almacenes/borrar"));
+const AlmacenesVer    = lazy(() => import("./pages/almacenes/ver"));
+
+const Estantes       = lazy(() => import("./pages/estantes"));
+const EstantesAlta   = lazy(() => import("./pages/estantes/alta"));
+const EstantesEditar = lazy(() => import("./pages/estantes/editar"));
+const EstantesBorrar = lazy(() => import("./pages/estantes/borrar"));
 
 const NoPage = lazy(() => import("./pages/404"));
 
@@ -81,6 +102,11 @@ function App() {
           <Route path="subcategorias/borrar" element={<SubcategoriasBorrar />} />
 
           <Route path="productos" element={<Productos />} />
+          <Route path="productos/alta" element={<ProductosAlta />} />
+          <Route path="productos/editar" element={<ProductosEditar />} />
+          <Route path="productos/borrar" element={<ProductosBorrar />} />
+          <Route path="productos/alta_foto" element={<ProductosAltaFoto />} />
+          <Route path="productos/borrar_foto" element={<ProductosBorrarFoto />} />
 
           <Route path="marcas" element={<Marcas />} />
           <Route path="marcas/alta" element={<MarcasAlta />} />
@@ -96,6 +122,23 @@ function App() {
           <Route path="proveedores/alta" element={<ProveedoresAlta />} />
           <Route path="proveedores/editar" element={<ProveedoresEditar />} />
           <Route path="proveedores/borrar" element={<ProveedoresBorrar />} />
+
+          <Route path="tallas" element={<Tallas />} />
+          <Route path="tallas/alta" element={<TallasAlta />} />
+          <Route path="tallas/editar" element={<TallasEditar />} />
+          <Route path="tallas/borrar" element={<TallasBorrar />} />
+
+          <Route path="almacenes" element={<Almacenes />} />
+          <Route path="almacenes/alta" element={<AlmacenesAlta />} />
+          <Route path="almacenes/editar" element={<AlmacenesEditar />} />
+          <Route path="almacenes/borrar" element={<AlmacenesBorrar />} />
+          <Route path="almacenes/ver" element={<AlmacenesVer />} />
+
+          <Route path="estantes" element={<Estantes />} />
+          <Route path="estantes/alta" element={<EstantesAlta />} />
+          <Route path="estantes/editar" element={<EstantesEditar />} />
+          <Route path="estantes/borrar" element={<EstantesBorrar />} />
+
 
           <Route path="*" element={<Navigate to="/404" />} />
 

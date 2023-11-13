@@ -12,22 +12,20 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
-const CategoriasEditar = () => {
+const Tallasditar = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
-  const [imagen, setImagen] = useState();
-  
-    
-  const id = localStorage.getItem("EditCategory");
+      
+  const id = localStorage.getItem("EditSize");
 
-  const getCategory = async () => {
+  
+  const getSize = async () => {
     try {
-      const res = await clienteAxios.get("/categoria/single/"+id);
+      const res = await clienteAxios.get("/talla/single/"+id);
       //console.log(res.data.single);
       
       setNombre(res.data.single.nombre);
-      setImagen(res.data.single.imagen);
-
+      
     } catch (error) {
       console.log(error);
       mostrarMensaje(error.code);
@@ -35,7 +33,7 @@ const CategoriasEditar = () => {
   };
 
   useEffect(() => {
-  getCategory();
+    getSize();
   }, []);
 
   const navigate = useNavigate();
@@ -58,24 +56,23 @@ const CategoriasEditar = () => {
 
     //validamos campos
     if(nombre == "" || nombre == undefined) {
-      mostrarMensaje("Debes escribir el nombre");
+      mostrarMensaje("Debes escribir al menos un nombre");
     } else {
-      const editCategory = async () => {
+      const editSize = async () => {
         try {
-          const res = await clienteAxios.put("/categoria/actualizar", {
+          const res = await clienteAxios.put("/talla/actualizar", {
             id:id,
-            nombre, 
-            imagen
+            nombre 
           });
           //console.log(res);
-          navigate("/categorias");
+          navigate("/tallas");
           
         } catch (error) {
           console.log(error);
           mostrarMensaje(error.response.data.msg);
         }
       };
-      editCategory();
+      editSize();
     }
   };
 
@@ -107,13 +104,12 @@ const CategoriasEditar = () => {
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Editar Categoría">
+        <Card title="Editar Talla">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
             
-            
-              {/*Nombre*/}
-              <Textinput
+             {/*Nombre*/}
+             <Textinput
                 onChange={(e) => setNombre(e.target.value)}
                 label="Nombre *"
                 placeholder="Nombre"
@@ -122,15 +118,7 @@ const CategoriasEditar = () => {
                 defaultValue={nombre}
               />
 
-              {/*Imagen*/}
-              <Textinput
-                onChange={(e) => setImagen(e.target.value)}
-                label="Imagen *"
-                placeholder="Imagen"
-                id="imagen"
-                type="file"
-              />
-               
+                           
 
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>
@@ -144,4 +132,4 @@ const CategoriasEditar = () => {
   );
 };
 
-export default CategoriasEditar;
+export default Tallasditar;

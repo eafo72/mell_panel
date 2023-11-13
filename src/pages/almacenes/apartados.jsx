@@ -12,18 +12,23 @@ import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../configs/axios";
-import { UserContext } from "../../pages/context/userContext";
+import { UserContext } from "../context/userContext";
 import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Products = () => {
-
+const Apartados = () => {
   const COLUMNS = [
-   
     {
-      Header: "Nombre",
+      Header: "Producto",
       accessor: "nombre",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Marca",
+      accessor: "marca",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
@@ -43,117 +48,72 @@ const Products = () => {
       },
     },
     {
-      Header: "Categoría",
-      accessor: "categoria",
+      Header: "Estante",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+          return <span>{row.row.original.almacen[0]['estante']}</span>;
       },
     },
     {
-      Header: "Subcategoría",
-      accessor: "subcategoria",
+      Header: "Apartado",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
+        return <span>{row.row.original.almacen[0]['apartado']}</span>;
     },
-    {
-      Header: "Precio",
-      accessor: "precio",
-      Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
-      },
-    },
-
-    
-    {
-      Header: "Fotos",
-      Cell: (row) => {
-        return <button onClick={() => goToFotos(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:photo"/>
-          </span>
-        </button>
-      },
-    },
-
-    {
-      Header: "Editar",
-      Cell: (row) => {
-        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:pencil-square"/>
-          </span>
-        </button>
-      },
-    },
-
-    {
-      Header: "Borrar",
-      Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.nombre)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons-outline:trash"/>
-          </span>
-        </button>;
-      },
     },
   ];
 
-  
-  
+
+
   const columns = useMemo(() => COLUMNS, []);
 
   const [datos, setDatos] = useState([]);
-  
+
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
   const navigate = useNavigate();
 
-  const getProducts = async () => {
+  const id = localStorage.getItem("ViewStorage");
+  const name = localStorage.getItem("ViewStorageName");
+   
+  const getStorageData = async () => {
     try {
-      let res = await clienteAxios.get(`/producto/obtener`);
+      const res = await clienteAxios.get("/almacen/apartados/" + id);
+      //console.log(res.data.apartados);
 
-      //console.log(res.data.productos);
-      
-      setDatos(res.data.productos);
+       setDatos(res.data.apartados);
     } catch (error) {
       console.log(error);
     }
   };
 
-  
   useEffect(() => {
     verifyingToken().then(() => {
       //console.log(user);
     });
 
-    if(authStatus === false) {
+    if (authStatus === false) {
       //navigate("/");
     }
-    getProducts();
-      
-  },[authStatus]);
-  
+    getStorageData();
+  }, [authStatus]);
 
-  const header = ["Nombre", "Categoría", "Subcategoría", "Precio" ];
+  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Apartado"];
   function handleDownloadExcel() {
     let newDatos = [];
-    for(let i=0;i<datos.length;i++){
+    for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        "nombre":datos[i]['nombre'],
-        "categoria":datos[i]['categoria'],
-        "subcategoria":datos[i]['subcategoria'],
-        "precio":datos[i]['precio']
-      })
+        nombre: datos[i]["nombre"],
+        marca: datos[i]["marca"],
+        talla: datos[i]['almacen'][0]['talla'],
+        color: datos[i]['almacen'][0]['color'],
+        estante: datos[i]['almacen'][0]['estante'],
+        apartado: datos[i]['almacen'][0]['apartado'],
+      });
     }
 
     downloadExcel({
-      fileName: "mell_products",
-      sheet: "products",
+      fileName: "mell_" + name + "_apartados",
+      sheet: name + "_apartados",
       tablePayload: {
         header,
         body: newDatos,
@@ -161,30 +121,6 @@ const Products = () => {
     });
   }
 
-  const handleAlta = () => {
-    navigate("/productos/alta");
-  };
-
- 
-
-  const goToFotos = (id,name) => {
-    localStorage.setItem("PhotoProduct",id);
-    navigate("/productos/alta_foto");
-  }
-
-
-  const goToEditar = (id,name) => {
-    localStorage.setItem("EditProduct",id);
-    navigate("/productos/editar");
-  }
-
-  const goToBorrar = async (id,name) => {
-    localStorage.setItem("DeleteProduct",id);
-    localStorage.setItem("DeleteProductName",name);
-    navigate("/productos/borrar");
-  }
-
-    
   const data = useMemo(() => datos, [datos]);
 
   const tableInstance = useTable(
@@ -221,17 +157,21 @@ const Products = () => {
   return (
     <>
       <ToastContainer />
+
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Productos</h4>
-          <button onClick={(e) => handleAlta(e)} className="btn btn-success">
-            Agregar nuevo
+          <h4>Apartados</h4>          
+          <button
+            className="btn btn-success m-2"
+            onClick={handleDownloadExcel}
+          >
+            Exportar
           </button>
-          <button className="btn btn-success m-2" onClick={handleDownloadExcel}>Exportar</button>
           <div>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           </div>
         </div>
+
         <div></div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -361,4 +301,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Apartados;

@@ -17,92 +17,104 @@ import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Brands = () => {
-
+const Estropeados = () => {
   const COLUMNS = [
-   
     {
-      Header: "Nombre",
+      Header: "Producto",
       accessor: "nombre",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
+    {
+      Header: "Marca",
+      accessor: "marca",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Talla",
+      accessor: "talla",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Color",
+      accessor: "color",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Estante",
+      Cell: (row) => {
+          return <span>{row.row.original.almacen[0]['estante']}</span>;
+      },
+    },
+    {
+      Header: "Estropeado",
+      Cell: (row) => {
+        return <span>{row.row.original.almacen[0]['estropeado']}</span>;
+      },
+    },
         
-    {
-      Header: "Editar",
-      Cell: (row) => {
-        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:pencil-square"/>
-          </span>
-        </button>
-      },
-    },
-
-    {
-      Header: "Borrar",
-      Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.nombre)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons-outline:trash"/>
-          </span>
-        </button>;
-      },
-    },
   ];
 
-  
-  
+
+
   const columns = useMemo(() => COLUMNS, []);
 
   const [datos, setDatos] = useState([]);
-  
+
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
   const navigate = useNavigate();
 
-  const getBrands = async () => {
+  const id = localStorage.getItem("ViewStorage");
+  const name = localStorage.getItem("ViewStorageName");
+ 
+  const getStorageData = async () => {
     try {
-      let res = await clienteAxios.get(`/marca/obtener`);
+      const res = await clienteAxios.get("/almacen/estropeados/" + id);
+      //console.log(res.data.estropeados);
 
-      //console.log(res.data.marcas);
-      
-      setDatos(res.data.marcas);
+       setDatos(res.data.estropeados);
     } catch (error) {
       console.log(error);
     }
   };
 
-  
   useEffect(() => {
     verifyingToken().then(() => {
       //console.log(user);
     });
 
-    if(authStatus === false) {
+    if (authStatus === false) {
       //navigate("/");
     }
-    getBrands();
-      
-  },[authStatus]);
-  
+    getStorageData();
+  }, [authStatus]);
 
-  const header = ["Nombre"];
+  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Estropeado"];
   function handleDownloadExcel() {
     let newDatos = [];
-    for(let i=0;i<datos.length;i++){
+    for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        "nombre":datos[i]['nombre']
-      })
+        nombre: datos[i]["nombre"],
+        marca: datos[i]["marca"],
+        talla: datos[i]['almacen'][0]['talla'],
+        color: datos[i]['almacen'][0]['color'],
+        estante: datos[i]['almacen'][0]['estante'],
+        apartado: datos[i]['almacen'][0]['estropeado'],
+      });
     }
 
     downloadExcel({
-      fileName: "mell_brands",
-      sheet: "brands",
+      fileName: "mell_" + name + "_estropeados",
+      sheet: name + "_estropeados",
       tablePayload: {
         header,
         body: newDatos,
@@ -110,22 +122,19 @@ const Brands = () => {
     });
   }
 
-  const handleAlta = () => {
-    navigate("/marcas/alta");
+  const goToEditar = (id, name) => {
+    localStorage.setItem("EditStorage", id);
+    navigate("/almacen/editar_almacen");
   };
 
-  const goToEditar = (id,name) => {
-    localStorage.setItem("EditBrand",id);
-    navigate("/marcas/editar");
-  }
+  const goToBorrar = async (id, name) => {
+    localStorage.setItem("DeleteStorage", id);
+    localStorage.setItem("DeleteStorageName", name);
+    navigate("/almacen/borrar_almacen");
+  };
 
-  const goToBorrar = async (id,name) => {
-    localStorage.setItem("DeleteBrand",id);
-    localStorage.setItem("DeleteBrandName",name);
-    navigate("/marcas/borrar");
-  }
+ 
 
-    
   const data = useMemo(() => datos, [datos]);
 
   const tableInstance = useTable(
@@ -162,17 +171,21 @@ const Brands = () => {
   return (
     <>
       <ToastContainer />
+
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Marcas</h4>
-          <button onClick={(e) => handleAlta(e)} className="btn btn-success">
-            Agregar nueva
+          <h4>Estropeados</h4>          
+          <button
+            className="btn btn-success m-2"
+            onClick={handleDownloadExcel}
+          >
+            Exportar
           </button>
-          <button className="btn btn-success m-2" onClick={handleDownloadExcel}>Exportar</button>
           <div>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           </div>
         </div>
+
         <div></div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -302,4 +315,4 @@ const Brands = () => {
   );
 };
 
-export default Brands;
+export default Estropeados;

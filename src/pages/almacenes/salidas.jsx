@@ -12,18 +12,23 @@ import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../configs/axios";
-import { UserContext } from "../../pages/context/userContext";
+import { UserContext } from "../context/userContext";
 import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Products = () => {
-
+const Salidas = () => {
   const COLUMNS = [
-   
     {
-      Header: "Nombre",
-      accessor: "nombre",
+      Header: "Producto",
+      accessor: "producto",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Marca",
+      accessor: "marca",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
@@ -43,117 +48,119 @@ const Products = () => {
       },
     },
     {
-      Header: "Categoría",
-      accessor: "categoria",
+      Header: "Estante",
+      accessor: "estante",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Subcategoría",
-      accessor: "subcategoria",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Precio",
-      accessor: "precio",
+      Header: "Cantidad",
+      accessor: "cantidad",
       Cell: (row) => {
         return <span>$ {row?.cell?.value}</span>;
       },
     },
-
-    
     {
-      Header: "Fotos",
+      Header: "Fecha",
+      accessor: "fecha",
       Cell: (row) => {
-        return <button onClick={() => goToFotos(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:photo"/>
-          </span>
-        </button>
+        return <span>$ {row?.cell?.value}</span>;
       },
     },
+    
 
     {
       Header: "Editar",
       Cell: (row) => {
-        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:pencil-square"/>
-          </span>
-        </button>
+        return (
+          <button
+            onClick={() =>
+              goToEditar(row.row.original._id, row.row.original.nombre)
+            }
+            className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse"
+          >
+            <span className="text-base">
+              <Icon icon="heroicons:pencil-square" />
+            </span>
+          </button>
+        );
       },
     },
 
     {
       Header: "Borrar",
       Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.nombre)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons-outline:trash"/>
-          </span>
-        </button>;
+        return (
+          <button
+            onClick={() =>
+              goToBorrar(row.row.original._id, row.row.original.nombre)
+            }
+            className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse"
+          >
+            <span className="text-base">
+              <Icon icon="heroicons-outline:trash" />
+            </span>
+          </button>
+        );
       },
     },
   ];
 
-  
-  
+
+
   const columns = useMemo(() => COLUMNS, []);
 
   const [datos, setDatos] = useState([]);
-  
+
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
   const navigate = useNavigate();
 
-  const getProducts = async () => {
+  const id = localStorage.getItem("ViewStorage");
+ 
+  const getStorageData = async () => {
     try {
-      let res = await clienteAxios.get(`/producto/obtener`);
+      const res = await clienteAxios.get("/almacen/content/" + id);
+      //console.log(res.data.single);
 
-      //console.log(res.data.productos);
-      
-      setDatos(res.data.productos);
+      setDatos(res.data.single.almacen);
     } catch (error) {
       console.log(error);
     }
   };
 
-  
   useEffect(() => {
     verifyingToken().then(() => {
       //console.log(user);
     });
 
-    if(authStatus === false) {
+    if (authStatus === false) {
       //navigate("/");
     }
-    getProducts();
-      
-  },[authStatus]);
-  
+    getStorageData();
+  }, [authStatus]);
 
-  const header = ["Nombre", "Categoría", "Subcategoría", "Precio" ];
+  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Apartado"];
   function handleDownloadExcel() {
     let newDatos = [];
-    for(let i=0;i<datos.length;i++){
+    for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        "nombre":datos[i]['nombre'],
-        "categoria":datos[i]['categoria'],
-        "subcategoria":datos[i]['subcategoria'],
-        "precio":datos[i]['precio']
-      })
+        nombre: datos[i]["nombre"],
+        marca: datos[i]["marca"],
+        talla: datos[i]["talla"],
+        color: datos[i]["color"],
+        estante: datos[i]["estante"],
+        apartado: datos[i]["apartado"],
+      });
     }
 
     downloadExcel({
-      fileName: "mell_products",
-      sheet: "products",
+      fileName: "mell_" + id + "orden",
+      sheet: id + "orden",
       tablePayload: {
         header,
         body: newDatos,
@@ -161,30 +168,19 @@ const Products = () => {
     });
   }
 
-  const handleAlta = () => {
-    navigate("/productos/alta");
+  const goToEditar = (id, name) => {
+    localStorage.setItem("EditStorage", id);
+    navigate("/almacen/editar_almacen");
+  };
+
+  const goToBorrar = async (id, name) => {
+    localStorage.setItem("DeleteStorage", id);
+    localStorage.setItem("DeleteStorageName", name);
+    navigate("/almacen/borrar_almacen");
   };
 
  
 
-  const goToFotos = (id,name) => {
-    localStorage.setItem("PhotoProduct",id);
-    navigate("/productos/alta_foto");
-  }
-
-
-  const goToEditar = (id,name) => {
-    localStorage.setItem("EditProduct",id);
-    navigate("/productos/editar");
-  }
-
-  const goToBorrar = async (id,name) => {
-    localStorage.setItem("DeleteProduct",id);
-    localStorage.setItem("DeleteProductName",name);
-    navigate("/productos/borrar");
-  }
-
-    
   const data = useMemo(() => datos, [datos]);
 
   const tableInstance = useTable(
@@ -221,17 +217,21 @@ const Products = () => {
   return (
     <>
       <ToastContainer />
+
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Productos</h4>
-          <button onClick={(e) => handleAlta(e)} className="btn btn-success">
-            Agregar nuevo
+          <h4>Salidas</h4>          
+          <button
+            className="btn btn-success m-2"
+            onClick={handleDownloadExcel}
+          >
+            Exportar
           </button>
-          <button className="btn btn-success m-2" onClick={handleDownloadExcel}>Exportar</button>
           <div>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           </div>
         </div>
+
         <div></div>
         <div className="overflow-x-auto -mx-6">
           <div className="inline-block min-w-full align-middle">
@@ -361,4 +361,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Salidas;
