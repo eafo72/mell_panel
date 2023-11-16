@@ -15,7 +15,7 @@ import clienteAxios from "../../configs/axios";
 const CategoriasEditar = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
-  const [imagen, setImagen] = useState();
+  const [image, setImage] = useState();
   
     
   const id = localStorage.getItem("EditCategory");
@@ -26,7 +26,7 @@ const CategoriasEditar = () => {
       //console.log(res.data.single);
       
       setNombre(res.data.single.nombre);
-      setImagen(res.data.single.imagen);
+      
 
     } catch (error) {
       console.log(error);
@@ -60,13 +60,16 @@ const CategoriasEditar = () => {
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
     } else {
-      const editCategory = async () => {
+      const editCategory = async (dataForm) => {
         try {
-          const res = await clienteAxios.put("/categoria/actualizar", {
-            id:id,
-            nombre, 
-            imagen
+
+          const res = await clienteAxios({
+            method: "put",
+            url: "/categoria/actualizar",
+            data: dataForm,
+            headers: { "Content-Type": "multipart/form-data" },
           });
+
           //console.log(res);
           navigate("/categorias");
           
@@ -75,7 +78,11 @@ const CategoriasEditar = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      editCategory();
+      editCategory({
+        id:id,
+        nombre, 
+        image
+      });
     }
   };
 
@@ -124,7 +131,7 @@ const CategoriasEditar = () => {
 
               {/*Imagen*/}
               <Textinput
-                onChange={(e) => setImagen(e.target.value)}
+                onChange={(e) => setImage(e.target.files[0])}
                 label="Imagen *"
                 placeholder="Imagen"
                 id="imagen"

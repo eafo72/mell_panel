@@ -14,54 +14,22 @@ import clienteAxios from "../../configs/axios";
 
 const EstantesEditar = () => {
   const [isDark] = useDarkMode();
-  const [nombre, setNombre] = useState();
-  const [almacen, setAlmacen] = useState();
-  
-  const [allStorages, setAllStorages] = useState([]);
+  const [nombre_nuevo, setNombreNuevo] = useState();
+  const [nombre_anterior, setNombreAnterior] = useState();
     
-  const id = localStorage.getItem("EditShelf");
-
-  const getStorages = async () => {
-    try {
-      let res = await clienteAxios.get(`/almacen/obtener`);
-
-      //console.log(res.data.almacenes);
-      let array = [];
-      for (let i = 0; i < res.data.almacenes.length; i++) {
-        //console.log(i);
-        array.push({"value":res.data.almacenes[i]["nombre"],"label":res.data.almacenes[i]["nombre"]});
-      }
-      setAllStorages(array);
       
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getShelf = async () => {
-    try {
-      const res = await clienteAxios.get("/estante/single/"+id);
-      console.log(res.data.single);
-      
-      setNombre(res.data.single.nombre);
-      
-      if(res.data.single.almacen != null){
-        setAlmacen({
-          label: res.data.single.almacen,
-          value: res.data.single.almacen,
-        }); 
-      }  
-
-    } catch (error) {
-      console.log(error);
-      mostrarMensaje(error.code);
-    }
+  const id_almacen = localStorage.getItem("ViewStorage");
+    
+  const getShelfName = async () => {
+    const nombre_estante = localStorage.getItem("EditShelf");
+    setNombreNuevo(nombre_estante);
+    setNombreAnterior(nombre_estante);
   };
 
   useEffect(() => {
-  getStorages();
-  getShelf();
+    getShelfName();
   }, []);
+
 
   const navigate = useNavigate();
 
@@ -82,20 +50,18 @@ const EstantesEditar = () => {
     event.preventDefault();
 
     //validamos campos
-    if(nombre == "" || nombre == undefined) {
+    if(nombre_nuevo == "" || nombre_nuevo == undefined) {
       mostrarMensaje("Debes escribir el nombre");
-    }else if(almacen == "" || almacen == undefined) {
-      mostrarMensaje("Debes seleccionar una almacén");
     } else {
       const editShelf = async () => {
         try {
-          const res = await clienteAxios.put("/estante/actualizar", {
-            id:id,
-            nombre, 
-            almacen:almacen.value
+          const res = await clienteAxios.put("/almacen/estante-editar", {
+            id_almacen,
+            nombre_nuevo,
+            nombre_anterior
           });
           //console.log(res);
-          navigate("/estantes");
+          navigate("/almacenes/estantes");
           
         } catch (error) {
           console.log(error);
@@ -141,27 +107,14 @@ const EstantesEditar = () => {
             
               {/*Nombre*/}
               <Textinput
-                onChange={(e) => setNombre(e.target.value)}
+                onChange={(e) => setNombreNuevo(e.target.value)}
                 label="Nombre *"
                 placeholder="Nombre"
                 id="nombre"
                 type="text"
-                defaultValue={nombre}
+                defaultValue={nombre_nuevo}
               />
-
-             {/*Tipo Almacenes*/}
-             <label  className="block capitalize form-label  ">Almacén *</label>
-              <Select
-                  styles={customStyles}
-                  label="Almacén *"
-                  placeholder="Seleccione"
-                  id="almacen"
-                  options={allStorages}
-                  value={almacen}
-                  onChange={setAlmacen}
-                  isSearchable={true}
-                ></Select>
-               
+  
 
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>

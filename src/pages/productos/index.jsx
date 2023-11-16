@@ -29,17 +29,10 @@ const Products = () => {
       },
     },
     {
-      Header: "Talla",
-      accessor: "talla",
+      Header: "Foto principal",
+      accessor: "foto_principal",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Color",
-      accessor: "color",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <img style={{width:"60px", height:"60px"}} src={row?.cell?.value}/>;
       },
     },
     {
@@ -66,7 +59,7 @@ const Products = () => {
 
     
     {
-      Header: "Fotos",
+      Header: "Carrusel",
       Cell: (row) => {
         return <button onClick={() => goToFotos(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
@@ -139,12 +132,13 @@ const Products = () => {
   },[authStatus]);
   
 
-  const header = ["Nombre", "Categoría", "Subcategoría", "Precio" ];
+  const header = ["Nombre", "Foto principal", "Categoría", "Subcategoría", "Precio" ];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
         "nombre":datos[i]['nombre'],
+        "foto_principal":datos[i]['foto_principal'],
         "categoria":datos[i]['categoria'],
         "subcategoria":datos[i]['subcategoria'],
         "precio":datos[i]['precio']

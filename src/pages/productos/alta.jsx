@@ -17,7 +17,7 @@ const ProductosAlta = () => {
 
   const [nombre, setNombre] = useState();
   const [descripcion, setDescripcion] = useState();
-  const [codigo_comun, setCodigoComun] = useState();
+  const [codigo, setCodigo] = useState();
   const [genero, setGenero] = useState();
   const [edad, setEdad] = useState();
   const [categoria, setCategoria] = useState();
@@ -26,15 +26,10 @@ const ProductosAlta = () => {
   const [talla, setTalla] = useState();
   const [color, setColor] = useState();
   const [proveedor, setProveedor] = useState();
+  const [image, setImage] = useState();
   //const [estatus, setEstatus] = useState();
   const [precio, setPrecio] = useState();
-  const [almacen, setAlmacen] = useState();
-  const [estante, setEstante] = useState();
-  const [stock, setStock] = useState();
-  const [apartado, setApartado] = useState();
-  const [estropeado, setEstropeado] = useState();
-  const [calificacion, setCalificacion] = useState();
-  
+    
   
   const allGenders = [
     { value: "Hombre", label: "Hombre" },
@@ -192,6 +187,8 @@ const ProductosAlta = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
+    }else if(codigo == "" || codigo == undefined) {
+      mostrarMensaje("Debes escribir el código");  
     }else if(genero == "" || genero == undefined) {
       mostrarMensaje("Debes seleccionar el género");
     }else if(edad == "" || edad == undefined) {
@@ -207,11 +204,19 @@ const ProductosAlta = () => {
     }else if(color == "" || color == undefined) {
       mostrarMensaje("Debes seleccionar un color");          
     }else if(proveedor == "" || proveedor == undefined) {
-      mostrarMensaje("Debes seleccionar un proveedor");                
+      mostrarMensaje("Debes seleccionar un proveedor");   
+    } else if (image == "" || image == undefined) {
+      mostrarMensaje("Debes seleccionar la foto principal");  
     } else {
       const createProduct = async (dataForm) => {
         try {
-          const res = await clienteAxios.post("/producto/crear", dataForm);
+          const res = await clienteAxios({
+            method: "post",
+            url: "/producto/crear",
+            data: dataForm,
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
           //console.log(res);
           navigate("/productos");
           
@@ -223,23 +228,18 @@ const ProductosAlta = () => {
       createProduct({ 
         nombre,
         descripcion,
-        codigo_comun,
+        codigo,
         genero:genero.value,
         edad,
         categoria:categoria.value,
         subcategoria:subcategoria.value,
         marca:marca.value,
-        talla:talla.value,
-        color:color.value,
+        talla,
+        color,
         proveedor:proveedor.value,
+        image,
         estatus:"Activo",
-        precio,
-        almacen,
-        estante,
-        stock,
-        apartado,
-        estropeado,
-        calificacion
+        precio
        });
     }
   };
@@ -294,12 +294,12 @@ const ProductosAlta = () => {
                   type="text"
                 />
 
-              {/*Codigo común*/}
+              {/*Codigo */}
               <Textinput
-                onChange={(e) => setCodigoComun(e.target.value)}
-                label="Código común"
-                placeholder="Código común"
-                id="codigo_comun"
+                onChange={(e) => setCodigo(e.target.value)}
+                label="Código"
+                placeholder="Código"
+                id="codigo"
                 type="text"
               />  
 
@@ -375,6 +375,7 @@ const ProductosAlta = () => {
                   value={talla}
                   onChange={setTalla}
                   isSearchable={true}
+                  isMulti={true}
                 ></Select>
 
               {/*Color*/}
@@ -388,6 +389,7 @@ const ProductosAlta = () => {
                   value={color}
                   onChange={setColor}
                   isSearchable={true}
+                  isMulti={true}
                 ></Select>
 
               {/*Proveedor*/}
@@ -402,6 +404,16 @@ const ProductosAlta = () => {
                   onChange={setProveedor}
                   isSearchable={true}
                 ></Select>
+
+
+              {/*Foto principal*/}
+              <Textinput
+                  onChange={(e) => setImage(e.target.files[0])}
+                  label="Foto principal *"
+                  placeholder="Foto principal"
+                  id="foto_principal"
+                  type="file"
+                />
 
   
               {/*Precio*/}

@@ -20,6 +20,13 @@ import { toast } from "react-toastify";
 const Entradas = () => {
   const COLUMNS = [
     {
+      Header: "Id",
+      accessor: "_id",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
       Header: "Producto",
       accessor: "producto",
       Cell: (row) => {
@@ -28,23 +35,20 @@ const Entradas = () => {
     },
     {
       Header: "Marca",
-      accessor: "marca",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.marca}</span>;
       },
     },
     {
       Header: "Talla",
-      accessor: "talla",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.talla}</span>;
       },
     },
     {
       Header: "Color",
-      accessor: "color",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.color}</span>;
       },
     },
     {
@@ -58,21 +62,21 @@ const Entradas = () => {
       Header: "Cantidad",
       accessor: "cantidad",
       Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Fecha",
-      accessor: "fecha",
+      Header: "Fecha de Entrada",
+      accessor: "fechaEntrada",
       Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Proveedor",
       accessor: "proveedor",
       Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
@@ -114,25 +118,24 @@ const Entradas = () => {
     },
   ];
 
-
-
   const columns = useMemo(() => COLUMNS, []);
 
   const [datos, setDatos] = useState([]);
+  
 
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
   const navigate = useNavigate();
 
-  const id = localStorage.getItem("ViewStorage");
+  const almacen = localStorage.getItem("ViewStorageName");
  
   const getStorageData = async () => {
     try {
-      const res = await clienteAxios.get("/almacen/content/" + id);
-      //console.log(res.data.single);
+      const res = await clienteAxios.post("/almacen/entradas", {almacen});
+      console.log(res.data.entradas);
 
-      setDatos(res.data.single.almacen);
+      setDatos(res.data.entradas);
     } catch (error) {
       console.log(error);
     }
@@ -145,9 +148,14 @@ const Entradas = () => {
 
     if (authStatus === false) {
       //navigate("/");
+    
     }
     getStorageData();
   }, [authStatus]);
+
+  const handleAlta = () => {
+    navigate("/almacenes/alta_entrada");
+  };
 
   const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Apartado"];
   function handleDownloadExcel() {
@@ -164,8 +172,8 @@ const Entradas = () => {
     }
 
     downloadExcel({
-      fileName: "mell_" + id + "orden",
-      sheet: id + "orden",
+      fileName: "mell_" + name + "entradas",
+      sheet: name+ "entradas",
       tablePayload: {
         header,
         body: newDatos,
@@ -179,9 +187,8 @@ const Entradas = () => {
   };
 
   const goToBorrar = async (id, name) => {
-    localStorage.setItem("DeleteStorage", id);
-    localStorage.setItem("DeleteStorageName", name);
-    navigate("/almacen/borrar_almacen");
+    localStorage.setItem("DeleteinStorage", id);
+    navigate("/almacenes/borrar_entrada");
   };
 
  

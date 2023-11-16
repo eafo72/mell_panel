@@ -55,11 +55,16 @@ const AlmacenesAlta   = lazy(() => import("./pages/almacenes/alta"));
 const AlmacenesEditar = lazy(() => import("./pages/almacenes/editar"));
 const AlmacenesBorrar = lazy(() => import("./pages/almacenes/borrar"));
 const AlmacenesVer    = lazy(() => import("./pages/almacenes/ver"));
+const AlmacenesEstantes    = lazy(() => import("./pages/almacenes/estantes"));
+const AlmacenesEstantesAlta= lazy(() => import("./pages/almacenes/estantes_alta"));
+const AlmacenesEstantesEditar= lazy(() => import("./pages/almacenes/estantes_editar"));
+const AlmacenesEstantesBorrar= lazy(() => import("./pages/almacenes/estantes_borrar"));
 
-const Estantes       = lazy(() => import("./pages/estantes"));
-const EstantesAlta   = lazy(() => import("./pages/estantes/alta"));
-const EstantesEditar = lazy(() => import("./pages/estantes/editar"));
-const EstantesBorrar = lazy(() => import("./pages/estantes/borrar"));
+
+const AlmacenEntradaAlta = lazy(() => import("./pages/almacenes/alta_entrada"));
+const AlmacenEntradaBorrar = lazy(() => import("./pages/almacenes/borrar_entrada"));
+
+
 
 const NoPage = lazy(() => import("./pages/404"));
 
@@ -133,11 +138,17 @@ function App() {
           <Route path="almacenes/editar" element={<AlmacenesEditar />} />
           <Route path="almacenes/borrar" element={<AlmacenesBorrar />} />
           <Route path="almacenes/ver" element={<AlmacenesVer />} />
+          <Route path="almacenes/estantes" element={<AlmacenesEstantes />} />
+          <Route path="almacenes/estantes_alta" element={<AlmacenesEstantesAlta />} />
+          <Route path="almacenes/estantes_editar" element={<AlmacenesEstantesEditar />} />
+          <Route path="almacenes/estantes_borrar" element={<AlmacenesEstantesBorrar />} />
 
-          <Route path="estantes" element={<Estantes />} />
-          <Route path="estantes/alta" element={<EstantesAlta />} />
-          <Route path="estantes/editar" element={<EstantesEditar />} />
-          <Route path="estantes/borrar" element={<EstantesBorrar />} />
+
+          <Route path="almacenes/alta_entrada" element={<AlmacenEntradaAlta />} />
+          <Route path="almacenes/borrar_entrada" element={<AlmacenEntradaBorrar />} />
+
+
+         
 
 
           <Route path="*" element={<Navigate to="/404" />} />

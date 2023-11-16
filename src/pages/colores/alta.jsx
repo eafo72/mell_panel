@@ -15,6 +15,7 @@ import clienteAxios from "../../configs/axios";
 const ColoresAlta = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
+  const [codigo, setCodigo] = useState();
   const [colorhexa, setHexa] = useState();
     
   const navigate = useNavigate();
@@ -38,6 +39,8 @@ const ColoresAlta = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
+    }else if(codigo == "" || codigo == undefined) {
+      mostrarMensaje("Debes escribir el código");
     }else if(colorhexa == "" || colorhexa == undefined) {
       mostrarMensaje("Debes escribir el color hexadecimal");
     } else {
@@ -53,7 +56,7 @@ const ColoresAlta = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createColor({ nombre, colorhexa });
+      createColor({ nombre, codigo, colorhexa });
     }
   };
 
@@ -95,6 +98,15 @@ const ColoresAlta = () => {
                 label="Nombre *"
                 placeholder="Nombre"
                 id="nombre"
+                type="text"
+              />
+
+              {/*Codigo*/}
+              <Textinput
+                onChange={(e) => setCodigo(e.target.value)}
+                label="Código *"
+                placeholder="Código"
+                id="codigo"
                 type="text"
               />
 

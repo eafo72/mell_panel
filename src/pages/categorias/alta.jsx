@@ -15,7 +15,7 @@ import clienteAxios from "../../configs/axios";
 const CategoriasAlta = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
-  const [imagen, setImagen] = useState();
+  const [image, setImage] = useState();
   
   const navigate = useNavigate();
 
@@ -38,12 +38,18 @@ const CategoriasAlta = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
-    }else if(imagen == "" || imagen == undefined) {
+    }else if(image == "" || image == undefined) {
       mostrarMensaje("Debes seleccionar una imagen");
     } else {
       const createCategory = async (dataForm) => {
         try {
-          const res = await clienteAxios.post("/categoria/crear", dataForm);
+
+          const res = await clienteAxios({
+            method: "post",
+            url: "/categoria/crear",
+            data: dataForm,
+            headers: { "Content-Type": "multipart/form-data" },
+          });
           
           //console.log(res);
           navigate("/categorias");
@@ -53,7 +59,7 @@ const CategoriasAlta = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createCategory({ nombre, imagen });
+      createCategory({ nombre, image });
     }
   };
 
@@ -99,13 +105,13 @@ const CategoriasAlta = () => {
 
               {/*Imagen*/}
               <Textinput
-                onChange={(e) => setImagen(e.target.value)}
+                onChange={(e) => setImage(e.target.files[0])}
                 label="Imagen *"
                 placeholder="Imagen"
                 id="imagen"
                 type="file"
               />
-              
+
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>
                 <Button text="Guardar" type="submit" className="btn-dark" />

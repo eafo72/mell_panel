@@ -29,6 +29,13 @@ const Colors = () => {
       },
     },
     {
+      Header: "Código",
+      accessor: "codigo",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
       Header: "Hexadecimal",
       accessor: "colorhexa",
       Cell: (row) => {
@@ -98,12 +105,13 @@ const Colors = () => {
   },[authStatus]);
   
 
-  const header = ["Nombre", "Hexadecimal"];
+  const header = ["Nombre", "Código", "Hexadecimal"];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
         "nombre":datos[i]['nombre'],
+        "codigo":datos[i]['codigo'],
         "colorhexa":datos[i]['colorhexa']
       })
     }

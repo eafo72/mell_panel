@@ -8,17 +8,16 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
-const EstantesBorrar = () => {
-  const id = localStorage.getItem("DeleteShelf");
-  const name = localStorage.getItem("DeleteShelfName");
-
+const AlmacenesEntradaBorrar = () => {
+  const id = localStorage.getItem("DeleteinStorage");
+  
   const navigate = useNavigate();
 
-  const deleteShelf = async () => {
+  const deleteinStorage = async () => {
     try {
-      const res = await clienteAxios.post("/estante/borrar", { id });
+      const res = await clienteAxios.post("/almacen/entrada-borrar", { id });
       //console.log(res.data);
-      toast.success('Estante Borrado', {
+      toast.success('Entrada Borrada', {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: false,
@@ -28,7 +27,7 @@ const EstantesBorrar = () => {
         progress: undefined,
         theme: "dark",
       });
-      navigate("/estantes");
+      navigate("/almacenes/ver");
       
     } catch (error) {
       console.log(error);
@@ -46,20 +45,20 @@ const EstantesBorrar = () => {
   };
 
   const regresar = () => {
-    navigate("/estantes");
+    navigate("/almacenes/ver");
   };
 
   return (
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Borrar Estantes">
+        <Card title="Borrar Entrada">
           <div className="space-y-4">
             <div className=" space-y-4 text-center">
-              <p>¿Seguro que desea borrar el estante: {name}?</p>
+              <p>¿Seguro que desea borrar la entrada: {id}?</p>
               <Button
                 text="Borrar"
-                onClick={() => deleteShelf()}
+                onClick={() => deleteinStorage()}
                 className="btn-danger m-5"
               />
               <Button
@@ -75,4 +74,4 @@ const EstantesBorrar = () => {
   );
 };
 
-export default EstantesBorrar;
+export default AlmacenesEntradaBorrar;

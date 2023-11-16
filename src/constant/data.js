@@ -3,54 +3,45 @@ export const menuItems = [
     isHeadr: true,
     title: "menu",
   },
-/*
-  {
+  {  
     title: "Dashboard",
     icon: "heroicons:presentation-chart-bar",
     link: "dashboard",
   },
- */
-
   {
     title: "Productos",
     icon: "heroicons:list-bullet",
-    link: "productos",
-  },
+    link: "#",
+    isHide: true,
+    child: [
+      {
+        childtitle: "Categorías",
+        childlink: "categorias",
+      },
+      {
+        childtitle: "Subcategorías",
+        childlink: "subcategorias",
+      },
+      {
+        childtitle: "Marcas",
+        childlink: "marcas",
+      },
+      {
+        childtitle: "Colores",
+        childlink: "colores",
+      },
+      {
+        childtitle: "Tallas",
+        childlink: "tallas",
+      },
 
-  {
-    title: "Categorías",
-    icon: "heroicons:list-bullet",
-    link: "categorias",
+    ],
   },
-  {
-    title: "Subcategorías",
-    icon: "heroicons:list-bullet",
-    link: "subcategorias",
-  },
-  {
-    title: "Marcas",
-    icon: "heroicons:list-bullet",
-    link: "marcas",
-  },
-  {
-    title: "Colores",
-    icon: "heroicons:paint-brush",
-    link: "colores",
-  },
-  {
-    title: "Tallas",
-    icon: "heroicons:list-bullet",
-    link: "tallas",
-  },
+  
   {
     title: "Almacenes",
     icon: "heroicons:list-bullet",
     link: "almacenes",
-  },
-  {
-    title: "Estantes",
-    icon: "heroicons:archive-box",
-    link: "estantes",
   },
   {
     title: "Proveedores",

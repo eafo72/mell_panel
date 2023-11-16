@@ -28,6 +28,13 @@ const Sizes = () => {
         return <span>{row?.cell?.value}</span>;
       },
     },
+    {
+      Header: "Código",
+      accessor: "codigo",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
         
     {
       Header: "Editar",
@@ -91,12 +98,13 @@ const Sizes = () => {
   },[authStatus]);
   
 
-  const header = ["Nombre"];
+  const header = ["Nombre", "Código"];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
-        "nombre":datos[i]['nombre']
+        "nombre":datos[i]['nombre'],
+        "codigo":datos[i]['codigo']
       })
     }
 

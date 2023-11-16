@@ -15,11 +15,8 @@ import clienteAxios from "../../configs/axios";
 const EstantesAlta = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
-  const [almacen, setAlmacen] = useState();
-
-  const [allStorages, setAllStorages] = useState([]);
   
-  
+    
   const navigate = useNavigate();
 
   const mostrarMensaje = (mensaje) =>{
@@ -35,49 +32,27 @@ const EstantesAlta = () => {
     });
   }
 
-  const getStorages = async () => {
-    try {
-      let res = await clienteAxios.get(`/almacen/obtener`);
-
-      //console.log(res.data.almacenes);
-      let array = [];
-      for (let i = 0; i < res.data.almacenes.length; i++) {
-        //console.log(i);
-        array.push({"value":res.data.almacenes[i]["nombre"],"label":res.data.almacenes[i]["nombre"]});
-      }
-      setAllStorages(array);
-      
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  const id_almacen = localStorage.getItem("ViewStorage");
   
-  useEffect(() => {
-    getStorages();
-  },[]);
-
   const sendData = (event) => {
     event.preventDefault();
 
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
-    }else if(almacen == "" || almacen == undefined) {
-      mostrarMensaje("Debes seleccionar una almacén");
     } else {
       const createShelf = async (dataForm) => {
         try {
-          const res = await clienteAxios.post("/estante/crear", dataForm);
+          const res = await clienteAxios.put("/almacen/estante-alta", dataForm);
           //console.log(res);
-          navigate("/estantes");
+          navigate("/almacenes/estantes");
           
         } catch (error) {
           console.log(error);
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createShelf({ nombre, almacen:almacen.value });
+      createShelf({ id_almacen, nombre });
     }
   };
 
@@ -121,19 +96,6 @@ const EstantesAlta = () => {
                 type="text"
               />
 
-               {/*Tipo Almacenes*/}
-               <label  className="block capitalize form-label  ">Almacen *</label>
-              <Select
-                  styles={customStyles}
-                  label="Almacén *"
-                  placeholder="Seleccione"
-                  id="almacen"
-                  options={allStorages}
-                  value={almacen}
-                  onChange={setAlmacen}
-                  isSearchable={true}
-                ></Select>
-              
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>
                 <Button text="Guardar" type="submit" className="btn-dark" />

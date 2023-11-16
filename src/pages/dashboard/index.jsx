@@ -14,10 +14,10 @@ const Dashboard = () => {
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
-  const [loading, setLoading] = useState(true);
-
   const [ventas, setVentasMes] = useState();
-  const [tourspormes, setToursMes] = useState();
+  const [productos, setToursMes] = useState();
+
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -34,96 +34,17 @@ const Dashboard = () => {
     });
   };
 
-  //getVentas
-  const getVentas = async (tipoUsuario, idempresa) => {
-    //console.log("TipoUsuario:"+tipoUsuario);
-    //tipoUsuario == 1 SuperAdmin
-    //tipoUsuario == 2 Administrador
-
-    if (parseInt(tipoUsuario) == 1){
-      try {
-        const res = await clienteAxios.get("/venta/ventaspormes");
-        console.log(res.data);
-
-        let array = [["Mes", "Total", {role:"style"}]];
-        for (let i = 0; i < res.data.length; i++) {
-          console.log(i);
-          array.push([res.data[i]["Mes"], parseFloat(res.data[i]["Total"]), "#3ea091"]);
-        }
-        setVentasMes(array);
-      } catch (error) {
-        console.log(error);
-        mostrarMensaje(error.code);
-      }
-    }else{
-      try {
-        const res = await clienteAxios.get(`/venta/ventaspormesbyempresa/${idempresa}`);
-        console.log(res.data);
-
-        let array = [["Mes", "Total", {role:"style"}]];
-        for (let i = 0; i < res.data.length; i++) {
-          console.log(i);
-          array.push([res.data[i]["Mes"], parseFloat(res.data[i]["Total"]), "#3ea091"]);
-        }
-        setVentasMes(array);
-      } catch (error) {
-        console.log(error);
-        mostrarMensaje(error.code);
-      }
-    }
-  };
-
-  //getToursporMes
-  const getToursMes = async (tipoUsuario, idempresa) => {
-    //console.log("TipoUsuario:"+tipoUsuario);
-    //tipoUsuario == 1 SuperAdmin
-    //tipoUsuario == 2 Administrador
-    if (parseInt(tipoUsuario) == 1) {
-      try {
-        const res = await clienteAxios.get("/venta/tourspormes");
-        console.log(res.data);
-
-        let array = [["Tour", "Total", {role:"style"}]];
-        for (let i = 0; i < res.data.length; i++) {
-          console.log(i);
-          array.push([res.data[i]["nombre"], parseFloat(res.data[i]["Total"]), "#6d48a8"]);
-        }
-        setToursMes(array);
-      } catch (error) {
-        console.log(error);
-        mostrarMensaje(error.code);
-      }
-    }else{
-      try {
-        const res = await clienteAxios.get(`/venta/tourspormesbyempresa/${idempresa}`);
-        console.log(res.data);
-
-        let array = [["Tour", "Total", {role:"style"}]];
-        for (let i = 0; i < res.data.length; i++) {
-          console.log(i);
-          array.push([res.data[i]["nombre"], parseFloat(res.data[i]["Total"]), "#6d48a8"]);
-        }
-        setToursMes(array);
-      } catch (error) {
-        console.log(error);
-        mostrarMensaje(error.code);
-      }
-    }
-  };
+  
 
   useEffect(() => {
     verifyingToken().then(() => {
       setLoading(false);
-      navigate("/usuarios");
+     
     });
     if (authStatus === false) {
       //navigate("/");
     }
    
-    
-    //  getVentas(1, user[0].empresa_id);
-    //  getToursMes(1, user[0].empresa_id);
-    
     
   }, [authStatus]);
 
@@ -133,13 +54,9 @@ const Dashboard = () => {
 
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
         <></>
-        {/*
         <Card title="Dashboard"></Card>
-        */}
-
-        
       </div>
-      {/*
+      
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
         <Card title="Ventas por mes">
           <Chart 
@@ -154,10 +71,10 @@ const Dashboard = () => {
               legend: { position: "none" },
             }} />
         </Card>
-        <Card title="Tours vendidos">
+        <Card title="Productos vendidos">
           <Chart
             chartType="BarChart"
-            data={tourspormes}
+            data={productos}
             width="100%"
             options={{
               //title: "Density of Precious Metals, in g/cm^3",
@@ -169,7 +86,7 @@ const Dashboard = () => {
           />
         </Card>
       </div>
-      */}
+     
     </div>
   );
 };

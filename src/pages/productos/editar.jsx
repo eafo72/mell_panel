@@ -17,7 +17,6 @@ const ProductosEditar = () => {
   
   const [nombre, setNombre] = useState();
   const [descripcion, setDescripcion] = useState();
-  const [codigo_comun, setCodigoComun] = useState();
   const [genero, setGenero] = useState();
   const [edad, setEdad] = useState();
   const [categoria, setCategoria] = useState();
@@ -26,16 +25,11 @@ const ProductosEditar = () => {
   const [talla, setTalla] = useState();
   const [color, setColor] = useState();
   const [proveedor, setProveedor] = useState();
+  const [image, setImage] = useState();
   const [estatus, setEstatus] = useState();
   const [precio, setPrecio] = useState();
-  const [almacen, setAlmacen] = useState();
-  const [estante, setEstante] = useState();
-  const [stock, setStock] = useState();
-  const [apartado, setApartado] = useState();
-  const [estropeado, setEstropeado] = useState();
-  const [calificacion, setCalificacion] = useState();
   
-  
+ 
   const allGenders = [
     { value: "Hombre", label: "Hombre" },
     { value: "Mujer", label: "Mujer" },
@@ -184,8 +178,7 @@ const ProductosEditar = () => {
       setNombre(res.data.single.nombre);
 
       setDescripcion(res.data.single.descripcion);
-      setCodigoComun(res.data.single.codigo_comun);
-
+      
       if(res.data.single.genero != null){
         setGenero({
           label: res.data.single.genero,
@@ -216,19 +209,9 @@ const ProductosEditar = () => {
         }); 
       }  
 
-      if(res.data.single.talla != null){
-        setTalla({
-          label: res.data.single.talla,
-          value: res.data.single.talla,
-        }); 
-      }  
+      setTalla(res.data.single.talla);
 
-      if(res.data.single.color != null){
-        setColor({
-          label: res.data.single.color,
-          value: res.data.single.color,
-        }); 
-      }  
+      setColor(res.data.single.color);
 
       if(res.data.single.proveedor != null){
         setProveedor({
@@ -287,23 +270,13 @@ const ProductosEditar = () => {
     }else if(proveedor == "" || proveedor == undefined) {
       mostrarMensaje("Debes seleccionar un proveedor");
     } else {
-      const editProduct = async () => {
+      const editProduct = async (dataForm) => {
         try {
-          const res = await clienteAxios.put("/producto/actualizar", {
-            id:id,
-            nombre,
-            descripcion,
-            codigo_comun,
-            genero:genero.value,
-            edad,
-            categoria:categoria.value,
-            subcategoria:subcategoria.value,
-            marca:marca.value,
-            talla:talla.value,
-            color:color.value,
-            proveedor:proveedor.value,
-            estatus:estatus.value,
-            precio
+          const res = await clienteAxios({
+            method: "put",
+            url: "/producto/actualizar",
+            data: dataForm,
+            headers: { "Content-Type": "multipart/form-data" },
           });
           //console.log(res);
           navigate("/productos");
@@ -313,7 +286,22 @@ const ProductosEditar = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      editProduct();
+      editProduct({
+        id:id,
+        nombre,
+        descripcion,
+        genero:genero.value,
+        edad,
+        categoria:categoria.value,
+        subcategoria:subcategoria.value,
+        marca:marca.value,
+        talla,
+        color,
+        proveedor:proveedor.value,
+        image,
+        estatus:estatus.value,
+        precio
+      });
     }
   };
 
@@ -369,15 +357,7 @@ const ProductosEditar = () => {
                   dValue={descripcion}
                 />
 
-              {/*Codigo común*/}
-              <Textinput
-                onChange={(e) => setCodigoComun(e.target.value)}
-                label="Código común"
-                placeholder="Código común"
-                id="codigo_comun"
-                type="text"
-                defaultValue={codigo_comun}
-              />  
+              
 
               {/*Genero*/}
               <label  className="block capitalize form-label  ">Género *</label>
@@ -452,6 +432,7 @@ const ProductosEditar = () => {
                   value={talla}
                   onChange={setTalla}
                   isSearchable={true}
+                  isMulti={true}
                 ></Select>
 
               {/*Color*/}
@@ -465,6 +446,7 @@ const ProductosEditar = () => {
                   value={color}
                   onChange={setColor}
                   isSearchable={true}
+                  isMulti={true}
                 ></Select>
 
               {/*Proveedor*/}
@@ -479,6 +461,17 @@ const ProductosEditar = () => {
                   onChange={setProveedor}
                   isSearchable={true}
                 ></Select>
+
+
+              {/*Foto principal*/}
+              <Textinput
+                  onChange={(e) => setImage(e.target.files[0])}
+                  label="Foto principal *"
+                  placeholder="Foto principal"
+                  id="foto_principal"
+                  type="file"
+                />
+
 
               {/*Estatus*/}
               <label  className="block capitalize form-label  ">Estatus *</label>

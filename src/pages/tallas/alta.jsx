@@ -14,6 +14,7 @@ import clienteAxios from "../../configs/axios";
 
 const TallasAlta = () => {
   const [isDark] = useDarkMode();
+  const [codigo, setCodigo] = useState();
   const [nombre, setNombre] = useState();
     
   const navigate = useNavigate();
@@ -37,6 +38,8 @@ const TallasAlta = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
+    }else if(codigo == "" || codigo == undefined) {
+      mostrarMensaje("Debes escribir el código");
     } else {
       const createSize = async (dataForm) => {
         try {
@@ -50,7 +53,7 @@ const TallasAlta = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createSize({ nombre });
+      createSize({ nombre, codigo });
     }
   };
 
@@ -91,6 +94,15 @@ const TallasAlta = () => {
                 label="Nombre *"
                 placeholder="Nombre"
                 id="nombre"
+                type="text"
+              />
+
+              {/*Codigo*/}
+              <Textinput
+                onChange={(e) => setCodigo(e.target.value)}
+                label="Código *"
+                placeholder="Código"
+                id="codigo"
                 type="text"
               />
 

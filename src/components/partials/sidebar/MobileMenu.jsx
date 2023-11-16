@@ -46,9 +46,9 @@ const MobileMenu = () => {
           <div className="flex items-center space-x-4">
             <div className="logo-icon">
               {!isDark && !isSemiDark ? (
-                <img src={MobileLogo} alt="" />
+                <img src={MobileLogo} alt="" style={{width:"60px"}}/>
               ) : (
-                <img src={MobileLogoWhite} alt="" />
+                <img src={MobileLogoWhite} alt="" style={{width:"60px"}} />
               )}
             </div>
             <div>

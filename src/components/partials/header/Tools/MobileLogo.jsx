@@ -8,7 +8,7 @@ const MobileLogo = () => {
   const [isDark] = useDarkMode();
   return (
     <Link to="/">
-      <img src={isDark ? LogoWhite : MainLogo} alt="" />
+      <img src={isDark ? LogoWhite : MainLogo} alt=""  style={{width:"60px"}}/>
     </Link>
   );
 };

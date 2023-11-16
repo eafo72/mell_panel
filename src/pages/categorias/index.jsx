@@ -32,7 +32,7 @@ const Categories = () => {
       Header: "Imagen",
       accessor: "imagen",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <img style={{width:"60px", height:"60px"}} src={row?.cell?.value}/>;
       },
     },
     {

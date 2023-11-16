@@ -136,7 +136,7 @@ const FotosAlta = () => {
             </div>
           </form>
         </Card>
-        <Card title="Fotos Actuales">
+        <Card title="Carrusel">
             <div className="grid grid-cols-4 gap-5">
                 {fotos.map((item, i) => {
                     return <div key={i}><button onClick={() => goFoto(i)} ><img  alt={item.image} src={item.image} className="w-full h-full" /></button></div>;
