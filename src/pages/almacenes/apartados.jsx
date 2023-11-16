@@ -49,15 +49,17 @@ const Apartados = () => {
     },
     {
       Header: "Estante",
+      accessor: "estante",
       Cell: (row) => {
-          return <span>{row.row.original.almacen[0]['estante']}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Apartado",
+      accessor: "apartado",
       Cell: (row) => {
-        return <span>{row.row.original.almacen[0]['apartado']}</span>;
-    },
+        return <span>{row?.cell?.value}</span>;
+      },
     },
   ];
 
@@ -77,10 +79,9 @@ const Apartados = () => {
    
   const getStorageData = async () => {
     try {
-      const res = await clienteAxios.get("/almacen/apartados/" + id);
-      //console.log(res.data.apartados);
-
-       setDatos(res.data.apartados);
+     //const res = await clienteAxios.get("/almacen/apartados/" + id);
+     //console.log(res.data.apartados);
+     //setDatos(res.data.apartados);
     } catch (error) {
       console.log(error);
     }

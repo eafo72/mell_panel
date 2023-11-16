@@ -124,10 +124,9 @@ const Salidas = () => {
  
   const getStorageData = async () => {
     try {
-      const res = await clienteAxios.get("/almacen/content/" + id);
+      //const res = await clienteAxios.get("/almacen/content/" + id);
       //console.log(res.data.single);
-
-      setDatos(res.data.single.almacen);
+      //setDatos(res.data.single.almacen);
     } catch (error) {
       console.log(error);
     }

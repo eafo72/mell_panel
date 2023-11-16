@@ -28,9 +28,8 @@ const Entradas = () => {
     },
     {
       Header: "Producto",
-      accessor: "producto",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.nombre}</span>;
       },
     },
     {
@@ -42,13 +41,13 @@ const Entradas = () => {
     {
       Header: "Talla",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.talla}</span>;
+        return <span>{row.row.original.datos_talla.nombre}</span>;
       },
     },
     {
       Header: "Color",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.color}</span>;
+        return <span>{row.row.original.datos_color.nombre}</span>;
       },
     },
     {
@@ -128,11 +127,11 @@ const Entradas = () => {
 
   const navigate = useNavigate();
 
-  const almacen = localStorage.getItem("ViewStorageName");
- 
+  const id = localStorage.getItem("ViewStorage");
+   
   const getStorageData = async () => {
     try {
-      const res = await clienteAxios.post("/almacen/entradas", {almacen});
+      const res = await clienteAxios.get("/almacen/entradas/" + id);
       console.log(res.data.entradas);
 
       setDatos(res.data.entradas);

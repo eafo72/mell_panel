@@ -16,14 +16,22 @@ const AlmacenEntradaAlta = () => {
   const [isDark] = useDarkMode();
 
   const [producto, setProducto] = useState();
+  const [talla, setTalla] = useState();
+  const [color, setColor] = useState();
   const [fechaEntrada, setFechaEntrada] = useState();
   const [cantidad, setCantidad] = useState();
   const [proveedor, setProveedor] = useState();
   const [estante, setEstante] = useState();
 
   const [allShelfs, setAllShelfs] = useState();
-  const [allProducts, setAllProducts] = useState();
+  const [allProductsInfo, setAllProductsInfo] = useState();  //contiene toda la informacion de productos
+  const [allProducts, setAllProducts] = useState(); //contiene solo el value(codigo) y label(nombre) de productos
   const [allSuppliers, setAllSuppliers] = useState();
+
+  const [allSizes, setAllSizes] = useState();
+  const [allColors, setAllColors] = useState();
+
+
 
   const id_almacen = localStorage.getItem("ViewStorage");
   const nombre_almacen = localStorage.getItem("ViewStorageName");
@@ -43,32 +51,38 @@ const AlmacenEntradaAlta = () => {
     });
   }
 
+
   const getShelfs = async () => {
     try {
-      let res = await clienteAxios.get(`/estante/obtener`);
 
-      //console.log(res.data.estantes);
+      const res = await clienteAxios.get("/almacen/single/"+id_almacen);
+      //console.log(res.data.single);
+
       let array = [];
-      for (let i = 0; i < res.data.estantes.length; i++) {
+      for (let i = 0; i < res.data.single.estantes.length; i++) {
         //console.log(i);
-        array.push({"value":res.data.estantes[i]["nombre"],"label":res.data.estantes[i]["nombre"]});
+        array.push({"value":res.data.single.estantes[i]["nombre"],"label":res.data.single.estantes[i]["nombre"]});
       }
-      setAllShelfs(array);
       
+      setAllShelfs(array);
+
     } catch (error) {
       console.log(error);
     }
   };
+
 
   const getProducts = async () => {
     try {
       let res = await clienteAxios.get(`/producto/obtener`);
 
       //console.log(res.data.productos);
+      setAllProductsInfo(res.data.productos);
+
       let array = [];
       for (let i = 0; i < res.data.productos.length; i++) {
         //console.log(i);
-        array.push({"value":res.data.productos[i]["nombre"],"label":res.data.productos[i]["nombre"]+"/"+res.data.productos[i]["marca"]+"/"+res.data.productos[i]["talla"]+"/"+res.data.productos[i]["color"]});
+        array.push({"value":res.data.productos[i]["codigo"],"label":res.data.productos[i]["nombre"]+"/"+res.data.productos[i]["marca"]});
       }
       setAllProducts(array);
       
@@ -101,12 +115,33 @@ const AlmacenEntradaAlta = () => {
     getSuppliers();
   }, []);
 
+
+  const handleChange = (event) => {
+    //console.log(event);
+    setProducto({"value":event.value,"label":event.label});
+    
+    
+    for (let i = 0; i < allProductsInfo.length; i++) {
+        if(allProductsInfo[i].codigo == event.value){
+          setAllColors(allProductsInfo[i].color);
+          setAllSizes(allProductsInfo[i].talla);
+        }  
+    }
+    
+
+  };
+
+
   const sendData = (event) => {
     event.preventDefault();
 
     //validamos campos
     if(producto == "" || producto == undefined) {
       mostrarMensaje("Debes seleccionar el producto");
+    }else if(talla == "" || talla == undefined) {
+      mostrarMensaje("Debes seleccionar una talla");
+    }else if(color == "" || color == undefined) {
+      mostrarMensaje("Debes seleccionar un color");  
     }else if(fechaEntrada == "" || fechaEntrada == undefined) {
         mostrarMensaje("Debes seleccionar una fecha");
     }else if(cantidad == "" || cantidad == undefined) {
@@ -128,7 +163,7 @@ const AlmacenEntradaAlta = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createStorage({ producto:producto.value, fechaEntrada, cantidad, proveedor:proveedor.value, id_almacen, nombre_almacen, estante:estante.value });
+      createStorage({ producto:producto.value, talla:talla.value, color:color.value, fechaEntrada, cantidad, proveedor:proveedor.value, id_almacen, nombre_almacen, estante:estante.value });
     }
   };
 
@@ -173,9 +208,38 @@ const AlmacenEntradaAlta = () => {
                   id="producto"
                   options={allProducts}
                   value={producto}
-                  onChange={setProducto}
+                  onChange={handleChange}
                   isSearchable={true}
               ></Select>
+
+              {/*Talla*/}
+              <label  className="block capitalize form-label  ">Talla *</label>
+              <Select
+                  styles={customStyles}
+                  label="Talla *"
+                  placeholder="Seleccione"
+                  id="talla"
+                  options={allSizes}
+                  value={talla}
+                  onChange={setTalla}
+                  isSearchable={true}
+              ></Select>
+
+
+              {/*Color*/}
+              <label  className="block capitalize form-label  ">Color *</label>
+              <Select
+                  styles={customStyles}
+                  label="Color *"
+                  placeholder="Seleccione"
+                  id="color"
+                  options={allColors}
+                  value={color}
+                  onChange={setColor}
+                  isSearchable={true}
+              ></Select>
+
+
 
               {/*Fecha de Entrada*/}
               <Textinput

@@ -21,54 +21,55 @@ const Stock = () => {
   const COLUMNS = [
     {
       Header: "Producto",
-      accessor: "nombre",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.nombre}</span>;
       },
     },
     {
       Header: "Marca",
-      accessor: "marca",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.marca}</span>;
       },
     },
     {
       Header: "Talla",
-      accessor: "talla",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_talla.nombre}</span>;
       },
     },
     {
       Header: "Color",
-      accessor: "color",
+      Cell: (row) => {
+        return <span>{row.row.original.datos_color.nombre}</span>;
+      },
+    },
+    
+    {
+      Header: "Estante",
+      accessor: "estante",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Estante",
-      Cell: (row) => {
-          return <span>{row.row.original.almacen[0]['estante']}</span>;
-      },
-    },
-    {
       Header: "Stock",
+      accessor: "stock",
       Cell: (row) => {
-        return <span>{row.row.original.almacen[0]['stock']}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Apartados",
+      accessor: "apartado",
       Cell: (row) => {
-        return <span>{row.row.original.almacen[0]['apartado']}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Estropeados",
+      accessor: "estropeado",
       Cell: (row) => {
-        return <span>{row.row.original.almacen[0]['estropeado']}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
 

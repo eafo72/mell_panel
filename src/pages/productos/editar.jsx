@@ -127,7 +127,7 @@ const ProductosEditar = () => {
       let array = [];
       for (let i = 0; i < res.data.tallas.length; i++) {
         //console.log(i);
-        array.push({"value":res.data.tallas[i]["nombre"],"label":res.data.tallas[i]["nombre"]});
+        array.push({"value":res.data.tallas[i]["codigo"],"label":res.data.tallas[i]["nombre"]});
       }
       setAllSizes(array);
       
@@ -144,7 +144,7 @@ const ProductosEditar = () => {
       let array = [];
       for (let i = 0; i < res.data.colores.length; i++) {
         //console.log(i);
-        array.push({"value":res.data.colores[i]["nombre"],"label":res.data.colores[i]["nombre"]});
+        array.push({"value":res.data.colores[i]["codigo"],"label":res.data.colores[i]["nombre"]});
       }
       setAllColors(array);
       

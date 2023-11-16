@@ -15,6 +15,10 @@ export const menuItems = [
     isHide: true,
     child: [
       {
+        childtitle: "Catalogo",
+        childlink: "productos",
+      },
+      {
         childtitle: "Categorías",
         childlink: "categorias",
       },

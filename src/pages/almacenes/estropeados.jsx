@@ -49,14 +49,16 @@ const Estropeados = () => {
     },
     {
       Header: "Estante",
+      accessor: "estante",
       Cell: (row) => {
-          return <span>{row.row.original.almacen[0]['estante']}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Estropeado",
+      accessor: "estropeado",
       Cell: (row) => {
-        return <span>{row.row.original.almacen[0]['estropeado']}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
         
@@ -78,10 +80,9 @@ const Estropeados = () => {
  
   const getStorageData = async () => {
     try {
-      const res = await clienteAxios.get("/almacen/estropeados/" + id);
+      //const res = await clienteAxios.get("/almacen/estropeados/" + id);
       //console.log(res.data.estropeados);
-
-       setDatos(res.data.estropeados);
+      // setDatos(res.data.estropeados);
     } catch (error) {
       console.log(error);
     }
