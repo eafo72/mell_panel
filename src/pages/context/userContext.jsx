@@ -57,23 +57,9 @@ export const UserProvider = ({ children }) => {
       const res = await clienteAxios.post('/usuario/login', dataForm)
       
       console.log(res.data);
-
-      if(res.status == 202){
-          toast.error(res.data.errors[0]['detail'], {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false,
-          progress: undefined,
-          theme: "dark",
-        });
-
-      }else if(res.status == 200){
-        localStorage.setItem('token', res.data.token)
-        setAuthStatus(true)
-      }
+      localStorage.setItem('token', res.data.token)
+      setAuthStatus(true)
+      
 
       
     } catch (error) {

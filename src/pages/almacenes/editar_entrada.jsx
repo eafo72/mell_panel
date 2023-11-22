@@ -12,14 +12,15 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
-const AlmacenEntradaAlta = () => {
+const ProductosEditarEntrada = () => {
   const [isDark] = useDarkMode();
-
+  
   const [producto, setProducto] = useState();
   const [talla, setTalla] = useState();
   const [color, setColor] = useState();
   const [fechaEntrada, setFechaEntrada] = useState();
   const [cantidad, setCantidad] = useState();
+  const [cantidadAnterior, setCantidadAnterior] = useState();
   const [proveedor, setProveedor] = useState();
   const [estante, setEstante] = useState();
 
@@ -30,15 +31,16 @@ const AlmacenEntradaAlta = () => {
 
   const [allSizes, setAllSizes] = useState();
   const [allColors, setAllColors] = useState();
-
-
+ 
 
   const id_almacen = localStorage.getItem("ViewStorage");
   const nombre_almacen = localStorage.getItem("ViewStorageName");
-  
+  const id_producto = localStorage.getItem("EditStock");
+  const id_entrada = localStorage.getItem("EditinStorage");
+
   const navigate = useNavigate();
 
-  const mostrarMensaje = (mensaje) =>{
+  const mostrarMensaje = (mensaje) => {
     toast.error(mensaje, {
       position: "top-right",
       autoClose: 2500,
@@ -49,8 +51,7 @@ const AlmacenEntradaAlta = () => {
       progress: undefined,
       theme: "dark",
     });
-  }
-
+  };
 
   const getShelfs = async () => {
     try {
@@ -108,13 +109,47 @@ const AlmacenEntradaAlta = () => {
     }
   };
 
+ 
+  const getEntrada = async () => {
+    try {
+      const res = await clienteAxios.get("/almacen/entrada-single/"+id_entrada);
 
+      //console.log(res.data.single[0]);
+      
+      setProducto({
+        "value":res.data.single[0].codigo_producto, "label":res.data.single[0].datos_producto.nombre
+      });
+      setTalla({
+        "value":res.data.single[0].codigo_talla, "label":res.data.single[0].datos_talla.nombre
+      });
+      setColor({
+        "value":res.data.single[0].codigo_color, "label":res.data.single[0].datos_color.nombre
+      });
+      setFechaEntrada(res.data.single[0].fechaEntrada.substr(0,10)); 
+      setCantidad(res.data.single[0].cantidad); 
+      setCantidadAnterior(res.data.single[0].cantidad); 
+      setProveedor({
+        "value":res.data.single[0].proveedor, "label":res.data.single[0].proveedor
+      });
+      setEstante({
+        "value":res.data.single[0].estante, "label":res.data.single[0].estante
+      });
+
+      
+
+    } catch (error) {
+      console.log(error);
+      mostrarMensaje(error.code);
+    }
+  };
+  
   useEffect(() => {
     getShelfs();
     getProducts();
     getSuppliers();
+    getEntrada();
+    
   }, []);
-
 
   const handleChange = (event) => {
     //console.log(event);
@@ -132,29 +167,27 @@ const AlmacenEntradaAlta = () => {
   };
 
 
+  //es para jalar la lista de colores y tallas por primera vez aun no programo como jalarlo
+  const setData = () => {
+    
+    //guardamos los colores y tallas disponibles para el producto actual
+    for (let i = 0; i < allProductsInfo?.length; i++) {
+      if(allProductsInfo[i].codigo == producto.value){
+        setAllColors(allProductsInfo[i].color);
+        setAllSizes(allProductsInfo[i].talla);
+      }  
+    }
+    
+  }
+
+
   const sendData = (event) => {
     event.preventDefault();
 
     //validamos campos
-    if(producto == "" || producto == undefined) {
-      mostrarMensaje("Debes seleccionar el producto");
-    }else if(talla == "" || talla == undefined) {
-      mostrarMensaje("Debes seleccionar una talla");
-    }else if(color == "" || color == undefined) {
-      mostrarMensaje("Debes seleccionar un color");  
-    }else if(fechaEntrada == "" || fechaEntrada == undefined) {
-        mostrarMensaje("Debes seleccionar una fecha");
-    }else if(cantidad == "" || cantidad == undefined) {
-        mostrarMensaje("Debes escribir una cantidad");
-    }else if(proveedor == "" || proveedor == undefined) {
-        mostrarMensaje("Debes seleccionar una proveedor");    
-    }else if(estante == "" || estante == undefined) {
-        mostrarMensaje("Debes seleccionar una estante");    
-    } else {
-      const createinStorage = async (dataForm) => {
-        try {
-          const res = await clienteAxios.post("/almacen/entrada-alta", dataForm);
-          
+    const editinStorage = async (dataForm) => {
+       try {
+          const res = await clienteAxios.put("/almacen/entrada-editar", dataForm);
           //console.log(res);
           navigate("/almacenes/ver");
           
@@ -163,11 +196,11 @@ const AlmacenEntradaAlta = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createinStorage({ producto:producto.value, talla:talla.value, color:color.value, fechaEntrada, cantidad, proveedor:proveedor.value, id_almacen, nombre_almacen, estante:estante.value });
-    }
+      editinStorage({ id:id_entrada, producto:producto.value, talla:talla.value, color:color.value, fechaEntrada, cantidad, cantidadAnterior, proveedor:proveedor.value, id_almacen, nombre_almacen, estante:estante.value });
+    
   };
 
-  const customStyles = {
+   const customStyles = {
     control: (base, state) => ({
       ...base,
       background: isDark
@@ -177,11 +210,11 @@ const AlmacenEntradaAlta = () => {
     singleValue: (base, state) => ({
       ...base,
       color: isDark ? "white" : "rgb(15 23 42 / var(--tw-text-opacity))",
-    }), 
+    }),  
     multiValueRemove: (base, state) => ({
       ...base,
       color: "red",
-    }), 
+    }),  
     option: (base, state) => {
       return {
         ...base,
@@ -195,12 +228,13 @@ const AlmacenEntradaAlta = () => {
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Alta de Entrada al Almacén">
+        <Card title="Editar Entrada">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
+            
 
-              {/*Producto*/}
-              <label  className="block capitalize form-label  ">Producto *</label>
+             {/*Producto*/}
+             <label  className="block capitalize form-label  ">Producto *</label>
               <Select
                   styles={customStyles}
                   label="Producto *"
@@ -248,6 +282,7 @@ const AlmacenEntradaAlta = () => {
                 placeholder="Fecha de Entrada"
                 id="fechaEntrada"
                 type="date"
+                defaultValue={fechaEntrada}
               />
 
               {/*Cantidad*/}
@@ -257,6 +292,7 @@ const AlmacenEntradaAlta = () => {
                 placeholder="Cantidad"
                 id="cantidad"
                 type="number"
+                defaultValue={cantidad}
               />
 
               {/*Proveedor*/}
@@ -286,6 +322,7 @@ const AlmacenEntradaAlta = () => {
               ></Select>
 
               
+
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>
                 <Button text="Guardar" type="submit" className="btn-dark" />
@@ -298,4 +335,4 @@ const AlmacenEntradaAlta = () => {
   );
 };
 
-export default AlmacenEntradaAlta;
+export default ProductosEditarEntrada;

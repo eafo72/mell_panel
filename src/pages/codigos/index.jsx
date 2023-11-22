@@ -17,75 +17,29 @@ import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Products = () => {
+const Codes = () => {
 
   const COLUMNS = [
    
     {
-      Header: "Nombre",
-      accessor: "nombre",
+      Header: "Código",
+      accessor: "codigo",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Foto principal",
-      accessor: "foto_principal",
-      Cell: (row) => {
-        return <img style={{width:"60px", height:"60px"}} src={row?.cell?.value}/>;
-      },
-    },
-    {
-      Header: "Categoría",
-      accessor: "categoria",
+      Header: "Porcentaje",
+      accessor: "porcentaje",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
-    {
-      Header: "Subcategoría",
-      accessor: "subcategoria",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Precio",
-      accessor: "precio",
-      Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
-      },
-    },
-
-    
-    {
-      Header: "Carrusel",
-      Cell: (row) => {
-        return <button onClick={() => goToFotos(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:photo"/>
-          </span>
-        </button>
-      },
-    },
-
-    {
-      Header: "Barcode",
-      Cell: (row) => {
-        return <button onClick={() => goToBarcode(row.row.original._id)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:qr-code"/>
-          </span>
-        </button>
-      },
-    },
-
+        
     {
       Header: "Editar",
       Cell: (row) => {
-        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.codigo)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
             <Icon icon="heroicons:pencil-square"/>
@@ -97,7 +51,7 @@ const Products = () => {
     {
       Header: "Borrar",
       Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.nombre)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.codigo)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
             <Icon icon="heroicons-outline:trash"/>
@@ -118,13 +72,13 @@ const Products = () => {
 
   const navigate = useNavigate();
 
-  const getProducts = async () => {
+  const getCodes = async () => {
     try {
-      let res = await clienteAxios.get(`/producto/obtener`);
+      let res = await clienteAxios.get(`/codigo/obtener`);
 
-      //console.log(res.data.productos);
+      //console.log(res.data.codigos);
       
-      setDatos(res.data.productos);
+      setDatos(res.data.codigos);
     } catch (error) {
       console.log(error);
     }
@@ -139,27 +93,24 @@ const Products = () => {
     if(authStatus === false) {
       //navigate("/");
     }
-    getProducts();
+    getCodes();
       
   },[authStatus]);
   
 
-  const header = ["Nombre", "Foto principal", "Categoría", "Subcategoría", "Precio" ];
+  const header = ["Código", "Porcentaje"];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
-        "nombre":datos[i]['nombre'],
-        "foto_principal":datos[i]['foto_principal'],
-        "categoria":datos[i]['categoria'],
-        "subcategoria":datos[i]['subcategoria'],
-        "precio":datos[i]['precio']
+        "codigo":datos[i]['codigo'],
+        "porcentaje":datos[i]['porcentaje'],
       })
     }
 
     downloadExcel({
-      fileName: "mell_products",
-      sheet: "products",
+      fileName: "mell_discounts",
+      sheet: "discounts",
       tablePayload: {
         header,
         body: newDatos,
@@ -168,31 +119,18 @@ const Products = () => {
   }
 
   const handleAlta = () => {
-    navigate("/productos/alta");
+    navigate("/codigos/alta");
   };
 
- 
-
-  const goToFotos = (id,name) => {
-    localStorage.setItem("PhotoProduct",id);
-    navigate("/productos/alta_foto");
+  const goToEditar = (id,code) => {
+    localStorage.setItem("EditCode",id);
+    navigate("/codigos/editar");
   }
 
-
-  const goToEditar = (id,name) => {
-    localStorage.setItem("EditProduct",id);
-    navigate("/productos/editar");
-  }
-
-  const goToBarcode = (id) => {
-    localStorage.setItem("BarcodeProduct",id);
-    navigate("/productos/barcode");
-  }
-
-  const goToBorrar = async (id,name) => {
-    localStorage.setItem("DeleteProduct",id);
-    localStorage.setItem("DeleteProductName",name);
-    navigate("/productos/borrar");
+  const goToBorrar = async (id,code) => {
+    localStorage.setItem("DeleteCode",id);
+    localStorage.setItem("DeleteCodeName",code);
+    navigate("/codigos/borrar");
   }
 
     
@@ -234,7 +172,7 @@ const Products = () => {
       <ToastContainer />
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Productos</h4>
+          <h4 className="card-title">Códigos de descuento</h4>
           <button onClick={(e) => handleAlta(e)} className="btn btn-success">
             Agregar nuevo
           </button>
@@ -372,4 +310,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Codes;

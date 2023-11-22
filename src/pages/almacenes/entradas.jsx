@@ -78,6 +78,7 @@ const Entradas = () => {
         return <span>{row?.cell?.value}</span>;
       },
     },
+    /*
     {
       Header: "Editar",
       Cell: (row) => {
@@ -96,6 +97,7 @@ const Entradas = () => {
         );
       },
     },
+    */
 
     {
       Header: "Borrar",
@@ -128,11 +130,12 @@ const Entradas = () => {
   const navigate = useNavigate();
 
   const id = localStorage.getItem("ViewStorage");
+  const name = localStorage.getItem("ViewStorageName");
    
   const getStorageData = async () => {
     try {
       const res = await clienteAxios.get("/almacen/entradas/" + id);
-      console.log(res.data.entradas);
+      //console.log(res.data.entradas);
 
       setDatos(res.data.entradas);
     } catch (error) {
@@ -181,8 +184,8 @@ const Entradas = () => {
   }
 
   const goToEditar = (id, name) => {
-    localStorage.setItem("EditStorage", id);
-    navigate("/almacen/editar_almacen");
+    localStorage.setItem("EditinStorage", id);
+    navigate("/almacenes/editar_entrada");
   };
 
   const goToBorrar = async (id, name) => {

@@ -25,6 +25,7 @@ const SubcategoriasBorrar = lazy(() => import("./pages/subcategorias/borrar"));
 
 const Productos       = lazy(() => import("./pages/productos"));
 const ProductosAlta   = lazy(() => import("./pages/productos/alta"));
+const ProductosBarcode = lazy(() => import("./pages/productos/barcode"));
 const ProductosEditar = lazy(() => import("./pages/productos/editar"));
 const ProductosBorrar = lazy(() => import("./pages/productos/borrar"));
 const ProductosAltaFoto   = lazy(() => import("./pages/productos/alta_foto"));
@@ -62,8 +63,15 @@ const AlmacenesEstantesBorrar= lazy(() => import("./pages/almacenes/estantes_bor
 
 
 const AlmacenEntradaAlta = lazy(() => import("./pages/almacenes/alta_entrada"));
+const AlmacenEntradaEditar = lazy(() => import("./pages/almacenes/editar_entrada"));
 const AlmacenEntradaBorrar = lazy(() => import("./pages/almacenes/borrar_entrada"));
 
+const VentasAlta = lazy(() => import("./pages/ventas/ventas_alta"));
+
+const Codigos       = lazy(() => import("./pages/codigos"));
+const CodigosAlta   = lazy(() => import("./pages/codigos/alta"));
+const CodigosEditar = lazy(() => import("./pages/codigos/editar"));
+const CodigosBorrar = lazy(() => import("./pages/codigos/borrar"));
 
 
 const NoPage = lazy(() => import("./pages/404"));
@@ -108,6 +116,7 @@ function App() {
 
           <Route path="productos" element={<Productos />} />
           <Route path="productos/alta" element={<ProductosAlta />} />
+          <Route path="productos/barcode" element={<ProductosBarcode />} />
           <Route path="productos/editar" element={<ProductosEditar />} />
           <Route path="productos/borrar" element={<ProductosBorrar />} />
           <Route path="productos/alta_foto" element={<ProductosAltaFoto />} />
@@ -145,10 +154,17 @@ function App() {
 
 
           <Route path="almacenes/alta_entrada" element={<AlmacenEntradaAlta />} />
+          <Route path="almacenes/editar_entrada" element={<AlmacenEntradaEditar />} />
           <Route path="almacenes/borrar_entrada" element={<AlmacenEntradaBorrar />} />
 
 
-         
+          <Route path="ventas/ventas_alta" element={<VentasAlta />} />
+
+          <Route path="codigos" element={<Codigos />} />
+          <Route path="codigos/alta" element={<CodigosAlta />} />
+          <Route path="codigos/editar" element={<CodigosEditar />} />
+          <Route path="codigos/borrar" element={<CodigosBorrar />} />
+
 
 
           <Route path="*" element={<Navigate to="/404" />} />

@@ -57,6 +57,22 @@ export const menuItems = [
     icon: "heroicons:user-group",
     link: "usuarios",
   },
+  {
+    title: "Ventas",
+    icon: "heroicons:banknotes",
+    link: "#",
+    isHide: true,
+    child: [
+      {
+        childtitle:"Punto de venta",
+        childlink: "ventas/ventas_alta",
+      },
+      {
+        childtitle: "Códigos descuento",
+        childlink: "codigos",
+      },
+    ],
+  },
 ];
 
 export const topMenu = [];
