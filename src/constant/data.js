@@ -71,6 +71,14 @@ export const menuItems = [
         childtitle: "Códigos descuento",
         childlink: "codigos",
       },
+      {
+        childtitle: "Historial de Pedidos",
+        childlink: "ventas/historial_pedidos",
+      },
+      {
+        childtitle: "Historial de Ventas",
+        childlink: "ventas/historial_ventas",
+      },
     ],
   },
 ];

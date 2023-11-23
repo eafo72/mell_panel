@@ -67,6 +67,12 @@ const AlmacenEntradaEditar = lazy(() => import("./pages/almacenes/editar_entrada
 const AlmacenEntradaBorrar = lazy(() => import("./pages/almacenes/borrar_entrada"));
 
 const VentasAlta = lazy(() => import("./pages/ventas/ventas_alta"));
+const PedidosHistorial = lazy(() => import("./pages/ventas/historial_pedidos"));
+const VentasHistorial = lazy(() => import("./pages/ventas/historial_ventas"));
+const VentasDetalle = lazy(() => import("./pages/ventas/detalle"));
+const VentasPagar = lazy(() => import("./pages/ventas/pagar"));
+
+
 
 const Codigos       = lazy(() => import("./pages/codigos"));
 const CodigosAlta   = lazy(() => import("./pages/codigos/alta"));
@@ -159,6 +165,10 @@ function App() {
 
 
           <Route path="ventas/ventas_alta" element={<VentasAlta />} />
+          <Route path="ventas/historial_pedidos" element={<PedidosHistorial />} />
+          <Route path="ventas/historial_ventas" element={<VentasHistorial />} />
+          <Route path="ventas/detalle" element={<VentasDetalle />} />
+          <Route path="ventas/pagar" element={<VentasPagar />} />
 
           <Route path="codigos" element={<Codigos />} />
           <Route path="codigos/alta" element={<CodigosAlta />} />

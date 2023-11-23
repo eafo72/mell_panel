@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import Textarea from "@/components/ui/Textarea";
@@ -9,8 +9,8 @@ import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
 import { useNavigate } from "react-router-dom";
-
 import clienteAxios from "../../configs/axios";
+import { UserContext } from "../context/userContext";
 import { Label } from "reactstrap";
 
 const VentasAlta = () => {
@@ -26,15 +26,22 @@ const VentasAlta = () => {
   const [subtotal, setSubtotal] = useState(0);
   const [porcentaje, setPorcentaje] = useState(0);
   const [descuento, setDescuento] = useState(0);
+  const [iva, setIva] = useState(0);
+  const porcentaje_iva = .15;
   const [total, setTotal] = useState(0);
+
+  const [costo_envio, setCostoEnvio] = useState(0);
+
 
   const [formaPago, setFormaPago] = useState();
   const [parcialidades, setParcialidades] = useState();
+  const [solicitarAbono, setSolicitarAbono] = useState(false);
+  const [abono, setAbono] = useState();
 
   const [formaEntrega, setFormaEntrega] = useState();
   const [solicitarDatosEnvio, setSolicitarDatosEnvio] = useState(false);
 
-  const [datos_entrega_nombre, setDatosEntregaNombre] = useState();
+  const [datos_entrega_nombre, setDatosEntregaNombre] = useState("Mostrador");
   const [datos_entrega_direccion, setDatosEntregaDireccion] = useState();
   const [datos_entrega_correo, setDatosEntregaCorreo] = useState();
   const [datos_entrega_telefono, setDatosEntregaTelefono] = useState();
@@ -46,7 +53,9 @@ const VentasAlta = () => {
 
   const [cart, setCart] = useState([]);
  
-  
+  const userCtx = useContext(UserContext);
+  const { user, authStatus, verifyingToken } = userCtx;
+
   const navigate = useNavigate();
 
   const mostrarMensaje = (mensaje) => {
@@ -108,9 +117,18 @@ const VentasAlta = () => {
   };
  
   
+  
   useEffect(() => {
+    verifyingToken().then(() => {
+      //console.log(user);
+    });
+
+    if (authStatus === false) {
+      //navigate("/");
+    }
     getProducts();
-  }, []);
+  }, [authStatus]);
+  
 
   const handleProductChange = (event) => {
     //console.log(event);
@@ -130,6 +148,17 @@ const VentasAlta = () => {
     
 
   };
+
+  const  handleParcialidades = (e) => {
+     setParcialidades(e.target.value);
+        
+     if(e.target.value > 1){
+       setSolicitarAbono(true)
+     }else{
+       setSolicitarAbono(false)
+     }
+
+  }  
 
   const handleFormaEntregaChange = (event) => {
     //console.log(event);
@@ -213,9 +242,9 @@ const VentasAlta = () => {
       nombre_talla:talla.label,
       codigo_color:color.value, 
       nombre_color:color.label, 
-      cantidad,
+      cantidad:parseInt(cantidad),
       precio,
-      total:cantidad * precio
+      total:parseInt(cantidad) * precio
      }])
      
       let calculo
@@ -229,7 +258,11 @@ const VentasAlta = () => {
       setSubtotal(parseInt(calculo));
       const desc = parseInt(calculo) * (porcentaje * .01); 
       setDescuento(desc);
-      setTotal(parseInt(calculo) - desc);
+
+      const total_iva = (parseInt(calculo) - desc) * porcentaje_iva;
+      setIva(total_iva);
+
+      setTotal(parseInt(calculo) - desc + total_iva);
 
 
       setFotoPrincipal(null);
@@ -260,13 +293,20 @@ const VentasAlta = () => {
         const descuento = subtotal * (res.data.single[0].porcentaje * .01); 
         setDescuento(descuento);
 
-        setTotal(subtotal - descuento);
+        const total_iva = (subtotal - descuento) * porcentaje_iva;
+        setIva(total_iva);
+
+        setTotal(subtotal - descuento + total_iva);
 
       }else{
         mostrarMensaje("Código no encontrado");
         setPorcentaje(0);
         setDescuento(0);
-        setTotal(subtotal);
+
+        const total_iva = (subtotal) * porcentaje_iva;
+        setIva(total_iva);
+
+        setTotal(subtotal + total_iva);
 
 
       }  
@@ -283,26 +323,87 @@ const VentasAlta = () => {
       //validamos campos
       if(formaPago == "" || formaPago == undefined) {
         mostrarMensaje("Debes seleccionar una forma de pago");
+      }else if(parcialidades == "" || parcialidades == undefined) {
+        mostrarMensaje("Debes escribir el número de parcialidades");    
       }else if(formaEntrega == "" || formaEntrega == undefined) {
-        mostrarMensaje("Debes seleccionar uan forma de entrega");    
+        mostrarMensaje("Debes seleccionar una forma de entrega");   
+      }else if(solicitarDatosEnvio == true && (costo_envio == "" || costo_envio == undefined)) {
+        mostrarMensaje("Debes escribir el costo de envío");    
+      }else if(solicitarDatosEnvio == true && (datos_entrega_nombre == "" || datos_entrega_nombre == undefined)) {
+        mostrarMensaje("Debes escribir el nombre en datos de entrega");    
+      
+      }else if(solicitarDatosEnvio == true && (datos_entrega_direccion == "" || datos_entrega_direccion == undefined)) {
+        mostrarMensaje("Debes escribir la direccion en datos de entrega");    
+      
+      }else if(solicitarDatosEnvio == true && (datos_entrega_correo == "" || datos_entrega_correo == undefined)) {
+        mostrarMensaje("Debes escribir el correo en datos de entrega");    
+      
+      }else if(solicitarDatosEnvio == true && (datos_entrega_telefono == "" || datos_entrega_telefono == undefined)) {
+        mostrarMensaje("Debes escribir el teléfono en datos de entrega");      
       } else {
 
         
         const createSell = async (dataForm) => {
          try {
-            const res = await clienteAxios.put("/venta/crear", dataForm);
+            const res = await clienteAxios.post("/pedido/crear", dataForm);
             //console.log(res);
-            navigate("/ventas/alta");
+
+            var container = document.getElementById("div-cart");
+            var printWindow = window.open('', 'PrintMap');
+            printWindow.document.writeln(container.innerHTML);
+            printWindow.document.close();
+            printWindow.print();
+            printWindow.close();
+
+            
+            //navigate("/ventas/ventas_alta");
+            navigate(0);
           
           } catch (error) {
             console.log(error);
             mostrarMensaje(error.response.data.msg);
           }
         };
-        createSell({ producto:producto.value, talla:talla.value, color:color.value, cantidad });
+
+        let estatus_pago = "";
+        if(parcialidades > 1){
+          estatus_pago = "Pendiente"
+        }else{
+          estatus_pago = "Pagado"
+        }
+
+        let estatus_envio = "";
+        if(formaEntrega.value == "Tienda"){
+          estatus_envio = "Entregado"
+        }else{
+          estatus_envio = "Pendiente"
+        }
+
+        createSell({ 
+          tipo_venta:"Mostrador",
+          subtotal,
+          descuento,
+          iva,
+          total,
+          descripcion:cart,
+          usuario:"Mostrador",
+          entregar_a:datos_entrega_nombre,
+          correo:datos_entrega_correo,
+          direccion_entrega:datos_entrega_direccion,
+          costo_envio:parseFloat(costo_envio),
+          telefono:datos_entrega_telefono,
+          estatus_pago,
+          estatus_envio,
+          vendedor:user.nombre,
+          forma_entrega:formaEntrega.value,
+          forma_pago:formaPago.value,
+          num_parcialidades:parcialidades,
+          parcialidades:parseFloat(abono)
+        });
         
       }
   };
+
 
    const customStyles = {
     control: (base, state) => ({
@@ -466,6 +567,14 @@ const VentasAlta = () => {
                 <th></th>
                 <th></th>
                 <th></th>
+                <th>I.V.A.</th>
+                <th align="left">$ {iva}</th>
+              </tr>
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
                 <th>Total</th>
                 <th align="left">$ {total}</th>
               </tr>
@@ -503,11 +612,25 @@ const VentasAlta = () => {
                     {/*Parcialidades*/}
                     <Label style={{textAlign:"start", alignSelf:"end"}}>Parcialidades</Label>
                     <Textinput
-                      onChange={(e) => setParcialidades(e.target.value)}
+                      onChange={handleParcialidades}
                       placeholder="Núm. de pagos"
                       id="parcialidades"
                       type="number"
                     />
+                    </div>
+
+                    <div style={solicitarAbono == true ? {display:"block"} : {display:"none"} }>
+                      <div style={{display: 'flex', flexDirection: 'row'}}>
+
+                        {/*Abono*/}
+                        <Label style={{textAlign:"start", alignSelf:"end"}}>Importe Parcialidad</Label>
+                        <Textinput
+                          onChange={(e) => setAbono(e.target.value)}
+                          placeholder="Importe"
+                          id="abono"
+                          type="number"
+                        />
+                      </div>
                     </div>
 
                     {/*forma entrega*/}
@@ -522,8 +645,17 @@ const VentasAlta = () => {
                       isSearchable={true}
                     ></Select>
 
-                    <div style={solicitarDatosEnvio == true ? {display:"block"} : {display:"none"} }>
-                      <Label>Datos de Entrega</Label>
+                    <div style={solicitarDatosEnvio == true ? {display:"block"} : {display:"none"}} className="mt-4">
+
+                      {/*Costo envio:*/}
+                      <Textinput
+                      onChange={(e) => setCostoEnvio(e.target.value)}
+                      placeholder="Costo de envío"
+                      id="costo_envio"
+                      type="number"
+                      />
+
+                      <Label className="mt-2">Datos de Entrega</Label>
 
                       {/*Entregar a:*/}
                       <Textinput
@@ -572,7 +704,78 @@ const VentasAlta = () => {
           </table>
         </Card>
       </div>  
-      
+
+      {/*ticket*/}
+      <div id="div-cart" style={{display:"none"}}>
+      <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              {cart && cart.map((row,i) => {
+                    return (
+                      <tr key={i}>
+                        {
+                          <>
+                          <td>
+                              {row.nombre_producto}
+                          </td>
+                          <td align="center">
+                            {row.cantidad}
+                          </td>
+                          <td align="center">
+                           $ {row.precio}
+                          </td>
+                          <td align="right">
+                           $ {row.total}
+                          </td>
+                          </>
+                        }
+                      </tr>
+                    );
+                  })}
+            </tbody>
+            {cart.length > 0 ? (
+            <tfoot>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>Subtotal</th>
+                <th align="right">$ {subtotal}</th>
+              </tr>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>Descuento</th>
+                <th align="right">$ {descuento}</th>
+              </tr>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>I.V.A.</th>
+                <th align="right">$ {iva}</th>
+              </tr>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>Total</th>
+                <th align="right">$ {total}</th>
+              </tr>
+            </tfoot>
+            ):
+            (
+              <></>
+            )
+            }
+          </table>
+      </div>
+     
     </>
   );
 };
