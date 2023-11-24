@@ -122,6 +122,8 @@ const PedidoPagar = () => {
 
              <h4>Pagado: $ {total_parcialidades}</h4> 
              <h4>Total: $ {total}</h4>
+             <h4 style={{color:"red"}}>Resta: $ {total-total_parcialidades}</h4>
+
             
              {/*Nombre*/}
              <Textinput

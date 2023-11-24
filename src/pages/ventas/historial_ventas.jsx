@@ -6,8 +6,15 @@ import {
   useRowSelect,
   useSortBy,
   useGlobalFilter,
+  useFilters,
   usePagination,
 } from "react-table";
+
+import {
+  DateRangeColumnFilter,
+  dateBetweenFilterFn
+} from "../../components/rangeFilters";
+
 import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 import { useNavigate } from "react-router-dom";
@@ -16,23 +23,76 @@ import { UserContext } from "../context/userContext";
 import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
+import { ColumnFilter } from "../../components/columnFilter";
 
 const SalesHistory = () => {
 
   const COLUMNS = [
    
     {
-      Header: "Imagen",
-      Cell: (row) => {
-        return <img src={row.row.original.foto_principal} style={{width:"60px", height: "60px"}} />;
-      },
-    },
-    {
-      Header: "Producto",
-      accessor: "nombre_producto",
+      Header: "Id Pedido",
+      accessor: "id",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter
+    },
+    {
+      Header: "Fecha",
+      accessor: "date",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: DateRangeColumnFilter,
+      filter: dateBetweenFilterFn
+    },
+    {
+      Header: "Producto",
+      accessor: "producto",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: ColumnFilter
+    },
+    {
+      Header: "Marca",
+      accessor: "marca",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: ColumnFilter
+    },
+    {
+      Header: "Categoría",
+      accessor: "categoria",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: ColumnFilter
+    },
+    {
+      Header: "Subcategoría",
+      accessor: "subcategoria",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: ColumnFilter
+    },
+    {
+      Header: "Talla",
+      accessor: "talla",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: ColumnFilter
+    },
+    {
+      Header: "Color",
+      accessor: "color",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: ColumnFilter
     },
     {
       Header: "Cantidad",
@@ -40,24 +100,25 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter
     },
     {
       Header: "Precio",
       accessor: "precio",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>$ {row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter
     },
     {
       Header: "Total",
       accessor: "total",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>$ {row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter
     },
-    
-    
-    
+   
   ];
 
   
@@ -76,22 +137,40 @@ const SalesHistory = () => {
 
 
   const getOrders = async () => {
-    /*
+    
     try {
       
       let res = await clienteAxios.get(`/pedido/ventas`);
       //console.log(res.data.ventas);
+
       const ventas = [];
-      for(let i=0;i<res.data.ventas;i++){
-        ventas.push({
-          res.data.ventas[i].descripcion,
-        })
+      for(let i=0;i<res.data.ventas.length;i++){
+        for(let ii=0;ii<res.data.ventas[i]['descripcion'].length;ii++){ 
+          //formateamos fecha a dd/mm/yyyy
+          const olddate = (res.data.ventas[i].fecha).split("-");
+          const newdate = olddate[0]+"/"+olddate[1]+"/"+olddate[2];
+
+          ventas.push({
+            "id":res.data.ventas[i]._id,
+            "date":newdate,
+            "producto":res.data.ventas[i]['descripcion'][ii].nombre_original,
+            "marca":res.data.ventas[i]['descripcion'][ii].marca,
+            "categoria":res.data.ventas[i]['descripcion'][ii].categoria,
+            "subcategoria":res.data.ventas[i]['descripcion'][ii].subcategoria,
+            "talla":res.data.ventas[i]['descripcion'][ii].nombre_talla,
+            "color":res.data.ventas[i]['descripcion'][ii].nombre_color,
+            "cantidad":res.data.ventas[i]['descripcion'][ii].cantidad,
+            "precio":res.data.ventas[i]['descripcion'][ii].precio,
+            "total":res.data.ventas[i]['descripcion'][ii].total
+          });
+        }
       }
+      //console.log(ventas);
       setDatos(ventas);
+      
     } catch (error) {
       console.log(error);
     }
-    */
   };
 
   
@@ -110,7 +189,7 @@ const SalesHistory = () => {
       columns,
       data,
     },
-
+    useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination,
@@ -169,6 +248,7 @@ const SalesHistory = () => {
                           className=" table-th "
                         >
                           {column.render("Header")}
+                          <div>{column.canFilter ? column.render('Filter') : null}</div>
                           <span>
                             {column.isSorted
                               ? column.isSortedDesc

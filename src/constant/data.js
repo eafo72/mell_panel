@@ -72,11 +72,11 @@ export const menuItems = [
         childlink: "codigos",
       },
       {
-        childtitle: "Historial de Pedidos",
+        childtitle: "Historial por Pedido",
         childlink: "ventas/historial_pedidos",
       },
       {
-        childtitle: "Historial de Ventas",
+        childtitle: "Historial por Producto",
         childlink: "ventas/historial_ventas",
       },
     ],

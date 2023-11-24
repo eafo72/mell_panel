@@ -19,6 +19,10 @@ const VentasAlta = () => {
   
   const [producto, setProducto] = useState();
   const [foto_principal, setFotoPrincipal] = useState();
+  const [nombre_original, setNombreOriginal] = useState();
+  const [marca, setMarca] = useState();
+  const [categoria, setCategoria] = useState();
+  const [subcategoria, setSubcategoria] = useState();
   const [talla, setTalla] = useState();
   const [color, setColor] = useState();
   const [precio, setPrecio] = useState();
@@ -139,8 +143,11 @@ const VentasAlta = () => {
         if(allProductsInfo[i].codigo == event.value){
 
           setFotoPrincipal(allProductsInfo[i].foto_principal);
+          setNombreOriginal(allProductsInfo[i].nombre);
+          setMarca(allProductsInfo[i].marca);
+          setCategoria(allProductsInfo[i].categoria);
+          setSubcategoria(allProductsInfo[i].subcategoria);
           setPrecio(allProductsInfo[i].precio);
-
           setAllColors(allProductsInfo[i].color);
           setAllSizes(allProductsInfo[i].talla);
         }  
@@ -191,8 +198,11 @@ const VentasAlta = () => {
           if(allProductsInfo[i].codigo == product_code){
   
             setFotoPrincipal(allProductsInfo[i].foto_principal);
+            setNombreOriginal(allProductsInfo[i].nombre);
+            setMarca(allProductsInfo[i].marca);
+            setCategoria(allProductsInfo[i].categoria);
+            setSubcategoria(allProductsInfo[i].subcategoria);
             setPrecio(allProductsInfo[i].precio);
-  
             setAllColors(allProductsInfo[i].color);
             setAllSizes(allProductsInfo[i].talla);
           }  
@@ -235,6 +245,10 @@ const VentasAlta = () => {
 
       setCart(cart => [...cart, { 
       foto_principal,
+      nombre_original,
+      marca,
+      categoria,
+      subcategoria,
       codigo:producto.value+'-'+talla.value+'-'+color.value,
       codigo_producto:producto.value, 
       nombre_producto:producto.label, 
