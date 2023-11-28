@@ -59,8 +59,8 @@ const ColoresEditar = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir al menos un nombre");
-    }else if(colohexa == "" || colorhexa == undefined) {
-      mostrarMensaje("Debes escribir el color hexadecimal");
+    }else if(colorhexa == "" || colorhexa == undefined) {
+      mostrarMensaje("Selecciona un color haciendo click en el cuadro");
     } else {
       const editColor = async () => {
         try {
@@ -124,7 +124,7 @@ const ColoresEditar = () => {
               />
 
 
-              {/*Hexa*/}
+              {/*Hexa
               <Textinput
                 onChange={(e) => setHexa(e.target.value)}
                 label="Color hexadecimal *"
@@ -133,6 +133,17 @@ const ColoresEditar = () => {
                 type="text"
                 defaultValue={colorhexa}
               />
+              */}
+              
+              <label  className="block form-label  ">Color * (Para seleccionar click en el cuadro)</label>
+              <input
+                onChange={(e) => setHexa(e.target.value)}
+                placeholder="Color hexadecimal"
+                id="colohexa"
+                type="color"
+              />
+              <label  className="block capitalize form-label  ">Color Seleccionado:</label>
+              <h6 style={{background:colorhexa, width:"100px", color:"black"}}>{colorhexa}</h6>
 
                            
 

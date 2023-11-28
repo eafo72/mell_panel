@@ -42,7 +42,7 @@ const ColoresAlta = () => {
     }else if(codigo == "" || codigo == undefined) {
       mostrarMensaje("Debes escribir el código");
     }else if(colorhexa == "" || colorhexa == undefined) {
-      mostrarMensaje("Debes escribir el color hexadecimal");
+      mostrarMensaje("Selecciona un color haciendo click en el cuadro");
     } else {
       const createColor = async (dataForm) => {
         try {
@@ -110,7 +110,7 @@ const ColoresAlta = () => {
                 type="text"
               />
 
-              {/*Hexa*/}
+              {/*Hexa
               <Textinput
                 onChange={(e) => setHexa(e.target.value)}
                 label="Color hexadecimal *"
@@ -118,8 +118,15 @@ const ColoresAlta = () => {
                 id="colorhexa"
                 type="text"
               />
+              */}
 
-              
+              <label  className="block form-label  ">Color * (Para seleccionar click en el cuadro)</label>
+              <input
+                onChange={(e) => setHexa(e.target.value)}
+                placeholder="Color hexadecimal"
+                id="colohexa"
+                type="color"
+              />
               
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>
