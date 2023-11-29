@@ -144,7 +144,7 @@ const ProductosEditar = () => {
       let array = [];
       for (let i = 0; i < res.data.colores.length; i++) {
         //console.log(i);
-        array.push({"value":res.data.colores[i]["codigo"],"label":res.data.colores[i]["nombre"]});
+        array.push({"value":res.data.colores[i]["codigo"],"label":res.data.colores[i]["nombre"],"colorhexa":res.data.colores[i]["colorhexa"]});
       }
       setAllColors(array);
       
