@@ -20,31 +20,34 @@ import { toast } from "react-toastify";
 const Apartados = () => {
   const COLUMNS = [
     {
-      Header: "Producto",
-      accessor: "nombre",
+      Header: "Id pedido",
+      accessor: "id_pedido",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Producto",
+      Cell: (row) => {
+        return <span>{row.row.original.datos_producto.nombre}</span>;
       },
     },
     {
       Header: "Marca",
-      accessor: "marca",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.marca}</span>;
       },
     },
     {
       Header: "Talla",
-      accessor: "talla",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_talla.nombre}</span>;
       },
     },
     {
       Header: "Color",
-      accessor: "color",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_color.nombre}</span>;
       },
     },
     {
@@ -79,9 +82,9 @@ const Apartados = () => {
    
   const getStorageData = async () => {
     try {
-     //const res = await clienteAxios.get("/almacen/apartados/" + id);
-     //console.log(res.data.apartados);
-     //setDatos(res.data.apartados);
+     const res = await clienteAxios.get("/almacen/apartado/" + id);
+     //console.log(res.data.apartado);
+     setDatos(res.data.apartado);
     } catch (error) {
       console.log(error);
     }
