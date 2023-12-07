@@ -42,7 +42,12 @@ const Colors = () => {
         return <span>{row?.cell?.value}</span>;
       },
     },
-        
+    {
+      Header: "Color",
+      Cell: (row) => {
+        return <h1 style={{width:"20px",height:"20px",backgroundColor: `${row.row.original.colorhexa}`}}></h1>;
+      },
+    },
     {
       Header: "Editar",
       Cell: (row) => {
