@@ -271,12 +271,12 @@ const VentasAlta = () => {
 
       setSubtotal(parseInt(calculo));
       const desc = parseInt(calculo) * (porcentaje * .01); 
-      setDescuento(desc);
+      setDescuento(desc.toFixed(2));
 
       const total_iva = (parseInt(calculo) - desc) * porcentaje_iva;
-      setIva(total_iva);
+      setIva(total_iva.toFixed(2));
 
-      setTotal(parseInt(calculo) - desc + total_iva);
+      setTotal((parseInt(calculo) - desc + total_iva).toFixed(2));
 
 
       setFotoPrincipal(null);
@@ -310,12 +310,12 @@ const VentasAlta = () => {
         mostrarAviso("Código encontrado " + res.data.single[0].porcentaje + "% de descuento");
 
         const descuento = subtotal * (res.data.single[0].porcentaje * .01); 
-        setDescuento(descuento);
+        setDescuento(descuento.toFixed(2));
 
-        const total_iva = (subtotal - descuento) * porcentaje_iva;
-        setIva(total_iva);
+        const total_iva = ((subtotal - descuento) * porcentaje_iva);
+        setIva(total_iva.toFixed(2));
 
-        setTotal(subtotal - descuento + total_iva);
+        setTotal((subtotal - descuento + total_iva).toFixed(2));
 
       }else{
         mostrarMensaje("Código no encontrado");
@@ -323,9 +323,9 @@ const VentasAlta = () => {
         setDescuento(0);
 
         const total_iva = (subtotal) * porcentaje_iva;
-        setIva(total_iva);
+        setIva(total_iva.toFixed(2));
 
-        setTotal(subtotal + total_iva);
+        setTotal((subtotal + total_iva).toFixed(2));
 
 
       }  
