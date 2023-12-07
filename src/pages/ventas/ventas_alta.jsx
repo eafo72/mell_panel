@@ -37,12 +37,12 @@ const VentasAlta = () => {
   const [costo_envio, setCostoEnvio] = useState(0);
 
 
-  const [formaPago, setFormaPago] = useState();
-  const [parcialidades, setParcialidades] = useState();
+  const [formaPago, setFormaPago] = useState({"value":"Efectivo","label":"Efectivo"});
+  const [parcialidades, setParcialidades] = useState(1);
   const [solicitarAbono, setSolicitarAbono] = useState(false);
   const [abono, setAbono] = useState();
 
-  const [formaEntrega, setFormaEntrega] = useState();
+  const [formaEntrega, setFormaEntrega] = useState({"value":"Tienda","label":"Tienda"});
   const [solicitarDatosEnvio, setSolicitarDatosEnvio] = useState(false);
 
   const [datos_entrega_nombre, setDatosEntregaNombre] = useState("Mostrador");
@@ -269,8 +269,8 @@ const VentasAlta = () => {
       }  
 
 
-      setSubtotal(parseInt(calculo));
-      const desc = parseInt(calculo) * (porcentaje * .01); 
+      setSubtotal(parseFloat(calculo).toFixed(2));
+      const desc = parseFloat(calculo) * (porcentaje * .01); 
       setDescuento(desc.toFixed(2));
 
       const total_iva = (parseInt(calculo) - desc) * porcentaje_iva;
@@ -634,6 +634,7 @@ const VentasAlta = () => {
                       placeholder="Núm. de pagos"
                       id="parcialidades"
                       type="number"
+                      defaultValue={parcialidades}
                     />
                     </div>
 
