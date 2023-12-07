@@ -295,6 +295,11 @@ const VentasAlta = () => {
   const findDiscount = async () => {
     const codigo = document.getElementById("codigo_descuento").value;
 
+    if(codigo == ''){
+      mostrarMensaje("Ingresa un código");
+      return;
+    }
+
     try {
       let res = await clienteAxios.get(`/codigo/validar/`+codigo);
 
@@ -596,7 +601,6 @@ const VentasAlta = () => {
                 <th colSpan={2}>
                   <div style={{padding:"10px"}}>
                 <Textinput
-                onChange={(e) => setCantidad(e.target.value)}
                 label="Código de descuento"
                 placeholder="Código"
                 id="codigo_descuento"
