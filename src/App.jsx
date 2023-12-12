@@ -79,6 +79,11 @@ const CodigosAlta   = lazy(() => import("./pages/codigos/alta"));
 const CodigosEditar = lazy(() => import("./pages/codigos/editar"));
 const CodigosBorrar = lazy(() => import("./pages/codigos/borrar"));
 
+const Faq       = lazy(() => import("./pages/faq"));
+const FaqAlta   = lazy(() => import("./pages/faq/alta"));
+const FaqEditar = lazy(() => import("./pages/faq/editar"));
+const FaqBorrar = lazy(() => import("./pages/faq/borrar"));
+
 
 const NoPage = lazy(() => import("./pages/404"));
 
@@ -175,7 +180,10 @@ function App() {
           <Route path="codigos/editar" element={<CodigosEditar />} />
           <Route path="codigos/borrar" element={<CodigosBorrar />} />
 
-
+          <Route path="faq" element={<Faq />} />
+          <Route path="faq/alta" element={<FaqAlta />} />
+          <Route path="faq/editar" element={<FaqEditar />} />
+          <Route path="faq/borrar" element={<FaqBorrar />} />
 
           <Route path="*" element={<Navigate to="/404" />} />
 

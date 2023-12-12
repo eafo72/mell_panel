@@ -81,6 +81,27 @@ export const menuItems = [
       },
     ],
   },
+  {
+    title: "Web",
+    icon: "heroicons:globe-alt",
+    link: "#",
+    isHide: true,
+    child: [
+      {
+        childtitle:"Faq",
+        childlink: "faq",
+      },
+    ],
+  },
+
+
+
+
+
+
+
+
+
 ];
 
 export const topMenu = [];

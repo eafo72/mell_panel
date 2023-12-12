@@ -97,7 +97,7 @@ const VentasAlta = () => {
   const allFormasEntrega = [
     {"value":"Tienda","label":"Tienda"},
     {"value":"Envío foráneo","label":"Envío foráneo"},
-    {"value":"Envío ciudad","label":"Envío ciudad"}
+    {"value":"Envío Cuernavaca","label":"Envío Cuernavaca"}
   ];
 
 
@@ -171,7 +171,7 @@ const VentasAlta = () => {
     //console.log(event);
     setFormaEntrega({"value":event.value,"label":event.label});
         
-    if(event.value == "Envío foráneo" || event.value == "Envío ciudad"){
+    if(event.value == "Envío foráneo" || event.value == "Envío Cuernavaca"){
       setSolicitarDatosEnvio(true)
 
     }else{
