@@ -20,31 +20,34 @@ import { toast } from "react-toastify";
 const Salidas = () => {
   const COLUMNS = [
     {
-      Header: "Producto",
-      accessor: "producto",
+      Header: "Id",
+      accessor: "_id",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Producto",
+      Cell: (row) => {
+        return <span>{row.row.original.datos_producto.nombre}</span>;
       },
     },
     {
       Header: "Marca",
-      accessor: "marca",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.marca}</span>;
       },
     },
     {
       Header: "Talla",
-      accessor: "talla",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_talla.nombre}</span>;
       },
     },
     {
       Header: "Color",
-      accessor: "color",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_color.nombre}</span>;
       },
     },
     {
@@ -58,55 +61,32 @@ const Salidas = () => {
       Header: "Cantidad",
       accessor: "cantidad",
       Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Fecha",
-      accessor: "fecha",
+      Header: "Fecha de Salida",
+      accessor: "fechaSalida",
       Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
+    {
+      Header: "Id Apartado",
+      accessor: "id_apartado",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Id Pedido",
+      accessor: "id_pedido",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+
     
-
-    {
-      Header: "Editar",
-      Cell: (row) => {
-        return (
-          <button
-            onClick={() =>
-              goToEditar(row.row.original._id, row.row.original.nombre)
-            }
-            className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse"
-          >
-            <span className="text-base">
-              <Icon icon="heroicons:pencil-square" />
-            </span>
-          </button>
-        );
-      },
-    },
-
-    {
-      Header: "Borrar",
-      Cell: (row) => {
-        return (
-          <button
-            onClick={() =>
-              goToBorrar(row.row.original._id, row.row.original.nombre)
-            }
-            className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse"
-          >
-            <span className="text-base">
-              <Icon icon="heroicons-outline:trash" />
-            </span>
-          </button>
-        );
-      },
-    },
   ];
 
 
@@ -124,9 +104,10 @@ const Salidas = () => {
  
   const getStorageData = async () => {
     try {
-      //const res = await clienteAxios.get("/almacen/content/" + id);
-      //console.log(res.data.single);
-      //setDatos(res.data.single.almacen);
+      const res = await clienteAxios.get("/almacen/salidas/" + id);
+      //console.log(res.data.salidas);
+
+      setDatos(res.data.salidas);
     } catch (error) {
       console.log(error);
     }

@@ -64,6 +64,13 @@ const Apartados = () => {
         return <span>{row?.cell?.value}</span>;
       },
     },
+    {
+      Header: "Status",
+      accessor: "status",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
   ];
 
 

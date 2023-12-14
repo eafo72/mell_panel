@@ -131,6 +131,46 @@ const AlmacenEntradaAlta = () => {
 
   };
 
+  const setfillBlanks = (value) => {
+    const combo = value.split("-");
+    const product_code = combo[0];
+    const size_code = combo[1];
+    const color_code = combo[2];
+
+    for (let i = 0; i < allProductsInfo.length; i++) {
+      if(allProductsInfo[i].codigo == product_code){
+
+        //producto
+        setProducto({"value":product_code, "label": allProductsInfo[i].nombre+'/'+allProductsInfo[i].marca});
+        
+        for (let i = 0; i < allProductsInfo.length; i++) {
+          if(allProductsInfo[i].codigo == product_code){
+            setAllColors(allProductsInfo[i].color);
+            setAllSizes(allProductsInfo[i].talla);
+          }  
+        }
+
+
+        //talla
+        for (let ii = 0; ii < allProductsInfo[i].talla.length; ii++) {
+          if(allProductsInfo[i].talla[ii].value == size_code){
+            setTalla({"value":size_code, "label": allProductsInfo[i].talla[ii].label });
+          }
+        }  
+
+        //color
+        for (let iii = 0; iii < allProductsInfo[i].color.length; iii++) {
+          if(allProductsInfo[i].color[iii].value == color_code){
+            setColor({"value":color_code, "label": allProductsInfo[i].color[iii].label });
+          }
+        }  
+       
+      }  
+    }
+    
+  
+  };
+
 
   const sendData = (event) => {
     event.preventDefault();
@@ -198,6 +238,16 @@ const AlmacenEntradaAlta = () => {
         <Card title="Alta de Entrada al Almacén">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
+
+
+              {/*Codigo*/}
+              <Textinput
+                onChange={(e) => setfillBlanks(e.target.value)}
+                placeholder="Código"
+                id="codigo"
+                type="text"
+              />
+
 
               {/*Producto*/}
               <label  className="block capitalize form-label  ">Producto *</label>

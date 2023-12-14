@@ -20,31 +20,34 @@ import { toast } from "react-toastify";
 const Orden = () => {
   const COLUMNS = [
     {
-      Header: "Producto",
-      accessor: "producto",
+      Header: "Id pedido",
+      accessor: "id_pedido",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Producto",
+      Cell: (row) => {
+        return <span>{row.row.original.datos_producto.nombre}</span>;
       },
     },
     {
       Header: "Marca",
-      accessor: "marca",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_producto.marca}</span>;
       },
     },
     {
       Header: "Talla",
-      accessor: "talla",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_talla.nombre}</span>;
       },
     },
     {
       Header: "Color",
-      accessor: "color",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
+        return <span>{row.row.original.datos_color.nombre}</span>;
       },
     },
     {
@@ -58,7 +61,7 @@ const Orden = () => {
       Header: "Apartado",
       accessor: "apartado",
       Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
@@ -67,7 +70,7 @@ const Orden = () => {
         return (
           <button
             onClick={() =>
-              goToEntregar(row.row.original._id, row.row.original.nombre)
+              goToEntregar(row.row.original._id)
             }
             className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse"
@@ -92,14 +95,40 @@ const Orden = () => {
 
   const navigate = useNavigate();
 
+  const mostrarMensaje = (mensaje) =>{
+    toast.error(mensaje, {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: "dark",
+    });
+  }
+
+  const mostrarAviso = (mensaje) => {
+    toast.success(mensaje, {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: "dark",
+    });
+  };
+
+
   const id = localStorage.getItem("ViewStorage");
  
   const getStorageData = async () => {
     try {
-      //const res = await clienteAxios.get("/almacen/content/" + id);
-      //console.log(res.data.single);
-
-      //setDatos(res.data.single.almacen);
+      const res = await clienteAxios.get("/almacen/apartadoOrdenDia/" + id);
+     //console.log(res.data.apartadoOrdenDia);
+     setDatos(res.data.apartadoOrdenDia);
     } catch (error) {
       console.log(error);
     }
@@ -140,9 +169,23 @@ const Orden = () => {
     });
   }
 
-  const goToEntregar = (id, name) => {
-    //localStorage.setItem("EditStorage", id);
-    //navigate("/almacen/editar_almacen");
+  const goToEntregar = async (id_apartado) => {
+    
+    try {
+      const res = await clienteAxios.post("/almacen/salida-alta", {id_apartado});
+      
+      //console.log(res);
+      mostrarAviso("Producto Entregado");
+      setTimeout(() => {
+        location.reload();
+      }, "2000");
+      
+      
+    } catch (error) {
+      console.log(error);
+      mostrarMensaje(error);
+    }
+
   };
 
  

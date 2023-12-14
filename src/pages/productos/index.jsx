@@ -20,7 +20,13 @@ import { toast } from "react-toastify";
 const Products = () => {
 
   const COLUMNS = [
-   
+    {
+      Header: "Código",
+      accessor: "codigo",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
     {
       Header: "Nombre",
       accessor: "nombre",
