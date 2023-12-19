@@ -8,3 +8,6 @@ crear build
 yarn build
 
 
+firebase deploy
+
+

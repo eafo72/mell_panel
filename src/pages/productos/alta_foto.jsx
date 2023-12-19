@@ -72,7 +72,7 @@ const FotosAlta = () => {
 
   const onCropComplete = async (croppedArea) => {
     try {
-      const newimage = await getCroppedImg(URL.createObjectURL(image), croppedArea, { width: 1200, height: 1200 * aspect });
+      const newimage = await getCroppedImg(URL.createObjectURL(image), croppedArea, { width: 400, height: 600 * aspect });
       setCroppedImage(newimage); //save image64 cropped image
     } catch (e) {
       console.error(e);
@@ -90,6 +90,8 @@ const FotosAlta = () => {
     //validamos campos
     if (image == "" || image == undefined) {
       mostrarMensaje("Debes seleccionar un archivo");  
+    }else if(croppedImage == "" || croppedImage == null || croppedImage == undefined ){  
+      mostrarMensaje("Seleccione con el mouse el área deseada de la imagen al igual que el zoom");  
     } else {
 
         const createPhoto = async (dataForm) => {
@@ -110,6 +112,8 @@ const FotosAlta = () => {
               theme: "dark",
             });
             document.getElementById("image").value = null;
+            setImage(null)
+            setCroppedImage(null);
             getFotos();
   
   
@@ -150,14 +154,9 @@ const FotosAlta = () => {
                 type="file"
               />
 
-              <div className=" space-y-4">
-                <p>* Campos requeridos</p>
-                <Button text="Guardar" type="submit" className="btn-dark" />
-              </div>
-              
-            </div>
-          </form>
-          {image && (
+            {image && (
+             <>
+            <p>Seleccione con el mouse el área deseada de la imagen al igual que el zoom</p>  
             <Cropper
               src={URL.createObjectURL(image)}
               width={400}
@@ -167,7 +166,17 @@ const FotosAlta = () => {
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}
             />
+            </> 
             )}  
+
+              <div className=" space-y-4">
+                <p>* Campos requeridos</p>
+                <Button text="Guardar" type="submit" className="btn-dark" />
+              </div>
+              
+            </div>
+          </form>
+          
         </Card>
         <Card title="Carrusel">
             <div className="grid grid-cols-4 gap-5">
