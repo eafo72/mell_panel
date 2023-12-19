@@ -148,17 +148,18 @@ const Salidas = () => {
     });
   }
 
+  /*
   const goToEditar = (id, name) => {
     localStorage.setItem("EditStorage", id);
-    navigate("/almacen/editar_almacen");
+    navigate("/almacenes/editar_almacen");
   };
 
   const goToBorrar = async (id, name) => {
     localStorage.setItem("DeleteStorage", id);
     localStorage.setItem("DeleteStorageName", name);
-    navigate("/almacen/borrar_almacen");
+    navigate("/almacenes/borrar_almacen");
   };
-
+  */
  
 
   const data = useMemo(() => datos, [datos]);

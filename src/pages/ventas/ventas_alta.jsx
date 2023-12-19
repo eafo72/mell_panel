@@ -42,7 +42,7 @@ const VentasAlta = () => {
   const [solicitarAbono, setSolicitarAbono] = useState(false);
   const [abono, setAbono] = useState();
 
-  const [formaEntrega, setFormaEntrega] = useState({"value":"Tienda","label":"Tienda"});
+  const [formaEntrega, setFormaEntrega] = useState({"value":"Directo en Tienda","label":"Directo en Tienda"});
   const [solicitarDatosEnvio, setSolicitarDatosEnvio] = useState(false);
 
   const [datos_entrega_nombre, setDatosEntregaNombre] = useState("Mostrador");
@@ -95,11 +95,12 @@ const VentasAlta = () => {
   ];
 
   const allFormasEntrega = [
-    {"value":"Tienda","label":"Tienda"},
-    {"value":"Envío foráneo","label":"Envío foráneo"},
-    {"value":"Envío Cuernavaca","label":"Envío Cuernavaca"}
+    {"value":"Directo en Tienda","label":"Directo en Tienda"},
+    {"value":"Paquetería fuera de Cuernavaca","label":"Paquetería fuera de Cuernavaca"},
+    {"value":"Envío por DiDi","label":"Envío por DiDi"},
+    {"value":"Entrega directa Jiutepec, Jojutla, Cuernavaca","label":"Entrega directa Jiutepec, Jojutla, Cuernavaca"},
   ];
-
+  
 
   const getProducts = async () => {
     try {
@@ -170,8 +171,8 @@ const VentasAlta = () => {
   const handleFormaEntregaChange = (event) => {
     //console.log(event);
     setFormaEntrega({"value":event.value,"label":event.label});
-        
-    if(event.value == "Envío foráneo" || event.value == "Envío Cuernavaca"){
+   
+    if(event.value == "Paquetería fuera de Cuernavaca" || event.value == "Envío por DiDi" || event.value == "Entrega directa Jiutepec, Jojutla, Cuernavaca"){
       setSolicitarDatosEnvio(true)
 
     }else{
