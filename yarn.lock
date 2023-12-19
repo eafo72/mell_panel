@@ -5051,6 +5051,11 @@ normalize-range@^0.1.2:
   resolved "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz"
   integrity sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==
 
+normalize-wheel@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/normalize-wheel/-/normalize-wheel-1.0.1.tgz#aec886affdb045070d856447df62ecf86146ec45"
+  integrity sha512-1OnlAPZ3zgrk8B91HyRj+eVv+kS5u+Z0SCsak6Xil/kmgEia50ga7zfkumayonZrImffAxPU/5WcyGhzetHNPA==
+
 npmlog@^6.0.0:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-6.0.2.tgz#c8166017a42f2dea92d6453168dd865186a70830"
@@ -5706,6 +5711,13 @@ react-collapse@^5.1.1:
   version "5.1.1"
   resolved "https://registry.npmjs.org/react-collapse/-/react-collapse-5.1.1.tgz"
   integrity sha512-k6cd7csF1o9LBhQ4AGBIdxB60SUEUMQDAnL2z1YvYNr9KoKr+nDkhN6FK7uGaBd/rYrYfrMpzpmJEIeHRYogBw==
+
+react-cropper-custom@^1.2.7:
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/react-cropper-custom/-/react-cropper-custom-1.2.7.tgz#ab394870ce26f856f976b251b9d077794a287fc4"
+  integrity sha512-aMA4uJmTbzc33VXODulzQoADHBbd/WKrICm+pULjA4WKdSqQyOMItj76czqoLsFB6gOzFRla/pkvRSje1F5rQg==
+  dependencies:
+    normalize-wheel "^1.0.1"
 
 react-date-object@^2.1.5:
   version "2.1.7"

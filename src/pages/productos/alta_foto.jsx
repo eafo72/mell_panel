@@ -9,9 +9,18 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
+import { Cropper, getCroppedImg } from 'react-cropper-custom';
+import "react-cropper-custom/dist/index.css";
+
 const FotosAlta = () => {
   const [image, setImage] = useState();
   const [fotos, setFotos] = useState([]);
+
+  const [zoom, setZoom] = useState(1);
+  const [aspect, setAspect] = useState(1);
+
+  
+  const [croppedImage, setCroppedImage] = useState();
 
 
   const id = localStorage.getItem("PhotoProduct");
@@ -55,59 +64,72 @@ const FotosAlta = () => {
     getFotos();
   }, []);
 
+  const imageChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const onCropComplete = async (croppedArea) => {
+    try {
+      const newimage = await getCroppedImg(URL.createObjectURL(image), croppedArea, { width: 1200, height: 1200 * aspect });
+      setCroppedImage(newimage); //save image64 cropped image
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const goFoto = (idFoto) => {
     localStorage.setItem("DeletePhoto",idFoto);
     navigate("/productos/borrar_foto");
   }
 
-  const sendData = (event) => {
+  const sendData = async (event) => {
     event.preventDefault();
 
     //validamos campos
     if (image == "" || image == undefined) {
       mostrarMensaje("Debes seleccionar un archivo");  
     } else {
-      const createPhoto = async (dataForm) => {
-        try {
-          const res = await clienteAxios({
-            method: "put",
-            url: "/producto/foto",
-            data: dataForm,
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-         
 
-          //console.log(res);
-          toast.success("Foto guardada", {
-            position: "top-right",
-            autoClose: 2500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-            theme: "dark",
-          });
-          document.getElementById("image").value = null;
-          getFotos();
+        const createPhoto = async (dataForm) => {
+          try {
 
+            const res = await clienteAxios.put("/producto/fotobase64", dataForm);
+          
+  
+            //console.log(res);
+            toast.success("Foto guardada", {
+              position: "top-right",
+              autoClose: 2500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+              theme: "dark",
+            });
+            document.getElementById("image").value = null;
+            getFotos();
+  
+  
+  
+          } catch (error) {
+            console.log(error);
+            toast.error(error.code, {
+              position: "top-right",
+              autoClose: 2500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: false,
+              progress: undefined,
+              theme: "dark",
+            });
+          }
+        };
+        createPhoto({id, name:image.name, imgbase64:croppedImage});
 
-
-        } catch (error) {
-          console.log(error);
-          toast.error(error.code, {
-            position: "top-right",
-            autoClose: 2500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: false,
-            progress: undefined,
-            theme: "dark",
-          });
-        }
-      };
-      createPhoto({ id, image });
     }
   };
 
@@ -121,7 +143,7 @@ const FotosAlta = () => {
             <div className="space-y-4">
               {/*thumb*/}
               <Textinput
-                onChange={(e) => setImage(e.target.files[0])}
+                onChange={(e) => imageChange(e)} 
                 label="Foto *"
                 placeholder="Foto"
                 id="image"
@@ -135,6 +157,17 @@ const FotosAlta = () => {
               
             </div>
           </form>
+          {image && (
+            <Cropper
+              src={URL.createObjectURL(image)}
+              width={400}
+              height={600}
+              zoom={zoom}
+              aspect={aspect}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+            />
+            )}  
         </Card>
         <Card title="Carrusel">
             <div className="grid grid-cols-4 gap-5">
