@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import Textarea from "@/components/ui/Textarea";
+import Modal from "@/components/ui/Modal";
 import Select from "react-select";
 import Button from "@/components/ui/Button";
 import useDarkMode from "@/hooks/useDarkMode";
@@ -12,13 +13,21 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
+function getDate() {
+  const today = new Date();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const date = today.getDate();
+  return `${year}-${month}-${date}`;
+}
+
 const AlmacenEntradaAlta = () => {
   const [isDark] = useDarkMode();
 
   const [producto, setProducto] = useState();
   const [talla, setTalla] = useState();
   const [color, setColor] = useState();
-  const [fechaEntrada, setFechaEntrada] = useState();
+  const [fechaEntrada, setFechaEntrada] = useState(getDate());
   const [cantidad, setCantidad] = useState();
   const [proveedor, setProveedor] = useState();
   const [estante, setEstante] = useState();
@@ -31,7 +40,8 @@ const AlmacenEntradaAlta = () => {
   const [allSizes, setAllSizes] = useState();
   const [allColors, setAllColors] = useState();
 
-
+  const [modalStatus, setModalStatus] = useState(false);
+  
 
   const id_almacen = localStorage.getItem("ViewStorage");
   const nombre_almacen = localStorage.getItem("ViewStorageName");
@@ -131,6 +141,20 @@ const AlmacenEntradaAlta = () => {
 
   };
 
+  const clearForm = () =>{
+
+    setModalStatus(false)
+
+    document.getElementById("codigo").value = "";
+    setProducto(null);
+    setTalla(null);
+    setColor(null);
+    setCantidad(null);
+    document.getElementById("cantidad").value = null;
+    setProveedor(null);
+    setEstante(null);
+  }
+
   const setfillBlanks = (value) => {
     const combo = value.split("-");
     const product_code = combo[0];
@@ -171,6 +195,7 @@ const AlmacenEntradaAlta = () => {
   
   };
 
+  
 
   const sendData = (event) => {
     event.preventDefault();
@@ -196,7 +221,9 @@ const AlmacenEntradaAlta = () => {
           const res = await clienteAxios.post("/almacen/entrada-alta", dataForm);
           
           //console.log(res);
-          navigate("/almacenes/ver");
+          //navigate("/almacenes/ver");
+          setModalStatus(true);
+          
           
         } catch (error) {
           console.log(error);
@@ -234,6 +261,21 @@ const AlmacenEntradaAlta = () => {
   return (
     <>
       <ToastContainer />
+      <Modal
+        title="¿Deseas dar de alta otra entrada?"
+        labelclassName="btn-outline-dark"
+        activeModal={modalStatus}
+        onClose={() =>
+          clearForm()
+        }
+      >
+          <div className="ltr:text-right rtl:text-left">
+            <button onClick={() => clearForm() } className="btn btn-success  text-center m-4">Sí</button>
+            <button onClick={() => navigate("/almacenes/ver") } className="btn btn-danger  text-center m-4">No</button>
+          </div>
+        
+      </Modal>
+
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
         <Card title="Alta de Entrada al Almacén">
           <form onSubmit={(e) => sendData(e)}>
@@ -298,6 +340,7 @@ const AlmacenEntradaAlta = () => {
                 placeholder="Fecha de Entrada"
                 id="fechaEntrada"
                 type="date"
+                defaultValue={fechaEntrada}
               />
 
               {/*Cantidad*/}

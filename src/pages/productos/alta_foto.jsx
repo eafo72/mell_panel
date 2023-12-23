@@ -148,7 +148,7 @@ const FotosAlta = () => {
               {/*thumb*/}
               <Textinput
                 onChange={(e) => imageChange(e)} 
-                label="Foto *"
+                label="Foto * (tamaño recomendado 400px por 600px)"
                 placeholder="Foto"
                 id="image"
                 type="file"

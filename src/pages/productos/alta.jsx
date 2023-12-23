@@ -203,8 +203,6 @@ const ProductosAlta = () => {
       mostrarMensaje("Debes seleccionar una talla");        
     }else if(color == "" || color == undefined) {
       mostrarMensaje("Debes seleccionar un color");          
-    }else if(proveedor == "" || proveedor == undefined) {
-      mostrarMensaje("Debes seleccionar un proveedor");   
     } else if (image == "" || image == undefined) {
       mostrarMensaje("Debes seleccionar la foto principal");  
     } else {
@@ -236,7 +234,6 @@ const ProductosAlta = () => {
         marca:marca.value,
         talla,
         color,
-        proveedor:proveedor.value,
         image,
         estatus:"Activo",
         precio
@@ -392,7 +389,7 @@ const ProductosAlta = () => {
                   isMulti={true}
                 ></Select>
 
-              {/*Proveedor*/}
+              {/*Proveedor
               <label  className="block capitalize form-label  ">Proveedor *</label>
               <Select
                   styles={customStyles}
@@ -404,12 +401,13 @@ const ProductosAlta = () => {
                   onChange={setProveedor}
                   isSearchable={true}
                 ></Select>
+                */}
 
 
               {/*Foto principal*/}
               <Textinput
                   onChange={(e) => setImage(e.target.files[0])}
-                  label="Foto principal *"
+                  label="Foto Principal * (tamaño recomendado 400px por 600px)"
                   placeholder="Foto principal"
                   id="foto_principal"
                   type="file"

@@ -135,7 +135,8 @@ const Entradas = () => {
   const getStorageData = async () => {
     try {
       const res = await clienteAxios.get("/almacen/entradas/" + id);
-      //console.log(res.data.entradas);
+      console.log(res.data.entradas);
+      console.log(id);
 
       setDatos(res.data.entradas);
     } catch (error) {

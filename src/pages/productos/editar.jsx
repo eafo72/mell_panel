@@ -267,8 +267,6 @@ const ProductosEditar = () => {
       mostrarMensaje("Debes seleccionar una talla");        
     }else if(color == "" || color == undefined) {
       mostrarMensaje("Debes seleccionar un color");          
-    }else if(proveedor == "" || proveedor == undefined) {
-      mostrarMensaje("Debes seleccionar un proveedor");
     } else {
       const editProduct = async (dataForm) => {
         try {
@@ -297,7 +295,6 @@ const ProductosEditar = () => {
         marca:marca.value,
         talla,
         color,
-        proveedor:proveedor.value,
         image,
         estatus:estatus.value,
         precio
@@ -449,7 +446,7 @@ const ProductosEditar = () => {
                   isMulti={true}
                 ></Select>
 
-              {/*Proveedor*/}
+              {/*Proveedor
               <label  className="block capitalize form-label  ">Proveedor *</label>
               <Select
                   styles={customStyles}
@@ -461,12 +458,12 @@ const ProductosEditar = () => {
                   onChange={setProveedor}
                   isSearchable={true}
                 ></Select>
-
+                */}
 
               {/*Foto principal*/}
               <Textinput
                   onChange={(e) => setImage(e.target.files[0])}
-                  label="Foto principal *"
+                  label="Foto Principal * (tamaño recomendado 400px por 600px)"
                   placeholder="Foto principal"
                   id="foto_principal"
                   type="file"

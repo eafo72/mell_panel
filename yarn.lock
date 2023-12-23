@@ -973,6 +973,18 @@
   resolved "https://registry.npmjs.org/@kurkle/color/-/color-0.3.2.tgz"
   integrity sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==
 
+"@mercadopago/sdk-js@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@mercadopago/sdk-js/-/sdk-js-0.0.3.tgz#f54eee5faa7d8d7253b5c03b0ef09dcb8229698a"
+  integrity sha512-kO48DNLHdfFAp3on12nuKdqNlEmw1x3+nM6wLd04BdWOXoFcAhkNMQV3AyUIanXdO/bB/dENakdacLT29297EQ==
+
+"@mercadopago/sdk-react@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@mercadopago/sdk-react/-/sdk-react-0.0.16.tgz#10215ffc38827fc7c59ce6f7e21f88d6efe74b6a"
+  integrity sha512-xQuRpi5qcK8medwJD8P/b4mSKii56dSKf29ig1JeMDpQhlGJ7JAQWgqkjDSEbAL2lzkiVVqLkSqa0hG3KCvybg==
+  dependencies:
+    "@mercadopago/sdk-js" "^0.0.3"
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz"

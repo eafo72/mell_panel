@@ -13,6 +13,11 @@ import clienteAxios from "../../configs/axios";
 import { UserContext } from "../context/userContext";
 import { Label } from "reactstrap";
 
+import { Payment } from '@mercadopago/sdk-react';
+
+import { initMercadoPago } from '@mercadopago/sdk-react'
+initMercadoPago('APP_USR-84f2c42a-e204-46f0-8dda-57e08f7579a9', {locale: 'es-MX'}); //'YOUR_PUBLIC_KEY')
+
 const VentasAlta = () => {
   const [isDark] = useDarkMode();
   
@@ -56,6 +61,12 @@ const VentasAlta = () => {
   const [allColors, setAllColors] = useState();
 
   const [cart, setCart] = useState([]);
+
+  const [viewMPbutton,setViewMPbutton] = useState(false);
+  const [viewContinuebutton,setViewContinuebutton] = useState(true);
+
+  const [preferenceId, setPreferenceId] = useState(null);
+  
  
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
@@ -337,34 +348,99 @@ const VentasAlta = () => {
 
   };
 
-  const sendData = (event) => {
-    event.preventDefault();
+  const createPreference = async () => {
 
-      //validamos campos
-      if(formaPago == "" || formaPago == undefined) {
-        mostrarMensaje("Debes seleccionar una forma de pago");
-      }else if(parcialidades == "" || parcialidades == undefined) {
-        mostrarMensaje("Debes escribir el número de parcialidades");    
-      }else if(formaEntrega == "" || formaEntrega == undefined) {
-        mostrarMensaje("Debes seleccionar una forma de entrega");   
-      }else if(solicitarDatosEnvio == true && (costo_envio == "" || costo_envio == undefined)) {
-        mostrarMensaje("Debes escribir el costo de envío");    
-      }else if(solicitarDatosEnvio == true && (datos_entrega_nombre == "" || datos_entrega_nombre == undefined)) {
-        mostrarMensaje("Debes escribir el nombre en datos de entrega");    
+    try {
+
+      const res = await clienteAxios.post("/mercadopago/create_preference", {
+        total
+      });
+
+      const {id} = res.data;
+      return id;
       
-      }else if(solicitarDatosEnvio == true && (datos_entrega_direccion == "" || datos_entrega_direccion == undefined)) {
-        mostrarMensaje("Debes escribir la direccion en datos de entrega");    
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
+  const handlePreferenceId = async () =>{
+    const id = await createPreference();
+    if(id){
+      setPreferenceId(id)
+    }
+  }
+
+  const mostrarMPbutton = () => {
+
+    //validamos campos
+    if(formaPago == "" || formaPago == undefined) {
+      mostrarMensaje("Debes seleccionar una forma de pago");
+    }else if(parcialidades == "" || parcialidades == undefined) {
+      mostrarMensaje("Debes escribir el número de parcialidades");    
+    }else if(formaEntrega == "" || formaEntrega == undefined) {
+      mostrarMensaje("Debes seleccionar una forma de entrega");   
+    }else if(solicitarDatosEnvio == true && (costo_envio == "" || costo_envio == undefined)) {
+      mostrarMensaje("Debes escribir el costo de envío");    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_nombre == "" || datos_entrega_nombre == undefined)) {
+      mostrarMensaje("Debes escribir el nombre en datos de entrega");    
+    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_direccion == "" || datos_entrega_direccion == undefined)) {
+      mostrarMensaje("Debes escribir la direccion en datos de entrega");    
+    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_correo == "" || datos_entrega_correo == undefined)) {
+      mostrarMensaje("Debes escribir el correo en datos de entrega");    
+    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_telefono == "" || datos_entrega_telefono == undefined)) {
+      mostrarMensaje("Debes escribir el teléfono en datos de entrega");      
+    } else {
+
+
+      handlePreferenceId();
+
+
+      setViewContinuebutton(false)
+      setViewMPbutton(true)
+    }  
+
+  }  
+
+  const NOmostrarMPbutton = () => {
+
+    //validamos campos
+    if(formaPago == "" || formaPago == undefined) {
+      mostrarMensaje("Debes seleccionar una forma de pago");
+    }else if(parcialidades == "" || parcialidades == undefined) {
+      mostrarMensaje("Debes escribir el número de parcialidades");    
+    }else if(formaEntrega == "" || formaEntrega == undefined) {
+      mostrarMensaje("Debes seleccionar una forma de entrega");   
+    }else if(solicitarDatosEnvio == true && (costo_envio == "" || costo_envio == undefined)) {
+      mostrarMensaje("Debes escribir el costo de envío");    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_nombre == "" || datos_entrega_nombre == undefined)) {
+      mostrarMensaje("Debes escribir el nombre en datos de entrega");    
+    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_direccion == "" || datos_entrega_direccion == undefined)) {
+      mostrarMensaje("Debes escribir la direccion en datos de entrega");    
+    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_correo == "" || datos_entrega_correo == undefined)) {
+      mostrarMensaje("Debes escribir el correo en datos de entrega");    
+    
+    }else if(solicitarDatosEnvio == true && (datos_entrega_telefono == "" || datos_entrega_telefono == undefined)) {
+      mostrarMensaje("Debes escribir el teléfono en datos de entrega");      
+    } else {
       
-      }else if(solicitarDatosEnvio == true && (datos_entrega_correo == "" || datos_entrega_correo == undefined)) {
-        mostrarMensaje("Debes escribir el correo en datos de entrega");    
+      sendData();
       
-      }else if(solicitarDatosEnvio == true && (datos_entrega_telefono == "" || datos_entrega_telefono == undefined)) {
-        mostrarMensaje("Debes escribir el teléfono en datos de entrega");      
-      } else {
+    }  
+
+  }  
+
+  const sendData = () => {
 
         
         const createSell = async (dataForm) => {
-         try {
+          try {
             const res = await clienteAxios.post("/pedido/crear", dataForm);
             //console.log(res);
 
@@ -383,22 +459,22 @@ const VentasAlta = () => {
             console.log(error);
             mostrarMensaje(error.response.data.msg);
           }
-        };
+        }  
+        
+          let estatus_pago = "";
+          if(parcialidades > 1){
+            estatus_pago = "Pendiente"
+          }else{
+            estatus_pago = "Pagado"
+          }
 
-        let estatus_pago = "";
-        if(parcialidades > 1){
-          estatus_pago = "Pendiente"
-        }else{
-          estatus_pago = "Pagado"
-        }
-
-        let estatus_envio = "";
-        if(formaEntrega.value == "Tienda"){
-          estatus_envio = "Entregado"
-        }else{
-          estatus_envio = "Pendiente"
-        }
-
+          let estatus_envio = "";
+          if(formaEntrega.value == "Tienda"){
+            estatus_envio = "Entregado"
+          }else{
+            estatus_envio = "Pendiente"
+          }
+        
         createSell({ 
           tipo_venta:"Mostrador",
           subtotal,
@@ -421,9 +497,93 @@ const VentasAlta = () => {
           parcialidades:parseFloat(abono)
         });
         
-      }
+      
   };
 
+
+  //funciones de mercado pago
+  const onSubmit = async (formData) => {
+    console.log(formData.formData);
+
+        
+       try {
+          const res = await clienteAxios({
+            method: "post",
+            url: "/mercadopago/process_payment",
+            data: JSON.stringify(formData.formData),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          console.log(res);
+
+          /*tipos de status
+          pending : El usuario no completo el proceso de pago todavía.
+          approved : El pago fue aprobado y acreditado.
+          authorized : El pago fue autorizado pero no capturado todavía.
+          in_process : El pago está en revisión.
+          in_mediation : El usuario inició una disputa.
+          rejected : El pago fue rechazado. El usuario podría reintentar el pago.
+          cancelled : El pago fue cancelado por una de las partes o el pago expiró.
+          refunded : El pago fue devuelto al usuario.
+          charged_back : Se ha realizado un contracargo en la tarjeta de crédito del comprador.
+*/
+
+          //si no hubo error en el pago
+          if(res.data.status === "approved"){
+            sendData();
+          }else{
+            if(res.data.status === 'rejected'){
+              mostrarMensaje("Lo sentimos tu pago fué rechazado, inténtalo nuevamente");
+            }else if(res.data.status === 'pending'){
+              mostrarMensaje("Lo sentimos, no se completó el proceso de pago todavía");
+            }else if(res.data.status === 'authorized'){
+            mostrarMensaje("Lo sentimos, el pago fué autorizado pero no capturado todavía");
+            }else if(res.data.status === 'in_process'){
+            mostrarMensaje("Lo sentimos, el pago está en revisión");
+            }else if(res.data.status === 'cancelled'){
+              mostrarMensaje("Lo sentimos, el pago fué cancelado por una de las partes o el pago expiró");
+            }else if(res.data.status === 'refunded'){
+              mostrarMensaje("Lo sentimos, el pago fué devuelto al usuario");
+            }else{
+              mostrarMensaje(res.data.status);
+            }
+          }  
+      
+     
+        } catch (error) {
+          console.log(error);
+          mostrarMensaje(error);
+        }
+    
+
+    
+  };
+
+
+   const customization = {
+    paymentMethods: {
+      atm: "all",
+      ticket: "all",
+      creditCard: "all",
+      debitCard: "all",
+      mercadoPago: "all",
+    },
+   };
+   
+   const onError = async (error) => {
+    // callback llamado para todos los casos de error de Brick
+    console.log(error);
+   };
+   
+   
+   const onReady = async () => {
+    /*
+      Callback llamado cuando Brick está listo.
+      Aquí puedes ocultar cargamentos de su sitio, por ejemplo.
+    */
+   };
 
    const customStyles = {
     control: (base, state) => ({
@@ -607,14 +767,20 @@ const VentasAlta = () => {
                 id="codigo_descuento"
                 type="text"
               />
-              <Button text="Aplicar" onClick={(e) => findDiscount()} className="btn-success mt-4" />
+              {viewContinuebutton === true ?
+              (
+                <Button text="Aplicar" onClick={(e) => findDiscount()} className="btn-success mt-4" />
+              ):(<></>)
+              }
               </div>
               </th>
               <th></th>
                 <th colSpan={3}>
-                  <form onSubmit={(e) => sendData(e)} className="mt-4">
-
-                    {/*forma pago*/}
+                  
+                {viewContinuebutton === true ?
+                 (  
+                  <>
+                   {/*forma pago*/}
                     <Select
                       styles={customStyles}
                       label="Forma de Pago *"
@@ -709,10 +875,40 @@ const VentasAlta = () => {
 
 
                     </div>
+                  </>
+                  ):(<></>)
+                  }   
                     
 
-                    <Button text="Pagar" type="submit" className="btn-success mt-4" />
-                  </form>
+                    
+                      {viewContinuebutton === true && formaPago.value === "Mercado Pago"  ?
+                          (
+                          <button className="btn btn-success text-uppercase mt-2" onClick={() => mostrarMPbutton()} >Continuar</button>
+                          )
+                          :(<></>)
+                      }
+
+                      {viewContinuebutton === true && formaPago.value !== "Mercado Pago"  ?
+                          (
+                          <button className="btn btn-success text-uppercase mt-2" onClick={() => NOmostrarMPbutton()} >Continuar</button>
+                          )
+                          :(<></>)
+                      }
+
+                      {preferenceId != null && viewMPbutton === true  ?
+                        (<Payment
+                          initialization={{amount: total, preferenceId}}
+                          customization={customization}
+                          onSubmit={onSubmit}
+                          onReady={onReady}
+                          onError={onError}
+                        />
+                        )
+                        :(<></>)
+                      }
+
+
+                  
                 </th>
               </tr>
             </tfoot>

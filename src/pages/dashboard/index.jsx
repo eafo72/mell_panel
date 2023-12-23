@@ -13,6 +13,9 @@ import { UserContext } from "../context/userContext";
 const Dashboard = () => {
   
   const [ventas, setVentas] = useState();
+
+  const [numeroPedidos, setNumeroPedidos] = useState();
+  const [ventasTotales, setVentasTotales] = useState();
   
   const [productos, setVentasProducto] = useState();
 
@@ -22,24 +25,31 @@ const Dashboard = () => {
     try {
       
       let res = await clienteAxios.get(`/pedido/ventas`);
-      //console.log(res.data.ventas);
+      console.log(res.data.ventas);
 
       //VENTAS
       let array_ventas = [["Mes", "Total", {role:"style"}]];
       let suma_ventas_nov = 0;
       let suma_ventas_dic = 0;
+      let total_numero_pedidos = 0;
+      let suma_ventas_totales = 0;
 
       for(let i=0;i<res.data.ventas.length;i++){
+        if(res.data.ventas[i].estatus_pago == "Pagado"){
+          total_numero_pedidos++;
+        }
         for(let ii=0;ii<res.data.ventas[i]['descripcion'].length;ii++){ 
           //formateamos fecha a dd/mm/yyyy
           const combo_fecha = (res.data.ventas[i].fecha).split("-");
           const mes = parseInt(combo_fecha[1]);
           
-          if(mes == 11){
+          if(mes == 11 && res.data.ventas[i].estatus_pago == "Pagado"){
             suma_ventas_nov = suma_ventas_nov + res.data.ventas[i]['descripcion'][ii].total;
+            suma_ventas_totales = suma_ventas_totales + res.data.ventas[i]['descripcion'][ii].total 
           }  
-          if(mes == 12){
+          if(mes == 12 && res.data.ventas[i].estatus_pago == "Pagado"){
             suma_ventas_dic = suma_ventas_dic + res.data.ventas[i]['descripcion'][ii].total;
+            suma_ventas_totales = suma_ventas_totales + res.data.ventas[i]['descripcion'][ii].total 
           }  
 
         }
@@ -50,6 +60,8 @@ const Dashboard = () => {
 
       //console.log(suma_ventas_nov);
       setVentas(array_ventas);
+      setNumeroPedidos(total_numero_pedidos);
+      setVentasTotales(suma_ventas_totales);
 
 
       //PRODUCTOS
@@ -109,10 +121,15 @@ const Dashboard = () => {
 
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
         <></>
-        <Card title="Dashboard"></Card>
+        <Card title="Dashboard">
+          <p>Número total de pedidos: {numeroPedidos}</p>
+          <p>Ventas totales: $ {ventasTotales.toFixed(2)}</p>
+          <p>Venta promedio: $ {(ventasTotales / numeroPedidos).toFixed(2)}</p>
+        </Card>
       </div>
       
-      <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
+      <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 mt-4">
+        
         <Card title="Ventas por mes">
           <Chart 
             chartType="BarChart"
@@ -126,6 +143,9 @@ const Dashboard = () => {
               legend: { position: "none" },
             }} />
         </Card>
+        </div>
+
+        <div className="grid xl:grid-cols-2 grid-cols-1 gap-5 mt-4">
         <Card title="Ventas por producto">
           <Chart
             chartType="BarChart"
