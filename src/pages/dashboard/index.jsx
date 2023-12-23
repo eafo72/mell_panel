@@ -14,8 +14,8 @@ const Dashboard = () => {
   
   const [ventas, setVentas] = useState();
 
-  const [numeroPedidos, setNumeroPedidos] = useState();
-  const [ventasTotales, setVentasTotales] = useState();
+  const [numeroPedidos, setNumeroPedidos] = useState(0);
+  const [ventasTotales, setVentasTotales] = useState(0);
   
   const [productos, setVentasProducto] = useState();
 
