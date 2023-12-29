@@ -16,6 +16,14 @@ const CategoriasEditar = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
   const [image, setImage] = useState();
+
+  const [indexViewUp, setIndexViewUp] = useState();
+  const [indexViewDown, setIndexViewDown] = useState();
+
+  const allViewOptions = [
+    { value: "Sí", label: "Sí" },
+    { value: "No", label: "No" }
+  ];
   
     
   const id = localStorage.getItem("EditCategory");
@@ -26,6 +34,22 @@ const CategoriasEditar = () => {
       //console.log(res.data.single);
       
       setNombre(res.data.single.nombre);
+
+      if(res.data.single.indexViewUp != null){
+        setIndexViewUp({
+          label: res.data.single.indexViewUp,
+          value: res.data.single.indexViewUp,
+        }); 
+      }  
+
+      if(res.data.single.indexViewDown != null){
+        setIndexViewDown({
+          label: res.data.single.indexViewDown,
+          value: res.data.single.indexViewDown,
+        }); 
+      }  
+
+      
       
 
     } catch (error) {
@@ -59,6 +83,10 @@ const CategoriasEditar = () => {
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
+    }else if(indexViewUp == "" || indexViewUp == undefined) {
+      mostrarMensaje("Debes seleccionar una opcion de la penúltima pregunta");
+    }else if(indexViewDown == "" || indexViewDown == undefined) {
+      mostrarMensaje("Debes seleccionar una opcion de la última pregunta");
     } else {
       const editCategory = async (dataForm) => {
         try {
@@ -81,7 +109,9 @@ const CategoriasEditar = () => {
       editCategory({
         id:id,
         nombre, 
-        image
+        image,
+        indexViewUp:indexViewUp.value, 
+        indexViewDown:indexViewDown.value
       });
     }
   };
@@ -137,6 +167,28 @@ const CategoriasEditar = () => {
                 id="imagen"
                 type="file"
               />
+
+              {/*indexViewUp*/}
+              <label  className="block capitalize form-label  ">Aparece en categorías del index *</label>
+              <Select
+                  styles={customStyles}
+                  placeholder="Seleccione"
+                  id="indexViewUp"
+                  options={allViewOptions}
+                  value={indexViewUp}
+                  onChange={setIndexViewUp}
+              ></Select>
+
+              {/*indexViewDown*/}
+              <label  className="block capitalize form-label  ">Aparece en la secció del index arriba del footer *</label>
+              <Select
+                  styles={customStyles}
+                  placeholder="Seleccione"
+                  id="indexViewDown"
+                  options={allViewOptions}
+                  value={indexViewDown}
+                  onChange={setIndexViewDown}
+              ></Select>
                
 
               <div className=" space-y-4">

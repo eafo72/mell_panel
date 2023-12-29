@@ -56,7 +56,7 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await clienteAxios.post('/usuario/login', dataForm)
       
-      console.log(res.data);
+      //console.log(res.data);
       localStorage.setItem('token', res.data.token)
       setAuthStatus(true)
       

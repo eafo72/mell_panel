@@ -16,6 +16,14 @@ const CategoriasAlta = () => {
   const [isDark] = useDarkMode();
   const [nombre, setNombre] = useState();
   const [image, setImage] = useState();
+
+  const [indexViewUp, setIndexViewUp] = useState();
+  const [indexViewDown, setIndexViewDown] = useState();
+
+  const allViewOptions = [
+    { value: "Sí", label: "Sí" },
+    { value: "No", label: "No" }
+  ];
   
   const navigate = useNavigate();
 
@@ -40,6 +48,10 @@ const CategoriasAlta = () => {
       mostrarMensaje("Debes escribir el nombre");
     }else if(image == "" || image == undefined) {
       mostrarMensaje("Debes seleccionar una imagen");
+    }else if(indexViewUp == "" || indexViewUp == undefined) {
+      mostrarMensaje("Debes seleccionar una opcion de la penúltima pregunta");
+    }else if(indexViewDown == "" || indexViewDown == undefined) {
+      mostrarMensaje("Debes seleccionar una opcion de la última pregunta");
     } else {
       const createCategory = async (dataForm) => {
         try {
@@ -59,7 +71,7 @@ const CategoriasAlta = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      createCategory({ nombre, image });
+      createCategory({ nombre, image, indexViewUp:indexViewUp.value, indexViewDown:indexViewDown.value });
     }
   };
 
@@ -111,6 +123,34 @@ const CategoriasAlta = () => {
                 id="imagen"
                 type="file"
               />
+
+
+              {/*indexViewUp*/}
+              <label  className="block capitalize form-label  ">Aparece en categorías del index *</label>
+              <Select
+                  styles={customStyles}
+                  placeholder="Seleccione"
+                  id="indexViewUp"
+                  options={allViewOptions}
+                  value={indexViewUp}
+                  onChange={setIndexViewUp}
+              ></Select>
+
+              {/*indexViewDown*/}
+              <label  className="block capitalize form-label  ">Aparece en la secció del index arriba del footer *</label>
+              <Select
+                  styles={customStyles}
+                  placeholder="Seleccione"
+                  id="indexViewDown"
+                  options={allViewOptions}
+                  value={indexViewDown}
+                  onChange={setIndexViewDown}
+              ></Select>
+
+
+
+
+
 
               <div className=" space-y-4">
                 <p>* Campos requeridos</p>

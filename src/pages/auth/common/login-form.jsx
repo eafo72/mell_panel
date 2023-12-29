@@ -47,6 +47,21 @@ const LoginForm = () => {
 
     if (authStatus) {
       navigate("/dashboard");
+
+/*
+      {user && user.tipo == "Administrador" ?
+      (navigate("/dashboard"))
+      :
+      (<></>)
+      }
+
+      {user && user.tipo == "Punto de venta" ?
+        (navigate("ventas/ventas_alta"))
+        :
+        (<></>)
+      }
+      */
+
       //navigate("/usuarios");
     }
   }, [authStatus]);

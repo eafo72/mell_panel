@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
 
 import Navmenu from "./Navmenu";
-import { menuItems, menuItemsAdministrador } from "@/constant/data";
+import { menuItems, menuItemsPuntoDeVenta, menuItemsAlmacen } from "@/constant/data";
 import SimpleBar from "simplebar-react";
 import useSemiDark from "@/hooks/useSemiDark";
 import useSkin from "@/hooks/useSkin";
@@ -78,8 +78,24 @@ const MobileMenu = () => {
         className="sidebar-menu px-4 h-[calc(100%-80px)]"
         scrollableNodeProps={{ ref: scrollableNodeRef }}
       >
+        {user && user.tipo == "Administrador" ?
+        (<Navmenu menus={menuItems} />)
+        :
+        (<></>)
+        }
+
+        {user && user.tipo == "Punto de venta" ?
+        (<Navmenu menus={menuItemsPuntoDeVenta} />)
+        :
+        (<></>)
+        }
+
+        {user && user.tipo == "Almacenista" ?
+        (<Navmenu menus={menuItemsAlmacen} />)
+        :
+        (<></>)
+        }
         
-        <Navmenu menus={menuItems} />
         
         <Logout />
         

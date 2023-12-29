@@ -86,6 +86,11 @@ const FaqAlta   = lazy(() => import("./pages/faq/alta"));
 const FaqEditar = lazy(() => import("./pages/faq/editar"));
 const FaqBorrar = lazy(() => import("./pages/faq/borrar"));
 
+const Empresa       = lazy(() => import("./pages/empresas"));
+const EmpresaEditar = lazy(() => import("./pages/empresas/editar"));
+
+const SeoEditar = lazy(() => import("./pages/seo/editar"));
+
 
 const NoPage = lazy(() => import("./pages/404"));
 
@@ -188,6 +193,11 @@ function App() {
           <Route path="faq/alta" element={<FaqAlta />} />
           <Route path="faq/editar" element={<FaqEditar />} />
           <Route path="faq/borrar" element={<FaqBorrar />} />
+
+          <Route path="empresas" element={<Empresa />} />
+          <Route path="empresas/editar" element={<EmpresaEditar />} />
+
+          <Route path="seo/editar" element={<SeoEditar />} />
 
           <Route path="*" element={<Navigate to="/404" />} />
 

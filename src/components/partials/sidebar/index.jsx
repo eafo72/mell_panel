@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
 import SidebarLogo from "./Logo";
 import Navmenu from "./Navmenu";
-import { menuItems, menuItemsAdministrador  } from "@/constant/data";
+import { menuItems, menuItemsPuntoDeVenta, menuItemsAlmacen  } from "@/constant/data";
 import SimpleBar from "simplebar-react";
 import useSidebar from "@/hooks/useSidebar";
 import useSemiDark from "@/hooks/useSemiDark";
@@ -66,7 +66,25 @@ const Sidebar = () => {
           className="sidebar-menu px-4 h-[calc(100%-80px)]"
           scrollableNodeProps={{ ref: scrollableNodeRef }}
         >
-          <Navmenu menus={menuItems} />
+          
+          {user && user.tipo == "Administrador" ?
+        (<Navmenu menus={menuItems} />)
+        :
+        (<></>)
+        }
+
+        {user && user.tipo == "Punto de venta" ?
+        (<Navmenu menus={menuItemsPuntoDeVenta} />)
+        :
+        (<></>)
+        }
+
+        {user && user.tipo == "Almacenista" ?
+        (<Navmenu menus={menuItemsAlmacen} />)
+        :
+        (<></>)
+        }
+
           <Logout />
         </SimpleBar>
       </div>

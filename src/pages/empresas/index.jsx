@@ -17,20 +17,13 @@ import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const Faq = () => {
+const Empresa = () => {
 
   const COLUMNS = [
    
     {
-      Header: "Pregunta",
-      accessor: "pregunta",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Respuesta",
-      accessor: "respuesta",
+      Header: "Nombre",
+      accessor: "nombre",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
@@ -47,17 +40,7 @@ const Faq = () => {
       },
     },
 
-    {
-      Header: "Borrar",
-      Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.pregunta)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons-outline:trash"/>
-          </span>
-        </button>;
-      },
-    },
+    
   ];
 
   
@@ -71,13 +54,13 @@ const Faq = () => {
 
   const navigate = useNavigate();
 
-  const getFaq = async () => {
+  const getEmpresas = async () => {
     try {
-      let res = await clienteAxios.get(`/faq/obtener`);
+      let res = await clienteAxios.get(`/empresa/obtener`);
 
-      //console.log(res.data.faqs);
+      //console.log(res.data.empresas);
       
-      setDatos(res.data.faqs);
+      setDatos(res.data.empresas);
     } catch (error) {
       console.log(error);
     }
@@ -92,24 +75,23 @@ const Faq = () => {
     if(authStatus === false) {
       //navigate("/");
     }
-    getFaq();
+    getEmpresas();
       
   },[authStatus]);
   
 
-  const header = ["Pregunta", "Respuesta" ];
+  const header = ["Nombre"];
   function handleDownloadExcel() {
     let newDatos = [];
     for(let i=0;i<datos.length;i++){
       newDatos.push({
-        "pregunta":datos[i]['pregunta'],
-        "respuesta":datos[i]['respuesta']
+        "nombre":datos[i]['nombre']
       })
     }
 
     downloadExcel({
-      fileName: "mell_faq",
-      sheet: "faq",
+      fileName: "mell_empresas",
+      sheet: "empresas",
       tablePayload: {
         header,
         body: newDatos,
@@ -118,19 +100,15 @@ const Faq = () => {
   }
 
   const handleAlta = () => {
-    navigate("/faq/alta");
+    navigate("/empresas/alta");
   };
 
   const goToEditar = (id) => {
-    localStorage.setItem("EditFaq",id);
-    navigate("/faq/editar");
+    localStorage.setItem("EditEmpresa",id);
+    navigate("/empresas/editar");
   }
 
-  const goToBorrar = async (id,pregunta) => {
-    localStorage.setItem("DeleteFaq",id);
-    localStorage.setItem("DeleteFaqQuestion",pregunta);
-    navigate("/faq/borrar");
-  }
+  
 
     
   const data = useMemo(() => datos, [datos]);
@@ -171,11 +149,13 @@ const Faq = () => {
       <ToastContainer />
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Faq</h4>
+          <h4 className="card-title">Empresas</h4>
+          {/*
           <button onClick={(e) => handleAlta(e)} className="btn btn-success">
             Agregar nueva
           </button>
           <button className="btn btn-success m-2" onClick={handleDownloadExcel}>Exportar</button>
+          */}
           <div>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           </div>
@@ -309,4 +289,4 @@ const Faq = () => {
   );
 };
 
-export default Faq;
+export default Empresa;

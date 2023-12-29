@@ -8,6 +8,11 @@ export const menuItems = [
     icon: "heroicons:presentation-chart-bar",
     link: "dashboard",
   },
+  {  
+    title: "Empresa",
+    icon: "heroicons:home",
+    link: "empresas/editar",
+  },
   {
     title: "Productos",
     icon: "heroicons:list-bullet",
@@ -88,24 +93,43 @@ export const menuItems = [
     isHide: true,
     child: [
       {
+        childtitle:"Seo",
+        childlink: "seo/editar",
+      },
+      {
         childtitle:"Faq",
         childlink: "faq",
       },
     ],
   },
+];
 
+export const menuItemsPuntoDeVenta = [
+  {
+    isHeadr: true,
+    title: "menu",
+  },
+  {
+    title: "Punto de venta",
+    icon: "heroicons:banknotes",
+    link: "ventas/ventas_alta",
+  },
+];
 
-
-
-
-
-
-
-
+export const menuItemsAlmacen = [
+  {
+    isHeadr: true,
+    title: "menu",
+  },
+  {
+    title: "Almacenes",
+    icon: "heroicons:list-bullet",
+    link: "almacenes",
+  },
 ];
 
 export const topMenu = [];
-export const menuItemsAdministrador = [];
+
 
 
 import User1 from "@/assets/images/all-img/user.png";
