@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const clienteAxios = axios.create({
- baseURL: "https://mell-backend.onrender.com"
+ baseURL: "https://api.mellfashionboutique.com"
  //baseURL: "http://localhost:4000"
 })
 

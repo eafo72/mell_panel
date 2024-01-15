@@ -63,6 +63,11 @@ export const menuItems = [
     link: "usuarios",
   },
   {
+    title: "Mensajes",
+    icon: "heroicons:chat-bubble-left-right",
+    link: "mensajes",
+  },
+  {
     title: "Ventas",
     icon: "heroicons:banknotes",
     link: "#",
