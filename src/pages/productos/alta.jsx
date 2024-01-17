@@ -184,11 +184,33 @@ const ProductosAlta = () => {
   const sendData = (event) => {
     event.preventDefault();
 
+    let nombre_original_size;
+    let nombre_calculated_size;
+
+    if(nombre != "" && nombre != undefined) {
+      nombre_original_size = nombre.length;
+      const nombre_valid = nombre.match(/[A-Za-z0-9]/g); //devuelve array con los caracteres aceptados
+      nombre_calculated_size = nombre_valid.length;
+    }  
+
+    let codigo_original_size;
+    let codigo_calculated_size;
+
+    if(codigo != "" && codigo != undefined) {
+      codigo_original_size = codigo.length;
+      const codigo_valid = codigo.match(/[A-Za-z0-9]/g); //devuelve array con los caracteres aceptados
+      codigo_calculated_size = codigo_valid.length;
+    }  
+    
     //validamos campos
     if(nombre == "" || nombre == undefined) {
       mostrarMensaje("Debes escribir el nombre");
+    }else if(nombre_original_size != nombre_calculated_size) {
+      mostrarMensaje("El nombre sólo admite letras y números");  
     }else if(codigo == "" || codigo == undefined) {
       mostrarMensaje("Debes escribir el código");  
+    }else if(codigo_original_size != codigo_calculated_size) {
+      mostrarMensaje("El código sólo admite letras y números");  
     }else if(genero == "" || genero == undefined) {
       mostrarMensaje("Debes seleccionar el género");
     }else if(edad == "" || edad == undefined) {
@@ -294,8 +316,8 @@ const ProductosAlta = () => {
               {/*Codigo */}
               <Textinput
                 onChange={(e) => setCodigo(e.target.value)}
-                label="Código"
-                placeholder="Código"
+                label="Código *"
+                placeholder="Código (no se podrá editar después)"
                 id="codigo"
                 type="text"
               />  
