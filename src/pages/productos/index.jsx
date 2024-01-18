@@ -38,7 +38,7 @@ const Products = () => {
       Header: "Foto principal",
       accessor: "foto_principal",
       Cell: (row) => {
-        return <img style={{width:"60px", height:"60px"}} src={row?.cell?.value}/>;
+        return <img style={{width:"40px", height:"60px"}} src={row?.cell?.value}/>;
       },
     },
     {

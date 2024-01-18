@@ -12,6 +12,9 @@ import { useNavigate } from "react-router-dom";
 
 import clienteAxios from "../../configs/axios";
 
+import { Cropper, getCroppedImg } from 'react-cropper-custom';
+import "react-cropper-custom/dist/index.css";
+
 const ProductosAlta = () => {
   const [isDark] = useDarkMode();
 
@@ -30,6 +33,10 @@ const ProductosAlta = () => {
   //const [estatus, setEstatus] = useState();
   const [precio, setPrecio] = useState();
     
+  const [zoom, setZoom] = useState(1);
+  const [aspect, setAspect] = useState(1);
+
+  const [croppedImage, setCroppedImage] = useState();
   
   const allGenders = [
     { value: "Hombre", label: "Hombre" },
@@ -189,7 +196,7 @@ const ProductosAlta = () => {
 
     if(nombre != "" && nombre != undefined) {
       nombre_original_size = nombre.length;
-      const nombre_valid = nombre.match(/[A-Za-z0-9]/g); //devuelve array con los caracteres aceptados
+      const nombre_valid = nombre.match(/[A-Za-z0-9\s]/g); //devuelve array con los caracteres aceptados //letras, numeros y espacios
       nombre_calculated_size = nombre_valid.length;
     }  
 
@@ -198,7 +205,7 @@ const ProductosAlta = () => {
 
     if(codigo != "" && codigo != undefined) {
       codigo_original_size = codigo.length;
-      const codigo_valid = codigo.match(/[A-Za-z0-9]/g); //devuelve array con los caracteres aceptados
+      const codigo_valid = codigo.match(/[A-Za-z0-9\s\-]/g); //devuelve array con los caracteres aceptados //letras, numeros y espacios
       codigo_calculated_size = codigo_valid.length;
     }  
     
@@ -227,15 +234,13 @@ const ProductosAlta = () => {
       mostrarMensaje("Debes seleccionar un color");          
     } else if (image == "" || image == undefined) {
       mostrarMensaje("Debes seleccionar la foto principal");  
+    } else if(croppedImage == "" || croppedImage == null || croppedImage == undefined ){  
+        mostrarMensaje("Seleccione con el mouse el área deseada de la imagen al igual que el zoom");  
     } else {
       const createProduct = async (dataForm) => {
         try {
-          const res = await clienteAxios({
-            method: "post",
-            url: "/producto/crear",
-            data: dataForm,
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+
+          const res = await clienteAxios.post("/producto/crear", dataForm);
 
           //console.log(res);
           navigate("/productos");
@@ -256,10 +261,26 @@ const ProductosAlta = () => {
         marca:marca.value,
         talla,
         color,
-        image,
+        name:image.name,
+        imgbase64:croppedImage,
         estatus:"Activo",
         precio
        });
+    }
+  };
+
+  const imageChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const onCropComplete = async (croppedArea) => {
+    try {
+      const newimage = await getCroppedImg(URL.createObjectURL(image), croppedArea, { width: 400, height: 600 * aspect });
+      setCroppedImage(newimage); //save image64 cropped image
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -427,13 +448,31 @@ const ProductosAlta = () => {
 
 
               {/*Foto principal*/}
+             
+
+              {/*thumb*/}
               <Textinput
-                  onChange={(e) => setImage(e.target.files[0])}
-                  label="Foto Principal * (tamaño recomendado 400px por 600px)"
-                  placeholder="Foto principal"
-                  id="foto_principal"
-                  type="file"
-                />
+                onChange={(e) => imageChange(e)} 
+                label="Foto principal * (tamaño recomendado 400px por 600px)"
+                placeholder="Foto principal"
+                id="image"
+                type="file"
+              />
+
+            {image && (
+             <>
+            <p>Seleccione con el mouse el área deseada de la imagen al igual que el zoom</p>  
+            <Cropper
+              src={URL.createObjectURL(image)}
+              width={400}
+              height={600}
+              zoom={zoom}
+              aspect={aspect}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+            />
+            </> 
+            )}    
 
   
               {/*Precio*/}
