@@ -20,6 +20,7 @@ const ProductosEditar = () => {
   
   const [nombre, setNombre] = useState();
   const [descripcion, setDescripcion] = useState();
+  const [codigo, setCodigo] = useState();
   const [genero, setGenero] = useState();
   const [edad, setEdad] = useState();
   const [categoria, setCategoria] = useState();
@@ -185,6 +186,8 @@ const ProductosEditar = () => {
       setNombre(res.data.single.nombre);
 
       setDescripcion(res.data.single.descripcion);
+
+      setCodigo(res.data.single.codigo);
       
       if(res.data.single.genero != null){
         setGenero({
@@ -307,6 +310,7 @@ const ProductosEditar = () => {
           id:id,
           nombre,
           descripcion,
+          codigo,
           genero:genero.value,
           edad,
           categoria:categoria.value,
@@ -324,6 +328,7 @@ const ProductosEditar = () => {
           id:id,
           nombre,
           descripcion,
+          codigo,
           genero:genero.value,
           edad,
           categoria:categoria.value,
