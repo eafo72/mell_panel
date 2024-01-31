@@ -27,27 +27,38 @@ const Salidas = () => {
       },
     },
     {
-      Header: "Producto",
+      Header: "Código",
+      accessor: "codigo",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Producto",
+      accessor: "producto",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Marca",
+      accessor: "marca",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.marca}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Talla",
+      accessor: "talla",
       Cell: (row) => {
-        return <span>{row.row.original.datos_talla.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Color",
+      accessor: "color",
       Cell: (row) => {
-        return <span>{row.row.original.datos_color.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
@@ -101,13 +112,34 @@ const Salidas = () => {
   const navigate = useNavigate();
 
   const id = localStorage.getItem("ViewStorage");
+  const name = localStorage.getItem("ViewStorageName");
  
   const getStorageData = async () => {
     try {
       const res = await clienteAxios.get("/almacen/salidas/" + id);
       //console.log(res.data.salidas);
 
-      setDatos(res.data.salidas);
+     let array = [];
+     for (let i = 0; i < res.data.salidas.length; i++) {
+       //console.log(i);
+       array.push({
+         "_id": res.data.salidas[i]['_id'],
+         "codigo": res.data.salidas[i]['codigo'],
+         "producto": res.data.salidas[i]['datos_producto']['nombre'],
+         "marca": res.data.salidas[i]['datos_producto']['marca'],
+         "talla": res.data.salidas[i]['datos_talla']['nombre'],
+         "color": res.data.salidas[i]['datos_color']['nombre'],
+         "estante": res.data.salidas[i]['estante'],
+         "cantidad": res.data.salidas[i]['cantidad'],
+         "fechaSalida": res.data.salidas[i]['fechaSalida'].substr(0, 10),
+         "id_apartado": res.data.salidas[i]['id_apartado'],
+         "id_pedido": res.data.salidas[i]['id_pedido']
+       });
+     }
+
+      setDatos(array);
+
+
     } catch (error) {
       console.log(error);
     }
@@ -124,22 +156,27 @@ const Salidas = () => {
     getStorageData();
   }, [authStatus]);
 
-  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Apartado"];
+  const header = ["Id", "Código", "Producto", "Marca", "Talla", "Color", "Estante", "Cantidad", "Fecha Salida", "Id apartado", "Id pedido"];
   function handleDownloadExcel() {
     let newDatos = [];
     for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        nombre: datos[i]["nombre"],
+        id: datos[i]["_id"],
+        codigo: datos[i]["codigo"],
+        producto: datos[i]["producto"],
         marca: datos[i]["marca"],
         talla: datos[i]["talla"],
         color: datos[i]["color"],
         estante: datos[i]["estante"],
-        apartado: datos[i]["apartado"],
+        cantidad: datos[i]["cantidad"],
+        fechaSalida: datos[i]["fechaSalida"],
+        id_apartado: datos[i]["id_apartado"],
+        id_pedido: datos[i]["id_pedido"]
       });
     }
 
     downloadExcel({
-      fileName: "mell_" + id + "orden",
+      fileName: "mell_" + name + "_salidas",
       sheet: id + "orden",
       tablePayload: {
         header,

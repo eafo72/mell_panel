@@ -15,15 +15,15 @@ import clienteAxios from "../../configs/axios";
 const ProductosEditarStock = () => {
   const [isDark] = useDarkMode();
   
-  const [nombre, setNombre] = useState();
+  
+  const [codigo, setCodigo] = useState();
   const [stock, setStock] = useState();
   const [apartado, setApartado] = useState();
   const [estropeado, setEstropeado] = useState();
  
   
-  const id_almacen = localStorage.getItem("ViewStorage");
-  const id_producto = localStorage.getItem("EditStock");
-
+  const id_stock = localStorage.getItem("EditStock");
+  
   const navigate = useNavigate();
 
   const mostrarMensaje = (mensaje) => {
@@ -40,22 +40,16 @@ const ProductosEditarStock = () => {
   };
 
 
-  const getProduct = async () => {
+  const getStock = async () => {
     try {
-      const res = await clienteAxios.get("/producto/single/"+id_producto);
+      const res = await clienteAxios.get("/almacen/stock-single/"+id_stock);
       //console.log(res.data.single);
       
-      setNombre(res.data.single.nombre);
-
-
-    
-      for (let i = 0; i < res.data.single.almacen.length; i++) {
-        if(res.data.single.almacen[i]['id_almacen'] == id_almacen ){
-          setStock(res.data.single.almacen[i]['stock']);
-          setApartado(res.data.single.almacen[i]['apartado']);
-          setEstropeado(res.data.single.almacen[i]['estropeado']);
-        }
-      }
+      setCodigo(res.data.single.codigo);
+      setStock(res.data.single.stock);
+      setApartado(res.data.single.apartado);
+      setEstropeado(res.data.single.estropeado);
+       
 
 
     } catch (error) {
@@ -65,7 +59,7 @@ const ProductosEditarStock = () => {
   };
   
   useEffect(() => {
-    getProduct();
+    getStock();
   },[]);
 
 
@@ -73,11 +67,13 @@ const ProductosEditarStock = () => {
     event.preventDefault();
 
     //validamos campos
-    const editProduct = async () => {
+    const editStock = async () => {
        try {
-          const res = await clienteAxios.put("/producto/actualizar", {
-            id:id,
-            almacen
+          const res = await clienteAxios.put("/almacen/stock-editar", {
+            id:id_stock,
+            stock,
+            apartado,
+            estropeado
           });
           //console.log(res);
           navigate("/almacenes/ver");
@@ -87,54 +83,21 @@ const ProductosEditarStock = () => {
           mostrarMensaje(error.response.data.msg);
         }
       };
-      editProduct();
+      editStock();
     
   };
 
-   const customStyles = {
-    control: (base, state) => ({
-      ...base,
-      background: isDark
-        ? "rgb(15 23 42 / var(--tw-bg-opacity))"
-        : "transparent",
-    }),
-    singleValue: (base, state) => ({
-      ...base,
-      color: isDark ? "white" : "rgb(15 23 42 / var(--tw-text-opacity))",
-    }),  
-    multiValueRemove: (base, state) => ({
-      ...base,
-      color: "red",
-    }),  
-    option: (base, state) => {
-      return {
-        ...base,
-        background: isDark ? "rgb(15 23 42 / var(--tw-bg-opacity))" : "",
-        color: state.isFocused ? (isDark ? "white" : "black") : "grey",
-      };
-    },
-  };
+   
 
   return (
     <>
       <ToastContainer />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
-        <Card title="Editar Producto">
+        <Card title="Editar Stock">
           <form onSubmit={(e) => sendData(e)}>
             <div className="space-y-4">
             
-               {/*Nombre*/}
-               <Textinput
-                onChange={(e) => setNombre(e.target.value)}
-                label="Nombre *"
-                placeholder="Nombre"
-                id="nombre"
-                type="text"
-                defaultValue={nombre}
-                readonly
-              />
-
-  
+              <label>Código: {codigo}</label>  
               {/*Stock*/}
               <Textinput
                 onChange={(e) => setStock(e.target.value)}

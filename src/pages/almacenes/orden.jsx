@@ -27,27 +27,38 @@ const Orden = () => {
       },
     },
     {
-      Header: "Producto",
+      Header: "Código",
+      accessor: "codigo",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Producto",
+      accessor: "producto",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Marca",
+      accessor: "marca",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.marca}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Talla",
+      accessor: "talla",
       Cell: (row) => {
-        return <span>{row.row.original.datos_talla.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Color",
+      accessor: "color",
       Cell: (row) => {
-        return <span>{row.row.original.datos_color.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
@@ -123,12 +134,31 @@ const Orden = () => {
 
 
   const id = localStorage.getItem("ViewStorage");
+  const name = localStorage.getItem("ViewStorageName");
  
   const getStorageData = async () => {
     try {
       const res = await clienteAxios.get("/almacen/apartadoOrdenDia/" + id);
      //console.log(res.data.apartadoOrdenDia);
-     setDatos(res.data.apartadoOrdenDia);
+
+     let array = [];
+     for (let i = 0; i < res.data.apartadoOrdenDia.length; i++) {
+       //console.log(i);
+       array.push({
+         "_id": res.data.apartadoOrdenDia[i]['_id'],
+         "id_pedido": res.data.apartadoOrdenDia[i]['id_pedido'],
+         "codigo": res.data.apartadoOrdenDia[i]['codigo'],
+         "producto": res.data.apartadoOrdenDia[i]['datos_producto']['nombre'],
+         "marca": res.data.apartadoOrdenDia[i]['datos_producto']['marca'],
+         "talla": res.data.apartadoOrdenDia[i]['datos_talla']['nombre'],
+         "color": res.data.apartadoOrdenDia[i]['datos_color']['nombre'],
+         "estante": res.data.apartadoOrdenDia[i]['estante'],
+         "apartado": res.data.apartadoOrdenDia[i]['apartado']
+       });
+     }
+
+     setDatos(array);
+
     } catch (error) {
       console.log(error);
     }
@@ -145,22 +175,24 @@ const Orden = () => {
     getStorageData();
   }, [authStatus]);
 
-  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Apartado"];
+  const header = ["Id Pedido", "Código", "Producto", "Marca", "Talla", "Color", "Estante", "Apartado"];
   function handleDownloadExcel() {
     let newDatos = [];
     for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        nombre: datos[i]["nombre"],
+        id_pedido: datos[i]["id_pedido"],
+        codigo: datos[i]["codigo"],
+        producto: datos[i]["producto"],
         marca: datos[i]["marca"],
         talla: datos[i]["talla"],
         color: datos[i]["color"],
         estante: datos[i]["estante"],
-        apartado: datos[i]["apartado"],
+        apartado: datos[i]["apartado"]
       });
     }
 
     downloadExcel({
-      fileName: "mell_" + id + "orden",
+      fileName: "mell_" + name + "_orden",
       sheet: id + "orden",
       tablePayload: {
         header,

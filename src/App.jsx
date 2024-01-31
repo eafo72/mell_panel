@@ -66,6 +66,7 @@ const AlmacenEntradaAlta = lazy(() => import("./pages/almacenes/alta_entrada"));
 const AlmacenEntradaEditar = lazy(() => import("./pages/almacenes/editar_entrada"));
 const AlmacenEntradaBorrar = lazy(() => import("./pages/almacenes/borrar_entrada"));
 
+const AlmacenStockEditar = lazy(() => import("./pages/almacenes/editar_stock"));
 const AlmacenStockBorrar = lazy(() => import("./pages/almacenes/borrar_stock"));
 
 const VentasAlta = lazy(() => import("./pages/ventas/ventas_alta"));
@@ -178,6 +179,8 @@ function App() {
           <Route path="almacenes/editar_entrada" element={<AlmacenEntradaEditar />} />
           <Route path="almacenes/borrar_entrada" element={<AlmacenEntradaBorrar />} />
 
+
+          <Route path="almacenes/editar_stock" element={<AlmacenStockEditar />} />
           <Route path="almacenes/borrar_stock" element={<AlmacenStockBorrar />} />
 
 

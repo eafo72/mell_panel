@@ -20,27 +20,39 @@ import { toast } from "react-toastify";
 const Stock = () => {
   const COLUMNS = [
     {
-      Header: "Producto",
+      Header: "Código",
+      accessor: "codigo",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+
+    {
+      Header: "Producto",
+      accessor: "producto",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Marca",
+      accessor: "marca",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.marca}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Talla",
+      accessor: "talla",
       Cell: (row) => {
-        return <span>{row.row.original.datos_talla.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Color",
+      accessor: "color",
       Cell: (row) => {
-        return <span>{row.row.original.datos_color.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     
@@ -73,6 +85,20 @@ const Stock = () => {
       },
     },
 
+    {
+      Header: "Editar",
+      Cell: (row) => {
+        return <button onClick={() =>
+           goToEditar(row.row.original._id)
+          } 
+          className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
+          <span className="text-base">
+            <Icon icon="heroicons:pencil-square"/>
+          </span>
+        </button>
+      },
+    },
     
     {
       Header: "Borrar",
@@ -80,7 +106,7 @@ const Stock = () => {
         return (
           <button
             onClick={() =>
-              goToBorrar(row.row.original._id, row.row.original.datos_producto.nombre)
+              goToBorrar(row.row.original._id, row.row.original.producto)
             }
             className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse"
@@ -111,7 +137,26 @@ const Stock = () => {
       const res = await clienteAxios.get("/almacen/stock/" + id);
       //console.log(res.data.stock);
 
-      setDatos(res.data.stock);
+      let array = [];
+      for (let i = 0; i < res.data.stock.length; i++) {
+        //console.log(i);
+        array.push({
+          "_id": res.data.stock[i]['_id'],
+          "codigo": res.data.stock[i]['codigo'],
+          "producto": res.data.stock[i]['datos_producto']['nombre'],
+          "marca": res.data.stock[i]['datos_producto']['marca'],
+          "talla": res.data.stock[i]['datos_talla']['nombre'],
+          "color": res.data.stock[i]['datos_color']['nombre'],
+          "estante": res.data.stock[i]['estante'],
+          "stock": res.data.stock[i]['stock'],
+          "apartado": res.data.stock[i]['apartado'],
+          "estropeado": res.data.stock[i]['estropeado']
+        });
+      }
+
+      setDatos(array);
+
+
     } catch (error) {
       console.log(error);
     }
@@ -128,20 +173,20 @@ const Stock = () => {
     getStorageData();
   }, [authStatus]);
 
-  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Stock", "Apartado", "Estropeado"];
+  const header = ["Código", "Producto", "Marca", "Talla", "Color", "Estante", "Stock", "Apartado", "Estropeado"];
   function handleDownloadExcel() {
     let newDatos = [];
     for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        nombre: datos[i]["nombre"],
+        codigo: datos[i]["codigo"],
+        producto: datos[i]["producto"],
         marca: datos[i]["marca"],
-        talla: datos[i]['almacen'][0]['talla'],
-        color: datos[i]['almacen'][0]['color'],
-        estante: datos[i]['almacen'][0]['estante'],
-        stock: datos[i]['almacen'][0]['stock'],
-        apartado: datos[i]['almacen'][0]['apartado'],
-        estropeado: datos[i]['almacen'][0]['estropeado'],
-
+        talla: datos[i]['talla'],
+        color: datos[i]['color'],
+        estante: datos[i]['estante'],
+        stock: datos[i]['stock'],
+        apartado: datos[i]['apartado'],
+        estropeado: datos[i]['estropeado']
       });
     }
 
@@ -155,12 +200,11 @@ const Stock = () => {
     });
   }
 
-  /*
-  const goToEditar = (id, name) => {
-    localStorage.setItem("EditStock", id);
+  
+  const goToEditar = (id) => {
+    localStorage.setItem("EditStock",id);
     navigate("/almacenes/editar_stock");
-  };
-  */
+  }
 
   const goToBorrar = async (id, nombre_producto) => {
     localStorage.setItem("DeleteStock", id);

@@ -20,8 +20,15 @@ import { toast } from "react-toastify";
 const Estropeados = () => {
   const COLUMNS = [
     {
+      Header: "Código",
+      accessor: "codigo",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
       Header: "Producto",
-      accessor: "nombre",
+      accessor: "producto",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
@@ -80,9 +87,26 @@ const Estropeados = () => {
  
   const getStorageData = async () => {
     try {
-      //const res = await clienteAxios.get("/almacen/estropeados/" + id);
+      const res = await clienteAxios.get("/almacen/estropeados/" + id);
       //console.log(res.data.estropeados);
-      // setDatos(res.data.estropeados);
+
+      let array = [];
+      for (let i = 0; i < res.data.estropeados.length; i++) {
+        //console.log(i);
+        array.push({
+          "_id": res.data.estropeados[i]['_id'],
+          "codigo": res.data.estropeados[i]['codigo'],
+          "producto": res.data.estropeados[i]['datos_producto']['nombre'],
+          "marca": res.data.estropeados[i]['datos_producto']['marca'],
+          "talla": res.data.estropeados[i]['datos_talla']['nombre'],
+          "color": res.data.estropeados[i]['datos_color']['nombre'],
+          "estante": res.data.estropeados[i]['estante'],
+          "estropeado": res.data.estropeados[i]['estropeado']
+        });
+      }
+
+      setDatos(array);
+
     } catch (error) {
       console.log(error);
     }
@@ -99,17 +123,18 @@ const Estropeados = () => {
     getStorageData();
   }, [authStatus]);
 
-  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Estropeado"];
+  const header = ["Código", "Producto", "Marca", "Talla", "Color", "Estante", "Estropeado"];
   function handleDownloadExcel() {
     let newDatos = [];
     for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        nombre: datos[i]["nombre"],
+        codigo: datos[i]["codigo"],
+        producto: datos[i]["producto"],
         marca: datos[i]["marca"],
-        talla: datos[i]['almacen'][0]['talla'],
-        color: datos[i]['almacen'][0]['color'],
-        estante: datos[i]['almacen'][0]['estante'],
-        apartado: datos[i]['almacen'][0]['estropeado'],
+        talla: datos[i]['talla'],
+        color: datos[i]['color'],
+        estante: datos[i]['estante'],
+        estropeado: datos[i]['estropeado'],
       });
     }
 

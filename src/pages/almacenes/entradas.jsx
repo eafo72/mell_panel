@@ -27,27 +27,38 @@ const Entradas = () => {
       },
     },
     {
-      Header: "Producto",
+      Header: "Código",
+      accessor: "codigo",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
+      },
+    },
+    {
+      Header: "Producto",
+      accessor: "producto",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Marca",
+      accessor: "marca",
       Cell: (row) => {
-        return <span>{row.row.original.datos_producto.marca}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Talla",
+      accessor: "talla",
       Cell: (row) => {
-        return <span>{row.row.original.datos_talla.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
       Header: "Color",
+      accessor: "color",
       Cell: (row) => {
-        return <span>{row.row.original.datos_color.nombre}</span>;
+        return <span>{row?.cell?.value}</span>;
       },
     },
     {
@@ -105,7 +116,7 @@ const Entradas = () => {
         return (
           <button
             onClick={() =>
-              goToBorrar(row.row.original._id, row.row.original.nombre)
+              goToBorrar(row.row.original._id, row.row.original.producto)
             }
             className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse"
@@ -135,10 +146,29 @@ const Entradas = () => {
   const getStorageData = async () => {
     try {
       const res = await clienteAxios.get("/almacen/entradas/" + id);
-      console.log(res.data.entradas);
-      console.log(id);
+      //console.log(res.data.entradas);
+      //console.log(id);
 
-      setDatos(res.data.entradas);
+     let array = [];
+     for (let i = 0; i < res.data.entradas.length; i++) {
+       //console.log(i);
+       array.push({
+         "_id": res.data.entradas[i]['_id'],
+         "codigo": res.data.entradas[i]['codigo'],
+         "producto": res.data.entradas[i]['datos_producto']['nombre'],
+         "marca": res.data.entradas[i]['datos_producto']['marca'],
+         "talla": res.data.entradas[i]['datos_talla']['nombre'],
+         "color": res.data.entradas[i]['datos_color']['nombre'],
+         "estante": res.data.entradas[i]['estante'],
+         "cantidad": res.data.entradas[i]['cantidad'],
+         "fechaEntrada": res.data.entradas[i]['fechaEntrada'].substr(0, 10),
+         "proveedor": res.data.entradas[i]['proveedor']
+
+       });
+     }
+
+      setDatos(array);
+
     } catch (error) {
       console.log(error);
     }
@@ -160,22 +190,27 @@ const Entradas = () => {
     navigate("/almacenes/alta_entrada");
   };
 
-  const header = ["Producto", "Marca", "Talla", "Color", "Estante", "Apartado"];
+  const header = ["Id","Código", "Producto", "Marca", "Talla", "Color", "Estante", "Cantidad", "Fecha Entrada", "Proveedor"];
   function handleDownloadExcel() {
     let newDatos = [];
     for (let i = 0; i < datos.length; i++) {
       newDatos.push({
-        nombre: datos[i]["nombre"],
+        id: datos[i]["_id"],
+        codigo: datos[i]["codigo"],
+        producto: datos[i]["producto"],
         marca: datos[i]["marca"],
         talla: datos[i]["talla"],
         color: datos[i]["color"],
         estante: datos[i]["estante"],
-        apartado: datos[i]["apartado"],
+        cantidad: datos[i]["cantidad"],
+        fechaEntrada: datos[i]["fechaEntrada"],
+        proveedor: datos[i]["proveedor"]
+
       });
     }
 
     downloadExcel({
-      fileName: "mell_" + name + "entradas",
+      fileName: "mell_" + name + "_entradas",
       sheet: name+ "entradas",
       tablePayload: {
         header,
