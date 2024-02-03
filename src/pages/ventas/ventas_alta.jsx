@@ -36,7 +36,8 @@ const VentasAlta = () => {
   const [porcentaje, setPorcentaje] = useState(0);
   const [descuento, setDescuento] = useState(0);
   const [iva, setIva] = useState(0);
-  const porcentaje_iva = .15;
+  //const porcentaje_iva = .15;
+  const porcentaje_iva = 0;
   const [total, setTotal] = useState(0);
 
   const [costo_envio, setCostoEnvio] = useState(0);
