@@ -196,7 +196,7 @@ const ProductosAlta = () => {
 
     if(nombre != "" && nombre != undefined) {
       nombre_original_size = nombre.length;
-      const nombre_valid = nombre.match(/[A-Za-z0-9\s]/g); //devuelve array con los caracteres aceptados //letras, numeros y espacios
+      const nombre_valid = nombre.match(/[A-Za-z0-9ñÑ\s]/g); //devuelve array con los caracteres aceptados //letras, numeros y espacios
       nombre_calculated_size = nombre_valid.length;
     }  
 
