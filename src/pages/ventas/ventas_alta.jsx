@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Card from "@/components/ui/Card";
 import Textinput from "@/components/ui/Textinput";
 import Textarea from "@/components/ui/Textarea";
@@ -12,6 +12,10 @@ import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../configs/axios";
 import { UserContext } from "../context/userContext";
 import { Label } from "reactstrap";
+
+import "./Print_styles.css";
+
+import { useReactToPrint } from 'react-to-print';
 
 import { Payment } from '@mercadopago/sdk-react';
 
@@ -67,8 +71,14 @@ const VentasAlta = () => {
   const [viewContinuebutton,setViewContinuebutton] = useState(true);
 
   const [preferenceId, setPreferenceId] = useState(null);
-  
- 
+
+  const printArea = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => printArea.current,
+    onAfterPrint:() => navigate(0) 
+  });
+   
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
@@ -445,16 +455,22 @@ const VentasAlta = () => {
             const res = await clienteAxios.post("/pedido/crear", dataForm);
             //console.log(res);
 
+            /*
             var container = document.getElementById("div-cart");
             var printWindow = window.open('', 'PrintMap');
             printWindow.document.writeln(container.innerHTML);
             printWindow.document.close();
             printWindow.print();
             printWindow.close();
+            */
+
+            
+            handlePrint();
+            
 
             
             //navigate("/ventas/ventas_alta");
-            navigate(0);
+            //navigate(0);
           
           } catch (error) {
             console.log(error);
@@ -500,6 +516,8 @@ const VentasAlta = () => {
         
       
   };
+
+  
 
 
   //funciones de mercado pago
@@ -586,7 +604,7 @@ const VentasAlta = () => {
     */
    };
 
-   const customStyles = {
+    const customStyles = {
     control: (base, state) => ({
       ...base,
       background: isDark
@@ -924,7 +942,11 @@ const VentasAlta = () => {
 
       {/*ticket*/}
       <div id="div-cart" style={{display:"none"}}>
-      <table>
+      <div align="center" ref={printArea} style={{fontSize:"12px"}}>
+        <div align="center">
+          <img src="https://agencianuba.com/mell_front_images/logo/logo_small.png" alt="Logo Mell" style={{height:"70px",width:"70px",marginTop:"10px",marginBottom:"10px"}} />  
+        </div>  
+        <table>
             <thead>
               <tr>
                 <th>Producto</th>
@@ -947,10 +969,10 @@ const VentasAlta = () => {
                             {row.cantidad}
                           </td>
                           <td align="center">
-                           $ {row.precio}
+                           $ {row.precio.toFixed(2)}
                           </td>
                           <td align="right">
-                           $ {row.total}
+                           $ {row.total.toFixed(2)}
                           </td>
                           </>
                         }
@@ -991,6 +1013,10 @@ const VentasAlta = () => {
             )
             }
           </table>
+          <span style={{marginBottom:"0", paddingBottom:"0"}}>Atendió: {user.nombre}</span>  
+          <br/>
+          <span style={{marginBottom:"0", paddingBottom:"0"}}>8 días para cualquier cambio con su nota</span>
+      </div>
       </div>
      
     </>
