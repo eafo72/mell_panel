@@ -6,8 +6,15 @@ import {
   useRowSelect,
   useSortBy,
   useGlobalFilter,
+  useFilters,
   usePagination,
 } from "react-table";
+
+import {
+  DateRangeColumnFilter,
+  dateBetweenFilterFn,
+} from "../../components/rangeFilters";
+
 import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 import { useNavigate } from "react-router-dom";
@@ -16,17 +23,18 @@ import { UserContext } from "../context/userContext";
 import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
+import { ColumnFilter } from "../../components/columnFilter";
 
 const OrdersHistory = () => {
 
   const COLUMNS = [
-   
     {
       Header: "id",
       accessor: "_id",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Origen",
@@ -34,6 +42,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Fecha",
@@ -41,6 +50,8 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: DateRangeColumnFilter,
+      filter: dateBetweenFilterFn,
     },
     {
       Header: "Tipo Envío",
@@ -48,6 +59,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Estatus Envío",
@@ -55,6 +67,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Parcialidades",
@@ -62,6 +75,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Subtotal",
@@ -69,6 +83,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Descuento",
@@ -76,6 +91,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "I.V.A",
@@ -83,6 +99,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Total",
@@ -90,6 +107,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Pagado",
@@ -97,6 +115,7 @@ const OrdersHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Estatus Pago",
@@ -114,6 +133,7 @@ const OrdersHistory = () => {
         
         {row?.cell?.value}</span>;
       },
+      Filter: ColumnFilter,
     },
     {
       Header: "Ver",
@@ -141,6 +161,12 @@ const OrdersHistory = () => {
     
   ];
 
+
+  const calculateColumnSum = (columnName) => {
+    return rows.reduce((sum, row) => {
+      return sum + parseFloat(row.values[columnName]);
+    }, 0);
+  };
   
   
   const columns = useMemo(() => COLUMNS, []);
@@ -226,7 +252,7 @@ const OrdersHistory = () => {
       columns,
       data,
     },
-
+    useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination,
@@ -248,6 +274,7 @@ const OrdersHistory = () => {
     pageCount,
     setPageSize,
     setGlobalFilter,
+    rows,
     prepareRow,
   } = tableInstance;
 
@@ -283,6 +310,9 @@ const OrdersHistory = () => {
                           className=" table-th "
                         >
                           {column.render("Header")}
+                          <div>
+                            {column.canFilter && column.Header != "Ver" && column.Header != "Pagar" ? column.render("Filter") : null}
+                          </div>
                           <span>
                             {column.isSorted
                               ? column.isSortedDesc
@@ -313,6 +343,24 @@ const OrdersHistory = () => {
                       </tr>
                     );
                   })}
+
+                  {/* Sum column */}
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td className="table-td">Total:</td>
+                    <td className="table-td">
+                       $ {calculateColumnSum("total")}
+                    </td>
+                  </tr>  
+
+
                 </tbody>
               </table>
             </div>

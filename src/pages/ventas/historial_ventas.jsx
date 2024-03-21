@@ -280,8 +280,8 @@ const SalesHistory = () => {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td class="table-td">Total:</td>
-                    <td class="table-td">
+                    <td className="table-td">Total:</td>
+                    <td className="table-td">
                        $ {calculateColumnSum("total")}
                     </td>
                   </tr>
