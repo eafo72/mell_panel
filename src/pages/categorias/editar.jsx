@@ -180,7 +180,7 @@ const CategoriasEditar = () => {
               ></Select>
 
               {/*indexViewDown*/}
-              <label  className="block capitalize form-label  ">Aparece en la secció del index arriba del footer *</label>
+              <label  className="block capitalize form-label  ">Aparece en la sección del index arriba del footer *</label>
               <Select
                   styles={customStyles}
                   placeholder="Seleccione"

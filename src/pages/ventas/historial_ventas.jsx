@@ -12,7 +12,7 @@ import {
 
 import {
   DateRangeColumnFilter,
-  dateBetweenFilterFn
+  dateBetweenFilterFn,
 } from "../../components/rangeFilters";
 
 import GlobalFilter from "../table/react-tables/GlobalFilter";
@@ -26,16 +26,14 @@ import { toast } from "react-toastify";
 import { ColumnFilter } from "../../components/columnFilter";
 
 const SalesHistory = () => {
-
   const COLUMNS = [
-   
     {
       Header: "Id Pedido",
       accessor: "id",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Fecha",
@@ -44,7 +42,7 @@ const SalesHistory = () => {
         return <span>{row?.cell?.value}</span>;
       },
       Filter: DateRangeColumnFilter,
-      filter: dateBetweenFilterFn
+      filter: dateBetweenFilterFn,
     },
     {
       Header: "Producto",
@@ -52,7 +50,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Marca",
@@ -60,7 +58,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Categoría",
@@ -68,7 +66,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Subcategoría",
@@ -76,7 +74,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Talla",
@@ -84,7 +82,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Color",
@@ -92,7 +90,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Cantidad",
@@ -100,7 +98,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Precio",
@@ -108,7 +106,7 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>$ {row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
     {
       Header: "Total",
@@ -116,72 +114,63 @@ const SalesHistory = () => {
       Cell: (row) => {
         return <span>$ {row?.cell?.value}</span>;
       },
-      Filter: ColumnFilter
+      Filter: ColumnFilter,
     },
-   
   ];
 
-  
-  
+  const calculateColumnSum = (columnName) => {
+    return rows.reduce((sum, row) => {
+      return sum + parseFloat(row.values[columnName]);
+    }, 0);
+  };
+
   const columns = useMemo(() => COLUMNS, []);
 
   const [datos, setDatos] = useState([]);
-
-  
 
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
   const navigate = useNavigate();
 
-
-
   const getOrders = async () => {
-    
     try {
-      
       let res = await clienteAxios.get(`/pedido/ventas`);
       //console.log(res.data.ventas);
 
       const ventas = [];
-      for(let i=0;i<res.data.ventas.length;i++){
-        for(let ii=0;ii<res.data.ventas[i]['descripcion'].length;ii++){ 
+      for (let i = 0; i < res.data.ventas.length; i++) {
+        for (let ii = 0; ii < res.data.ventas[i]["descripcion"].length; ii++) {
           //formateamos fecha a dd/mm/yyyy
-          const olddate = (res.data.ventas[i].fecha).split("-");
-          const newdate = olddate[0]+"/"+olddate[1]+"/"+olddate[2];
+          const olddate = res.data.ventas[i].fecha.split("-");
+          const newdate = olddate[0] + "/" + olddate[1] + "/" + olddate[2];
 
           ventas.push({
-            "id":res.data.ventas[i]._id,
-            "date":newdate,
-            "producto":res.data.ventas[i]['descripcion'][ii].nombre_original,
-            "marca":res.data.ventas[i]['descripcion'][ii].marca,
-            "categoria":res.data.ventas[i]['descripcion'][ii].categoria,
-            "subcategoria":res.data.ventas[i]['descripcion'][ii].subcategoria,
-            "talla":res.data.ventas[i]['descripcion'][ii].nombre_talla,
-            "color":res.data.ventas[i]['descripcion'][ii].nombre_color,
-            "cantidad":res.data.ventas[i]['descripcion'][ii].cantidad,
-            "precio":res.data.ventas[i]['descripcion'][ii].precio,
-            "total":res.data.ventas[i]['descripcion'][ii].total
+            id: res.data.ventas[i]._id,
+            date: newdate,
+            producto: res.data.ventas[i]["descripcion"][ii].nombre_original,
+            marca: res.data.ventas[i]["descripcion"][ii].marca,
+            categoria: res.data.ventas[i]["descripcion"][ii].categoria,
+            subcategoria: res.data.ventas[i]["descripcion"][ii].subcategoria,
+            talla: res.data.ventas[i]["descripcion"][ii].nombre_talla,
+            color: res.data.ventas[i]["descripcion"][ii].nombre_color,
+            cantidad: res.data.ventas[i]["descripcion"][ii].cantidad,
+            precio: res.data.ventas[i]["descripcion"][ii].precio,
+            total: res.data.ventas[i]["descripcion"][ii].total,
           });
         }
       }
       //console.log(ventas);
       setDatos(ventas);
-      
     } catch (error) {
       console.log(error);
     }
   };
 
-  
   useEffect(() => {
-
     getOrders();
-      
-  },[]);
-   
-   
-    
+  }, []);
+
   const data = useMemo(() => datos, [datos]);
 
   const tableInstance = useTable(
@@ -211,6 +200,7 @@ const SalesHistory = () => {
     pageCount,
     setPageSize,
     setGlobalFilter,
+    rows,
     prepareRow,
   } = tableInstance;
 
@@ -219,9 +209,6 @@ const SalesHistory = () => {
     <>
       <ToastContainer />
       <Card noborder>
-        
-
-
         <div className="md:flex justify-between items-center mb-6 mt-6">
           <h4 className="card-title">Ventas:</h4>
           <div>
@@ -248,7 +235,9 @@ const SalesHistory = () => {
                           className=" table-th "
                         >
                           {column.render("Header")}
-                          <div>{column.canFilter ? column.render('Filter') : null}</div>
+                          <div>
+                            {column.canFilter ? column.render("Filter") : null}
+                          </div>
                           <span>
                             {column.isSorted
                               ? column.isSortedDesc
@@ -279,6 +268,23 @@ const SalesHistory = () => {
                       </tr>
                     );
                   })}
+
+                  {/* Sum column */}
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="table-td">Total:</td>
+                    <td class="table-td">
+                       $ {calculateColumnSum("total")}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -353,7 +359,6 @@ const SalesHistory = () => {
             </li>
           </ul>
         </div>
-
       </Card>
     </>
   );
