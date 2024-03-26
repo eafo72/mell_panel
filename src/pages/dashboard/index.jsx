@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
+import Select from "react-select";
 import Card from "@/components/ui/Card";
+import useDarkMode from "@/hooks/useDarkMode";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
@@ -13,6 +15,15 @@ import { UserContext } from "../context/userContext";
 import Datepicker from "react-tailwindcss-datepicker";
 
 const Dashboard = () => {
+  const [isDark] = useDarkMode();
+
+  const options = [
+    { value: "Todo", label: "Todo" },
+    { value: "Tienda online", label: "Ecommerce" },
+    { value: "Mostrador", label: "Punto de Venta" }
+  ];
+
+  const [opcionGeneral, setOpcionGeneral] = useState({ value: "Todo", label: "Todo" });
 
   //ojo rango de fechas fijo de 1 de Dic de 2023 al 31 Dic 2025
 
@@ -56,15 +67,15 @@ const Dashboard = () => {
     getOrders(new Date(newValue.startDate), new Date(newValue.endDate));
   };
 
-
+ 
   const getOrders = async (inicio,final) => {
     setVentas2023([]);
     setVentas2024([]);
     setVentas2025([]);
     setVentasProducto([]);
 
-    const fecha_inicial = inicio.getFullYear() + "-" + ("0"+(inicio.getMonth()+1)).slice(-2) + "-" + ("0" + inicio.getDate()).slice(-2); 
-    const fecha_final = final.getFullYear() + "-" + ("0"+(final.getMonth()+1)).slice(-2) + "-" + ("0" + final.getDate()).slice(-2);     
+    //const fecha_inicial = inicio.getFullYear() + "-" + ("0"+(inicio.getMonth()+1)).slice(-2) + "-" + ("0" + inicio.getDate()).slice(-2); 
+    //const fecha_final = final.getFullYear() + "-" + ("0"+(final.getMonth()+1)).slice(-2) + "-" + ("0" + final.getDate()).slice(-2);     
     
     try {
       
@@ -119,8 +130,13 @@ const Dashboard = () => {
       let suma_ventas_a_pagos_restante = 0;
 
       for(let i=0;i<res.data.ventas.length;i++){
+
+        //console.log(res.data.ventas[i]);
+        //console.log(opcionGeneral);
+
+        if(opcionGeneral.value == "Todo" || res.data.ventas[i]['tipo_venta'] == opcionGeneral.value){
         
-        for(let ii=0;ii<res.data.ventas[i]['descripcion'].length;ii++){ 
+          for(let ii=0;ii<res.data.ventas[i]['descripcion'].length;ii++){ 
           
           const fecha_pedido = new Date(res.data.ventas[i].fecha);
 
@@ -259,6 +275,8 @@ const Dashboard = () => {
            
           }
 
+          }
+
         }
       }
 
@@ -378,7 +396,8 @@ const Dashboard = () => {
       }
 
       for(let i=0;i<númeroProductos;i++){
-        for(let ii=0;ii<res.data.ventas[i]['descripcion'].length;ii++){ 
+        if(opcionGeneral.value == "Todo" || res.data.ventas[i]['tipo_venta'] == opcionGeneral.value){
+          for(let ii=0;ii<res.data.ventas[i]['descripcion'].length;ii++){ 
           
           const fecha_pedido = new Date(res.data.ventas[i].fecha);
 
@@ -403,13 +422,15 @@ const Dashboard = () => {
           });
         }
 
-        }
+          }
+        }  
       }
       const groupByName = Map.groupBy(lista_productos, product => {
         return product.producto;
       });
       
-      console.log(lista_productos); 
+      //console.log(lista_productos); 
+
       if(lista_productos.length > 0){
         array_productos.push(["Producto", "Total", {role:"style"}])
 
@@ -451,17 +472,62 @@ const Dashboard = () => {
      
   }, [user]);
 
+  useEffect(() => {
+    getOrders(new Date(value.startDate), new Date(value.endDate));
+  }, [opcionGeneral]);
+
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      background: isDark
+        ? "rgb(15 23 42 / var(--tw-bg-opacity))"
+        : "transparent",
+    }),
+    singleValue: (base, state) => ({
+      ...base,
+      color: isDark ? "white" : "rgb(15 23 42 / var(--tw-text-opacity))",
+    }), 
+    multiValueRemove: (base, state) => ({
+      ...base,
+      color: "red",
+    }), 
+    option: (base, state) => {
+      return {
+        ...base,
+        background: isDark ? "rgb(15 23 42 / var(--tw-bg-opacity))" : "",
+        color: state.isFocused ? (isDark ? "white" : "black") : "grey",
+      };
+    },
+  };
+
   return (
     <div>
       <ToastContainer />
-
+      <div align="center">
+        <div style={{width:"30vw"}}>
+          <span>Periodo:
+            <Datepicker
+             value={value}
+             onChange={handleValueChange} 
+             inputClassName="w-full rounded-md focus:ring-0 font-normal bg-gray-300 dark:bg-gray-500 "
+             /> 
+          </span>
+          <br/>
+          <Select
+            styles={customStyles}
+            label="Opciones"
+            placeholder="Seleccione"
+            options={options}
+            value={opcionGeneral}
+            onChange={setOpcionGeneral}
+            isSearchable={false}
+          ></Select>
+        </div>
+      </div>
+      <br/>
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
         <></>
         <Card title="Dashboard">
-          <span>Periodo:
-            <Datepicker value={value} onChange={handleValueChange} /> 
-          </span>  
-
           <div className="grid xl:grid-cols-2 grid-cols-1 gap-5">
             <div>
               <p>Número total de pedidos pagados: {numeroPedidosPagados}</p>
@@ -484,17 +550,17 @@ const Dashboard = () => {
 
           <div>
             <h3>$ {(ventasTotales + ventasPendientes).toFixed(2)}</h3>
-            <h4>Ventas Totales</h4>
+            <h4>Ventas<br/>Totales</h4>
           </div>
 
           <div>
             <h3>$ {(ventasTotales + ventasAPagosAbonos).toFixed(2)}</h3>
-            <h4>Ingreso Total</h4>
+            <h4>Ingreso<br/>Total</h4>
           </div>
 
           <div>
             <h3>$ {ventasPendientes.toFixed(2)}</h3>
-            <h4>Ingreso Pendiente</h4>
+            <h4>Ingreso<br/>Pendiente</h4>
           </div>
 
 
