@@ -943,79 +943,31 @@ const VentasAlta = () => {
       {/*ticket*/}
       <div id="div-cart" style={{display:"none"}}>
       <div align="center" ref={printArea} style={{fontSize:"12px"}}>
-        <div align="center">
-          <img src="https://agencianuba.com/mell_front_images/logo/logo_small.png" alt="Logo Mell" style={{height:"70px",width:"70px",marginTop:"10px",marginBottom:"10px"}} />  
-        </div>  
-        <table>
-            <thead>
-              <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-
               {cart && cart.map((row,i) => {
-                    return (
-                      <tr key={i}>
-                        {
-                          <>
-                          <td>
-                              {row.nombre_producto}
-                          </td>
-                          <td align="center">
-                            {row.cantidad}
-                          </td>
-                          <td align="center">
-                           $ {row.precio.toFixed(2)}
-                          </td>
-                          <td align="right">
-                           $ {row.total.toFixed(2)}
-                          </td>
-                          </>
-                        }
-                      </tr>
-                    );
-                  })}
-            </tbody>
+                  return (
+                    <p key={i}>
+                        {row.nombre_producto +  " " +row.cantidad + " " + "$"+row.precio.toFixed(2) + "$"+row.total.toFixed(2)}
+                    </p>
+                  );
+              })}
+            
             {cart.length > 0 ? (
-            <tfoot>
-              <tr>
-                <th></th>
-                <th></th>
-                <th>Subtotal</th>
-                <th align="right">$ {subtotal}</th>
-              </tr>
-              <tr>
-                <th></th>
-                <th></th>
-                <th>Descuento</th>
-                <th align="right">$ {descuento}</th>
-              </tr>
-              <tr>
-                <th></th>
-                <th></th>
-                <th>I.V.A.</th>
-                <th align="right">$ {iva}</th>
-              </tr>
-              <tr>
-                <th></th>
-                <th></th>
-                <th>Total</th>
-                <th align="right">$ {total}</th>
-              </tr>
-            </tfoot>
+              <>
+             <p>Subtotal $ {subtotal}</p>
+             <p>Descuento $ {descuento}</p>
+             <p>I.V.A. $ {iva}</p>
+             <p>Total $ {total}</p>
+             </>
+             
             ):
             (
               <></>
             )
             }
-          </table>
-          <span style={{marginBottom:"0", paddingBottom:"0"}}>Atendió: {user.nombre}</span>  
+          
+          <p style={{marginBottom:"0", paddingBottom:"0"}}>Atendió: {user && user.nombre}</p>  
           <br/>
-          <span style={{marginBottom:"0", paddingBottom:"0"}}>8 días para cualquier cambio con su nota</span>
+          <p style={{marginBottom:"0", paddingBottom:"0"}}>8 días para cualquier cambio con su nota</p>
       </div>
       </div>
      

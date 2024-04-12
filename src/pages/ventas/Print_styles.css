@@ -1,6 +1,6 @@
 @media print {
     @page {
-      size: 48mm 100mm;
+      size: 100mm 250mm;
     }
 } 
  
