@@ -130,6 +130,10 @@ const LoginForm = () => {
         /*defaultValue={users[0].password}*/
         register={register}
         error={errors.password}
+        onKeyDown={(e) => {
+          if (e.key === "Enter")
+            onSubmit();
+          }}
       />
 
       {/*}

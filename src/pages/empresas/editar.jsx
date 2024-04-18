@@ -115,7 +115,7 @@ const EmpresaEditar = () => {
                 defaultValue={slogan}
               />
             
-             {/*aviso*/}
+             {/*aviso
              <Textarea
                   onChange={(e) => setAviso(e.target.value)}
                   label="Aviso de Privacidad"
@@ -125,7 +125,6 @@ const EmpresaEditar = () => {
                   dValue={aviso}
                 />
 
-              {/*respuesta*/}
               <Textarea
                   onChange={(e) => setTerminos(e.target.value)}
                   label="Términos y Condiciones"
@@ -134,6 +133,7 @@ const EmpresaEditar = () => {
                   type="text"
                   dValue={terminos}
                 />
+                */}
                
 
               <div className=" space-y-4">

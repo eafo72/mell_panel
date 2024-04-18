@@ -73,6 +73,12 @@ export const menuItems = [
     link: "#",
     isHide: true,
     child: [
+      /*
+      {
+        childtitle:"Prepedido",
+        childlink: "ventas/prepedido_alta",
+      },
+      */
       {
         childtitle:"Punto de venta",
         childlink: "ventas/ventas_alta",

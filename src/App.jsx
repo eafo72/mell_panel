@@ -95,6 +95,7 @@ const SeoEditar = lazy(() => import("./pages/seo/editar"));
 const Mensajes = lazy(() => import("./pages/mensajes"));
 const MensajesEnviar = lazy(() => import("./pages/mensajes/enviar"));
 
+const PrepedidoAlta = lazy(() => import("./pages/ventas/prepedido_alta"));
 
 const NoPage = lazy(() => import("./pages/404"));
 
@@ -207,6 +208,8 @@ function App() {
 
           <Route path="mensajes" element={<Mensajes />} />
           <Route path="mensajes/enviar" element={<MensajesEnviar />} />
+
+          <Route path="ventas/prepedido_alta" element={<PrepedidoAlta />} />
 
           <Route path="*" element={<Navigate to="/404" />} />
 
