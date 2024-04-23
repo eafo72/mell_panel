@@ -271,7 +271,7 @@ const AlmacenEntradaAlta = () => {
       >
           <div className="ltr:text-right rtl:text-left">
             <button onClick={() => clearForm() } className="btn btn-success  text-center m-4">Sí</button>
-            <button onClick={() => navigate("/almacenes/ver") } type="button" className="btn btn-danger  text-center m-4">No</button>
+            <button onClick={() => navigate("/almacenes/ver") }  className="btn btn-danger  text-center m-4">No</button>
           </div>
         
       </Modal>
@@ -308,7 +308,7 @@ const AlmacenEntradaAlta = () => {
                 {
                   localStorage.setItem("addProductCallbackTo", "almacen");
                   navigate("/productos/alta")
-                } } className="btn btn-success text-center">Nuevo Producto</button>
+                } } type="button" className="btn btn-success text-center">Nuevo Producto</button>
 
               {/*Talla*/}
               <label  className="block capitalize form-label  ">Talla *</label>
