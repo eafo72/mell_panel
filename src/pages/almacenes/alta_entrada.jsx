@@ -293,6 +293,7 @@ const AlmacenEntradaAlta = () => {
 
               {/*Producto*/}
               <label  className="block capitalize form-label  ">Producto *</label>
+              
               <Select
                   styles={customStyles}
                   label="Producto *"
@@ -303,6 +304,11 @@ const AlmacenEntradaAlta = () => {
                   onChange={handleChange}
                   isSearchable={true}
               ></Select>
+              <button onClick={() => 
+                {
+                  localStorage.setItem("addProductCallbackTo", "almacen");
+                  navigate("/productos/alta")
+                } } className="btn btn-success text-center">Nuevo Producto</button>
 
               {/*Talla*/}
               <label  className="block capitalize form-label  ">Talla *</label>

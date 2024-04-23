@@ -243,7 +243,13 @@ const ProductosAlta = () => {
           const res = await clienteAxios.post("/producto/crear", dataForm);
 
           //console.log(res);
-          navigate("/productos");
+          const source = localStorage.getItem("addProductCallbackTo");
+          
+          if(source == "almacen"){
+            navigate("/almacenes/alta_entrada");
+          }else{
+            navigate("/productos");
+          }
           
         } catch (error) {
           console.log(error);

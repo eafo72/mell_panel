@@ -96,6 +96,7 @@ const Mensajes = lazy(() => import("./pages/mensajes"));
 const MensajesEnviar = lazy(() => import("./pages/mensajes/enviar"));
 
 const PrepedidoAlta = lazy(() => import("./pages/ventas/prepedido_alta"));
+const Prepedidos = lazy(() => import("./pages/ventas/prepedidos"));
 
 const NoPage = lazy(() => import("./pages/404"));
 
@@ -210,6 +211,7 @@ function App() {
           <Route path="mensajes/enviar" element={<MensajesEnviar />} />
 
           <Route path="ventas/prepedido_alta" element={<PrepedidoAlta />} />
+          <Route path="ventas/prepedidos" element={<Prepedidos />} />
 
           <Route path="*" element={<Navigate to="/404" />} />
 

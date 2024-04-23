@@ -6,203 +6,111 @@ import {
   useRowSelect,
   useSortBy,
   useGlobalFilter,
+  useFilters,
   usePagination,
 } from "react-table";
+
+import {
+  DateRangeColumnFilter,
+  dateBetweenFilterFn,
+} from "../../components/rangeFilters";
+
 import GlobalFilter from "../table/react-tables/GlobalFilter";
 
 import { useNavigate } from "react-router-dom";
 import clienteAxios from "../../configs/axios";
-import { UserContext } from "../../pages/context/userContext";
+import { UserContext } from "../context/userContext";
 import { downloadExcel } from "react-export-table-to-excel";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
+import { ColumnFilter } from "../../components/columnFilter";
 
-const Products = () => {
-
+const PreSales = () => {
   const COLUMNS = [
     {
-      Header: "Código",
-      accessor: "codigo",
+      Header: "Id Pedido",
+      accessor: "id",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: ColumnFilter,
+    },
+    {
+      Header: "Fecha",
+      accessor: "fecha",
+      Cell: (row) => {
+        return <span>{row?.cell?.value}</span>;
+      },
+      Filter: DateRangeColumnFilter,
+      filter: dateBetweenFilterFn,
+    },
+    {
+      Header: "Status",
+      accessor: "status",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
     },
     {
-      Header: "Nombre",
-      accessor: "nombre",
+      Header: "Ver",
       Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Foto principal",
-      accessor: "foto_principal",
-      Cell: (row) => {
-        return <img style={{width:"40px", height:"60px"}} src={row?.cell?.value}/>;
-      },
-    },
-    {
-      Header: "Categoría",
-      accessor: "categoria",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Subcategoría",
-      accessor: "subcategoria",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-    },
-    {
-      Header: "Precio",
-      accessor: "precio",
-      Cell: (row) => {
-        return <span>$ {row?.cell?.value}</span>;
-      },
-    },
-
-    
-    {
-      Header: "Carrusel",
-      Cell: (row) => {
-        return <button onClick={() => goToFotos(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToVer(row.row.original._id)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
-            <Icon icon="heroicons:photo"/>
+            <Icon icon="heroicons:eye"/>
           </span>
         </button>
-      },
-    },
-
-    {
-      Header: "Barcode",
-      Cell: (row) => {
-        return <button onClick={() => goToBarcode(row.row.original._id)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:qr-code"/>
-          </span>
-        </button>
-      },
-    },
-
-    {
-      Header: "Editar",
-      Cell: (row) => {
-        return <button onClick={() => goToEditar(row.row.original._id, row.row.original.nombre)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons:pencil-square"/>
-          </span>
-        </button>
-      },
-    },
-
-    {
-      Header: "Borrar",
-      Cell: (row) => {
-        return <button onClick={() => goToBorrar(row.row.original._id, row.row.original.nombre)} className="text-danger-500 hover:bg-danger-500 hover:bg-opacity-100 hover:text-white border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
-        first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
-          <span className="text-base">
-            <Icon icon="heroicons-outline:trash"/>
-          </span>
-        </button>;
       },
     },
   ];
 
-  
-  
+ 
   const columns = useMemo(() => COLUMNS, []);
 
   const [datos, setDatos] = useState([]);
-  
+
   const userCtx = useContext(UserContext);
   const { user, authStatus, verifyingToken } = userCtx;
 
   const navigate = useNavigate();
 
-  const getProducts = async () => {
+  const getPreOrders = async () => {
     try {
-      let res = await clienteAxios.get(`/producto/obtener`);
+      let res = await clienteAxios.get(`/pedido/prepedidos`);
+      //console.log(res.data.prepedidos);
 
-      //console.log(res.data.productos);
-      
-      setDatos(res.data.productos);
+      const prepedidos = [];
+
+      for (let i = 0; i < res.data.prepedidos.length; i++) {
+       
+          //formateamos fecha a dd/mm/yyyy
+          const olddate = res.data.prepedidos[i].fecha.split("-");
+          const newdate = olddate[0] + "/" + olddate[1] + "/" + olddate[2];
+
+          prepedidos.push({
+            id: res.data.prepedidos[i]._id,
+            fecha: newdate,
+            status: res.data.prepedidos[i].status,
+          });
+       
+      }
+      //console.log(prepedidos);
+      setDatos(prepedidos);
     } catch (error) {
       console.log(error);
     }
   };
 
-  
   useEffect(() => {
-    verifyingToken().then(() => {
-      //console.log(user);
-    });
+    getPreOrders();
+  }, []);
 
-    if(authStatus === false) {
-      //navigate("/");
-    }
-    getProducts();
-      
-  },[authStatus]);
-  
 
-  const header = ["Nombre", "Foto principal", "Categoría", "Subcategoría", "Precio" ];
-  function handleDownloadExcel() {
-    let newDatos = [];
-    for(let i=0;i<datos.length;i++){
-      newDatos.push({
-        "nombre":datos[i]['nombre'],
-        "foto_principal":datos[i]['foto_principal'],
-        "categoria":datos[i]['categoria'],
-        "subcategoria":datos[i]['subcategoria'],
-        "precio":datos[i]['precio']
-      })
-    }
-
-    downloadExcel({
-      fileName: "mell_products",
-      sheet: "products",
-      tablePayload: {
-        header,
-        body: newDatos,
-      },
-    });
+  const goToVer = (id,email) => {
+    localStorage.setItem("SeePreSale",id);
+    navigate("/ventas/prepedido_detalle");
   }
 
-  const handleAlta = () => {
-    localStorage.setItem("addProductCallbackTo", "productos");
-    navigate("/productos/alta");
-  };
-
- 
-
-  const goToFotos = (id,name) => {
-    localStorage.setItem("PhotoProduct",id);
-    navigate("/productos/alta_foto");
-  }
-
-
-  const goToEditar = (id,name) => {
-    localStorage.setItem("EditProduct",id);
-    navigate("/productos/editar");
-  }
-
-  const goToBarcode = (id) => {
-    localStorage.setItem("BarcodeProduct",id);
-    navigate("/productos/barcode");
-  }
-
-  const goToBorrar = async (id,name) => {
-    localStorage.setItem("DeleteProduct",id);
-    localStorage.setItem("DeleteProductName",name);
-    navigate("/productos/borrar");
-  }
-
-    
   const data = useMemo(() => datos, [datos]);
 
   const tableInstance = useTable(
@@ -210,7 +118,7 @@ const Products = () => {
       columns,
       data,
     },
-
+    useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination,
@@ -232,6 +140,7 @@ const Products = () => {
     pageCount,
     setPageSize,
     setGlobalFilter,
+    rows,
     prepareRow,
   } = tableInstance;
 
@@ -240,12 +149,8 @@ const Products = () => {
     <>
       <ToastContainer />
       <Card noborder>
-        <div className="md:flex justify-between items-center mb-6">
-          <h4 className="card-title">Productos</h4>
-          <button onClick={(e) => handleAlta(e)} className="btn btn-success">
-            Agregar nuevo
-          </button>
-          <button className="btn btn-success m-2" onClick={handleDownloadExcel}>Exportar</button>
+        <div className="md:flex justify-between items-center mb-6 mt-6">
+          <h4 className="card-title">PrePedidos:</h4>
           <div>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           </div>
@@ -270,6 +175,9 @@ const Products = () => {
                           className=" table-th "
                         >
                           {column.render("Header")}
+                          <div>
+                            {column.canFilter && column.Header != "Status" && column.Header != "Ver" ?  column.render("Filter") : null}
+                          </div>
                           <span>
                             {column.isSorted
                               ? column.isSortedDesc
@@ -379,4 +287,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default PreSales;
