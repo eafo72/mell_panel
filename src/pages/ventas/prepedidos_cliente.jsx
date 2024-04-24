@@ -25,30 +25,23 @@ import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import { ColumnFilter } from "../../components/columnFilter";
 
-const PreSales = () => {
+const PreSalesClient = () => {
   const COLUMNS = [
+    
+    
     {
-      Header: "Id Pedido",
-      accessor: "id",
+      Header: "Cliente",
+      accessor: "cliente",
       Cell: (row) => {
         return <span>{row?.cell?.value}</span>;
       },
       Filter: ColumnFilter,
     },
-    {
-      Header: "Fecha",
-      accessor: "fecha",
-      Cell: (row) => {
-        return <span>{row?.cell?.value}</span>;
-      },
-      Filter: DateRangeColumnFilter,
-      filter: dateBetweenFilterFn,
-    },
     
     {
       Header: "Ver",
       Cell: (row) => {
-        return <button onClick={() => goToVer(row.row.original.id)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
+        return <button onClick={() => goToVer(row.row.original.cliente)} className="hover:bg-slate-900 hover:text-white dark:hover:bg-slate-600 dark:hover:bg-opacity-50 border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm  last:mb-0 cursor-pointer 
         first:rounded-t last:rounded-b flex  space-x-2 items-center rtl:space-x-reverse">
           <span className="text-base">
             <Icon icon="heroicons:eye"/>
@@ -76,20 +69,36 @@ const PreSales = () => {
       const prepedidos = [];
 
       for (let i = 0; i < res.data.prepedidos.length; i++) {
-       
-          //formateamos fecha a dd/mm/yyyy
-          const olddate = res.data.prepedidos[i].fecha.split("-");
-          const newdate = olddate[0] + "/" + olddate[1] + "/" + olddate[2];
 
-          prepedidos.push({
-            id: res.data.prepedidos[i]._id,
-            fecha: newdate,
-            status: res.data.prepedidos[i].status,
-          });
+        //formateamos fecha a dd/mm/yyyy
+        const olddate = res.data.prepedidos[i].fecha.split("-");
+        const newdate = olddate[0] + "/" + olddate[1] + "/" + olddate[2];
+
+        for (let ii = 0; ii < res.data.prepedidos[i]['descripcion'].length; ii++) {
+
+          if(res.data.prepedidos[i]['descripcion'][ii]['status'] == "Pendiente"){
+            prepedidos.push({
+              id: res.data.prepedidos[i]._id,
+              fecha: newdate,
+              status: res.data.prepedidos[i].status,
+              cliente: res.data.prepedidos[i]['descripcion'][ii]['cliente']
+            });
+          }
+
+        }
        
       }
-      //console.log(prepedidos);
-      setDatos(prepedidos);
+
+     
+      //eliminamos los repetidos
+      var hash = {};
+      const newprepedidos = prepedidos.filter(function(current) {
+        var exists = !hash[current.cliente];
+        hash[current.cliente] = true;
+        return exists;
+      });
+
+      setDatos(newprepedidos);
     } catch (error) {
       console.log(error);
     }
@@ -100,9 +109,9 @@ const PreSales = () => {
   }, []);
 
 
-  const goToVer = (id) => {
-    localStorage.setItem("SeePreSale",id);
-    navigate("/ventas/prepedido_detalle");
+  const goToVer = (cliente) => {
+    localStorage.setItem("SeePreSaleClient",cliente);
+    navigate("/ventas/prepedido_cliente_detalle");
   }
 
   const data = useMemo(() => datos, [datos]);
@@ -144,7 +153,7 @@ const PreSales = () => {
       <ToastContainer />
       <Card noborder>
         <div className="md:flex justify-between items-center mb-6 mt-6">
-          <h4 className="card-title">PrePedidos:</h4>
+          <h4 className="card-title">PrePedidos por Cliente:</h4>
           <div>
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           </div>
@@ -281,4 +290,4 @@ const PreSales = () => {
   );
 };
 
-export default PreSales;
+export default PreSalesClient;

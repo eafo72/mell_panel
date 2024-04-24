@@ -201,6 +201,7 @@ const PrepedidoAlta = () => {
           cliente,
           precio,
           total: parseInt(cantidad) * precio,
+          status:"Pendiente"
         },
       ]);
 

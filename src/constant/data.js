@@ -78,6 +78,10 @@ export const menuItems = [
         childlink: "ventas/prepedidos",
       },
       {
+        childtitle:"Prepedidos por Cliente",
+        childlink: "ventas/prepedidos_cliente",
+      },
+      {
         childtitle:"Alta Prepedido",
         childlink: "ventas/prepedido_alta",
       },

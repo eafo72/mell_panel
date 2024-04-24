@@ -96,7 +96,10 @@ const Mensajes = lazy(() => import("./pages/mensajes"));
 const MensajesEnviar = lazy(() => import("./pages/mensajes/enviar"));
 
 const PrepedidoAlta = lazy(() => import("./pages/ventas/prepedido_alta"));
+const PrepedidoDetalle = lazy(() => import("./pages/ventas/prepedido_detalle"));
+const PrepedidoClienteDetalle = lazy(() => import("./pages/ventas/prepedido_cliente_detalle"));
 const Prepedidos = lazy(() => import("./pages/ventas/prepedidos"));
+const PrepedidosCliente = lazy(() => import("./pages/ventas/prepedidos_cliente"));
 
 const NoPage = lazy(() => import("./pages/404"));
 
@@ -211,7 +214,10 @@ function App() {
           <Route path="mensajes/enviar" element={<MensajesEnviar />} />
 
           <Route path="ventas/prepedido_alta" element={<PrepedidoAlta />} />
+          <Route path="ventas/prepedido_detalle" element={<PrepedidoDetalle />} />
+          <Route path="ventas/prepedido_cliente_detalle" element={<PrepedidoClienteDetalle />} />
           <Route path="ventas/prepedidos" element={<Prepedidos />} />
+          <Route path="ventas/prepedidos_cliente" element={<PrepedidosCliente />} />
 
           <Route path="*" element={<Navigate to="/404" />} />
 
