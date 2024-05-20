@@ -22,7 +22,7 @@ import useDarkMode from "@/hooks/useDarkMode";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const PreSalesDetails = () => {
+const PreClientSalesDetails = () => {
   const [isDark] = useDarkMode();
 
   const COLUMNS = [
@@ -191,6 +191,7 @@ const PreSalesDetails = () => {
         }
       }
 
+      console.log(prepedidos);
       setDatos(prepedidos);
       setTotal(tot);
     } catch (error) {
@@ -628,4 +629,4 @@ const PreSalesDetails = () => {
   );
 };
 
-export default PreSalesDetails;
+export default PreClientSalesDetails;
