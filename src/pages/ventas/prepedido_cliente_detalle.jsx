@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useContext } from "react";
 import Textinput from "@/components/ui/Textinput";
 import Textarea from "@/components/ui/Textarea";
 import Select from "react-select";
-import { Label } from "reactstrap";
+
 import Card from "@/components/ui/Card";
 import Icon from "@/components/ui/Icon";
 import {
@@ -22,7 +22,7 @@ import useDarkMode from "@/hooks/useDarkMode";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-const PreClientSalesDetails = () => {
+const PrepedidoClienteDetalle = () => {
   const [isDark] = useDarkMode();
 
   const COLUMNS = [
@@ -191,7 +191,6 @@ const PreClientSalesDetails = () => {
         }
       }
 
-      console.log(prepedidos);
       setDatos(prepedidos);
       setTotal(tot);
     } catch (error) {
@@ -547,7 +546,7 @@ const PreClientSalesDetails = () => {
             <br />
 
             {/*forma pago*/}
-            <Label className="mt-2">Forma de pago:</Label>
+            <p className="mt-2">Forma de pago:</p>
             <Select
               styles={customStyles}
               label="Forma de Pago *"
@@ -561,7 +560,7 @@ const PreClientSalesDetails = () => {
             <br />
 
             {/*forma entrega*/}
-            <Label className="mt-2">Forma de Entrega:</Label>
+            <p className="mt-2">Forma de Entrega:</p>
             <Select
               styles={customStyles}
               label="Forma de Entrega *"
@@ -581,7 +580,7 @@ const PreClientSalesDetails = () => {
               }
               className="mt-4"
             >
-              <Label className="mt-2">Datos de Entrega:</Label>
+              <p className="mt-2">Datos de Entrega:</p>
 
               {/*Entregar a:*/}
               <Textinput
@@ -629,4 +628,4 @@ const PreClientSalesDetails = () => {
   );
 };
 
-export default PreClientSalesDetails;
+export default PrepedidoClienteDetalle;

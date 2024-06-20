@@ -942,7 +942,7 @@ const VentasAlta = () => {
 
       {/*ticket*/}
       <div id="div-cart" style={{display:"none"}}>
-      <div align="center" ref={printArea} style={{fontSize:"12px"}}>
+      <div align="center" ref={printArea} style={{fontSize:"20px"}}>
               {cart && cart.map((row,i) => {
                   return (
                     <p key={i}>
