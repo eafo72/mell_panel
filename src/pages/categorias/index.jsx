@@ -32,7 +32,8 @@ const Categories = () => {
       Header: "Imagen",
       accessor: "imagen",
       Cell: (row) => {
-        return <img style={{width:"60px", height:"60px"}} src={row?.cell?.value}/>;
+        const uniqueImageUrl = `${row?.cell?.value}?v=${Math.random()}`;
+        return <img style={{width:"60px", height:"60px"}} src={uniqueImageUrl}/>;
       },
     },
     {
